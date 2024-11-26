@@ -1,0 +1,12 @@
+services:
+  postgres:
+    image: postgres:9.5
+    container_name: legacy_db
+    environment:
+      POSTGRES_DB: "applec"
+      POSTGRES_USER: "anyway"
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
