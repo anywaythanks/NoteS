@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: postgres:14
+    container_name: NoteS_db
+    environment:
+      POSTGRES_DB: "NoteS_db"
+      POSTGRES_USER: "anyway"
+      POSTGRES_PASSWORD: "anyway"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+  Liquibase:
+    image: liquibase/liquibase:4.10.0
+    container_name: Liquibase
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ../db:/liquibase/changelog
+    command:  update --classpath=/liquibase/changelog --changeLogFile db.changelog-master.xml --url jdbc:postgresql://postgres:5432/NoteS_db --username anyway --password anyway
