@@ -3,12 +3,11 @@
     image: elasticsearch:8.16.1
     container_name: elasticsearch
     environment:
-      - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - http.cors.enabled=true
-      - http.cors.allow-origin=*
-      - discovery.zen.minimum_master_nodes=2
+      - http.cors.enabled=false
+      - xpack.security.enabled=false
+      - discovery.type=single-node
     ulimits:
       memlock:
         soft: -1
