@@ -93,6 +93,8 @@ builder.Services.AddDbContext<IProductRepository, ProductRepositoryDb>(options =
 builder.Services.AddDbContext<IPurchasesRepository, PurchasesRepositoryDb>(options =>
     options.UseNpgsql(db).EnableSensitiveDataLogging());
 var app = builder.Build();
+app.UsePathBase(new PathString("/api"));
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
