@@ -1,5 +1,6 @@
 ﻿using LR.model;
 using Microsoft.EntityFrameworkCore;
+using NoteS.Models;
 
 namespace LR.repositories;
 
@@ -16,9 +17,9 @@ public sealed class ProductRepositoryDb(
             .HasOne(p => p.Owner)
             .WithMany()
             .HasForeignKey("account_id");
-        modelBuilder.Entity<Account>()
-            .Property(e => e.Role)
-            .HasConversion<string>();
+        // modelBuilder.Entity<Account>()
+        //     .Property(e => e.Role)
+        //     .HasConversion<string>();
     }
 
     public Product Save(Product product)

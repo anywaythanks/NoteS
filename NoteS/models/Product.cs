@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LR.model;
+namespace NoteS.Models;
 
 [Table("products")]
 public class Product(string name, string visibleName, string description)

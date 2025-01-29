@@ -3,6 +3,7 @@ using LR.model;
 using LR.model.dto.user;
 using LR.repositories;
 using Microsoft.AspNetCore.Identity;
+using NoteS.Models;
 using static Microsoft.AspNetCore.Identity.PasswordVerificationResult;
 
 namespace LR.services;
@@ -11,11 +12,12 @@ public class LoginService(IAccountRepository accountRepository, PasswordHasher<A
 {
     public Account? Login(string accountName, AccountLoginDto loginDto)
     {
-        // находим пользователя 
-        var account = accountRepository.FindByName(accountName);
-        if (account is null) return null;
-        return passwordHasher.VerifyHashedPassword(account, account.Password, loginDto.Password) == Success
-            ? account
-            : null;
+        // // находим пользователя 
+        // var account = accountRepository.FindByName(accountName);
+        // if (account is null) return null;
+        // return passwordHasher.VerifyHashedPassword(account, account.Password, loginDto.Password) == Success
+        //     ? account
+        //     : null;
+        return null!;
     }
 }

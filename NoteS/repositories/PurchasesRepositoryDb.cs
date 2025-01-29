@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using LR.model;
 using Microsoft.EntityFrameworkCore;
+using NoteS.Models;
 
 namespace LR.repositories;
 
@@ -29,9 +30,9 @@ public class PurchasesRepositoryDb(
         modelBuilder.Entity<Purchase>()
             .Property(p => p.Number)
             .IsRequired(false);
-        modelBuilder.Entity<Account>()
-            .Property(e => e.Role)
-            .HasConversion<string>();
+        // modelBuilder.Entity<Account>()
+        //     .Property(e => e.Role)
+        //     .HasConversion<string>();
     }
 
     public Purchase Save(Purchase purchases)

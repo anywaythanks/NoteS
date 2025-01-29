@@ -1,5 +1,6 @@
 ﻿using LR.model;
 using Microsoft.EntityFrameworkCore;
+using NoteS.Models;
 
 namespace LR.repositories;
 
@@ -10,9 +11,9 @@ public sealed class AccountRepositoryDb(DbContextOptions<AccountRepositoryDb> op
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Account>()
-            .Property(e => e.Role)
-            .HasConversion<string>();
+        // modelBuilder.Entity<Account>()
+        //     .Property(e => e.Role)
+        //     .HasConversion<string>();
     }
 
     public Account Save(Account account)

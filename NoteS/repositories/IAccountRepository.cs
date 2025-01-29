@@ -1,4 +1,5 @@
 ﻿using LR.model;
+using NoteS.Models;
 
 namespace LR.repositories;
 

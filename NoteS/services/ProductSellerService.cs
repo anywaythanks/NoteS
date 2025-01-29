@@ -5,6 +5,7 @@ using LR.model;
 using LR.model.dto.product;
 using LR.model.dto.purchases;
 using LR.repositories;
+using NoteS.Models;
 
 namespace LR.services;
 

@@ -17,8 +17,7 @@ namespace LR.controllers;
 public class AccountController(
     AccountRegisterService registerService,
     AccountInformationService accountInformationService,
-    AccountReplenishService accountReplenishService,
-    LoginService loginService) : Controller
+    AccountReplenishService accountReplenishService) : Controller
 {
     //PUT /accounts/{name}
     [HttpPut]
@@ -47,27 +46,8 @@ public class AccountController(
     public IResult Login([FromRoute] string accountName,
         [FromBody] AccountLoginDto loginDto)
     {
-        var account = loginService.Login(accountName, loginDto);
-        if (account is null) return Results.Unauthorized(); //401
-
-        var claims = new List<Claim>
-            { new(ClaimTypes.Name, accountName), new(ClaimTypes.Role, account.Role.GetDisplayName()) };
-
-        var jwt = new JwtSecurityToken(
-            issuer: AuthOptions.ISSUER,
-            audience: AuthOptions.AUDIENCE,
-            claims: claims,
-            expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(30)),
-            signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(),
-                SecurityAlgorithms.HmacSha256));
-        var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-        return Results.Json(new
-        {
-            token = encodedJwt,
-            username = accountName
-        });
+        return null!;//TODO: интеграция с кейклок
     }
-   
    
     [HttpGet]
     [Authorize]

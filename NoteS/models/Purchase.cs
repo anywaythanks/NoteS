@@ -1,7 +1,6 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LR.model;
+namespace NoteS.Models;
 
 [Table("purchases")]
 public class Purchase(int quantity, Decimal cost)

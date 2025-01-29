@@ -4,6 +4,7 @@ using LR.mappers;
 using LR.model;
 using LR.model.dto.user;
 using LR.repositories;
+using NoteS.Models;
 
 namespace LR.services;
 
@@ -16,18 +17,19 @@ public class AccountReplenishService(
         [Required] [Range(1, long.MaxValue, ErrorMessage = "Only positive number allowed")]
         Decimal amount)
     {
-        var aDto = accountInformationService.Get(accountName);
-        var a = accountMapper.ToModel(aDto);
-        a.Amount += amount;
-        return accountMapper.ToPartialDto(accountRepository.Detach(accountRepository.Save(a)));
+        // var aDto = accountInformationService.Get(accountName);
+        // var a = accountMapper.ToModel(aDto);
+        // a.Amount += amount;
+        // return accountMapper.ToPartialDto(accountRepository.Detach(accountRepository.Save(a)));
+        return null!;
     }
 
     public AccountPartialDto Credit(Account account,
         [Required] [Range(1, long.MaxValue, ErrorMessage = "Only positive number allowed")]
         Decimal amount)
     {
-        account.Amount -= amount;
-        if (account.Amount < 0) throw new NotEnoughAmount();
+        // account.Amount -= amount;
+        // if (account.Amount < 0) throw new NotEnoughAmount();
         return accountMapper.ToPartialDto(accountRepository.Detach(accountRepository.Save(account)));
     }
 }

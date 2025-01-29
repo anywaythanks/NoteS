@@ -1,5 +1,6 @@
 ﻿using LR.model;
 using LR.model.dto.user;
+using NoteS.Models;
 using Riok.Mapperly.Abstractions;
 
 namespace LR.mappers;
