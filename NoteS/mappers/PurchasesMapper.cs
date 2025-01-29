@@ -1,14 +1,15 @@
 ﻿using LR.model;
 using LR.model.dto.purchases;
+using Riok.Mapperly.Abstractions;
 
 namespace LR.mappers;
 
-public class PurchasesMapper(AccountMapper accountMapper, ProductMapper productMapper)
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target,
+    ThrowOnMappingNullMismatch = true)]
+public partial class PurchasesMapper(AccountMapper accountMapper, ProductMapper productMapper)
 {
-    public PurchasePartialDto ToPartialDto(Purchase purchase)
-    {
-        return new PurchasePartialDto(productMapper.ToPartialDto(purchase.Product),
-            accountMapper.ToPartialDto(purchase.Buyer),
-            purchase.Quantity, purchase.Cost);
-    }
+    [UseMapper] private AccountMapper AccountMapper => accountMapper;
+    [UseMapper] private ProductMapper ProductMapper => productMapper;
+    
+    public partial PurchasePartialDto ToPartialDto(Purchase purchase);
 }
