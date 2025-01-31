@@ -1,10 +1,15 @@
 alter table if exists notes
-    add type int not null;
+    add type int not null default 0;
 
 GO
 
 alter table if exists notes
     add prev int not null;
+
+GO
+
+alter table if exists notes
+    add is_public boolean not null default false;
 
 GO
 
