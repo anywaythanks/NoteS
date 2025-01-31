@@ -1,15 +1,15 @@
 alter table if exists note_blocks
-    alter column id SET default null;
+    alter column id drop default;
 
 GO
 
 alter table if exists note_blocks
-    alter column created_on SET default null;
+    alter column created_on drop default;
 
 GO
 
 alter table if exists note_blocks
-    alter column modified_by SET default null;
+    alter column modified_by drop default;
 
 GO
 

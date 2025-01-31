@@ -1,5 +1,5 @@
 alter table if exists notes
-    alter column id SET default nextval('note_blocks_seq'::regclass);
+    alter column id SET default nextval('note_id_seq'::regclass);
 
 GO
 

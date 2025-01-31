@@ -14,21 +14,27 @@
     </changeSet>
 
     <include file="v-0.1/db.changelog-v.0.1.xml" relativeToChangelogFile="true"/>
-
+    <!--    Копирка курсового-->
     <changeSet id="0.1" author="anywaythanks">
         <tagDatabase tag="v.0.1"/>
     </changeSet>
-    
+<!--    Значительное упрощение типов блоков заметок. -->
     <include file="v-0.2/db.changelog-v.0.2.xml" relativeToChangelogFile="true"/>
 
     <changeSet id="0.2" author="anywaythanks">
         <tagDatabase tag="v.0.2"/>
     </changeSet>
-    
+    <!--    Добавление автогенерации-->
     <include file="v-0.3/db.changelog-v.0.3.xml" relativeToChangelogFile="true"/>
 
     <changeSet id="0.3" author="anywaythanks">
         <tagDatabase tag="v.0.3"/>
+    </changeSet>
+    <!--   Расширение возможностей таблички Note, для поддержки комментариев и ко -->
+    <include file="v-0.4/db.changelog-v.0.4.xml" relativeToChangelogFile="true"/>
+    
+    <changeSet id="0.4" author="anywaythanks">
+        <tagDatabase tag="v.0.4"/>
     </changeSet>
     
 </databaseChangeLog>

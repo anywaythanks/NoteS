@@ -1,5 +1,5 @@
 alter table if exists tags
-    alter column id SET default null;
+    alter column id drop default;
 GO
 
 alter table if exists tags
