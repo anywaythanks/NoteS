@@ -1,11 +1,11 @@
-﻿using LR.model.dto.user;
-using LR.repositories;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using NoteS.Models;
+using NoteS.models.dto.accounts;
+using NoteS.repositories;
 using AccountMapper = NoteS.mappers.AccountMapper;
 
 
-namespace LR.services;
+namespace NoteS.services;
 
 public class AccountRegisterService(
     IAccountRepository accountRepository,

@@ -1,4 +1,4 @@
-﻿using LR.services;
+﻿using NoteS.services;
 
 namespace NoteS.configs;
 

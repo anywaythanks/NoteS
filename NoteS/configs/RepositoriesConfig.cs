@@ -1,5 +1,5 @@
-﻿using LR.repositories;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using NoteS.repositories;
 
 namespace NoteS.configs;
 

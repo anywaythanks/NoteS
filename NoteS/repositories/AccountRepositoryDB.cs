@@ -1,8 +1,7 @@
-﻿using LR.model;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NoteS.Models;
 
-namespace LR.repositories;
+namespace NoteS.repositories;
 
 public sealed class AccountRepositoryDb(DbContextOptions<AccountRepositoryDb> options)
     : DbContext(options), IAccountRepository

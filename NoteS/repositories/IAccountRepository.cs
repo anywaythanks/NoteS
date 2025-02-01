@@ -1,7 +1,6 @@
-﻿using LR.model;
-using NoteS.Models;
+﻿using NoteS.Models;
 
-namespace LR.repositories;
+namespace NoteS.repositories;
 
 public interface IAccountRepository
 {

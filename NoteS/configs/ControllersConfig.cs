@@ -1,6 +1,4 @@
-﻿using LR.services;
-
-namespace NoteS.configs;
+﻿namespace NoteS.configs;
 
 public class ControllersConfig
 {

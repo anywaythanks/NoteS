@@ -1,16 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using LR.model;
-using LR.model.dto.user;
-using LR.services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Extensions;
+using NoteS.models.dto.accounts;
+using NoteS.services;
 
-namespace LR.controllers;
+namespace NoteS.controllers;
 
 [Route("api/")]
 [ApiController]

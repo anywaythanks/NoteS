@@ -1,9 +1,9 @@
 ﻿using LR.exceptions;
-using LR.model.dto.user;
-using LR.repositories;
+using NoteS.models.dto.accounts;
+using NoteS.repositories;
 using AccountMapper = NoteS.mappers.AccountMapper;
 
-namespace LR.services;
+namespace NoteS.services;
 
 public class AccountInformationService(IAccountRepository accountRepository, AccountMapper accountMapper)
 {

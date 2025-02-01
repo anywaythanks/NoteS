@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LR.model.dto.user;
+namespace NoteS.models.dto.accounts;
 
 public class AccountLoginDto(string password)
 {

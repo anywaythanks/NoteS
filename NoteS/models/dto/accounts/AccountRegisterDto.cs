@@ -1,9 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace NoteS.models.dto.accounts;
 
-namespace LR.model.dto.user;
-
-public class AccountRegisterDto(Role role, string password)
+public class AccountRegisterDto
 {
-    public Role Role { get; } = role;
-    [Required] [MaxLength(64)] public string Password  { get; set; } = password;
 }
