@@ -18,4 +18,5 @@ public class Note(string title, string elasticUuid)
     [Column("type")] public NoteTypes? Type { get; init; }
     [Column("is_public")] public bool? Public { get; init; }
     [Column("prev")] public Note? MainNote { get; init; } //поскольку это дерево, то не следует вовсе заполнять
+    [Column("syntax_type_id")] public SyntaxType? SyntaxType { get; init; }
 }

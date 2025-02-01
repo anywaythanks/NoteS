@@ -11,10 +11,6 @@ public class RepositoriesConfig
         
         builder.Services.AddDbContext<IAccountRepository, AccountRepositoryDb>(options =>
             options.UseNpgsql(db).EnableSensitiveDataLogging());
-        builder.Services.AddDbContext<IProductRepository, ProductRepositoryDb>(options =>
-            options.UseNpgsql(db).EnableSensitiveDataLogging());
-        builder.Services.AddDbContext<IPurchasesRepository, PurchasesRepositoryDb>(options =>
-            options.UseNpgsql(db).EnableSensitiveDataLogging());
     }
     
     public static void AfterConfiguration(WebApplication app)
@@ -22,8 +18,6 @@ public class RepositoriesConfig
         using (var scope = app.Services.CreateScope())
         {
             scope.ServiceProvider.GetRequiredService<AccountRepositoryDb>().Database.EnsureCreated();
-            scope.ServiceProvider.GetRequiredService<ProductRepositoryDb>().Database.EnsureCreated();
-            scope.ServiceProvider.GetRequiredService<PurchasesRepositoryDb>().Database.EnsureCreated();
         }
     }
 }
