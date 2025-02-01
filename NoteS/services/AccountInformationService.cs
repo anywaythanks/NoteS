@@ -1,7 +1,7 @@
 ﻿using LR.exceptions;
-using LR.mappers;
 using LR.model.dto.user;
 using LR.repositories;
+using AccountMapper = NoteS.mappers.AccountMapper;
 
 namespace LR.services;
 

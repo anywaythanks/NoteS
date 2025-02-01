@@ -1,17 +1,17 @@
-﻿using LR.model;
-using LR.model.dto.user;
+﻿using LR.model.dto.user;
 using NoteS.Models;
 using Riok.Mapperly.Abstractions;
 
-namespace LR.mappers;
+namespace NoteS.mappers;
 
-[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target, 
-    ThrowOnMappingNullMismatch = true, 
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target,
+    ThrowOnMappingNullMismatch = true,
     ThrowOnPropertyMappingNullMismatch = true)]
 public partial class AccountMapper
 {
     [MapProperty("Id", "Id")]
     public partial AccountFullDto ToFullDto(Account account);
+
     public partial AccountPartialDto ToPartialDto(Account account);
 
     public Account ToModel(AccountPartialDto partialDto)

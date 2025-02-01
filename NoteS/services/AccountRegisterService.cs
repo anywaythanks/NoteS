@@ -1,9 +1,8 @@
-﻿using LR.mappers;
-using LR.model;
-using LR.model.dto.user;
+﻿using LR.model.dto.user;
 using LR.repositories;
 using Microsoft.AspNetCore.Identity;
 using NoteS.Models;
+using AccountMapper = NoteS.mappers.AccountMapper;
 
 
 namespace LR.services;
