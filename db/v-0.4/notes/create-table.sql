@@ -5,6 +5,10 @@ GO
 
 alter table if exists notes
     add prev int not null;
+GO
+
+alter table if exists notes
+    add path char(64) not null unique;
 
 GO
 

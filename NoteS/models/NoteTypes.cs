@@ -4,15 +4,15 @@ public class NoteTypes
 {
     public int Num { get; }
     public string Name { get; }
-    public static NoteTypes NOTE = new NoteTypes(0, "NOTE");
-    public static NoteTypes COMMENT = new NoteTypes(1, "COMMENT");
+    public static readonly NoteTypes Note = new(0, "NOTE");
+    public static readonly NoteTypes Comment = new(1, "COMMENT");
     
     public static NoteTypes NumToType(int num)
     {
         switch (num)
         {
-            case 0: return NOTE;
-            case 1: return COMMENT;
+            case 0: return Note;
+            case 1: return Comment;
         }
 
         throw new ArgumentException();//TODO: другая ошибка
@@ -23,6 +23,4 @@ public class NoteTypes
         Num = num;
         Name = name;
     }
-
-    
 }

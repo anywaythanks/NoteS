@@ -9,7 +9,7 @@ GO
 
 create sequence custom_types_syntax_seq
     minvalue 1
-    start with 1
+    start with 100
     increment by 50
     cache 5
 

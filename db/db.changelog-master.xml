@@ -37,4 +37,10 @@
         <tagDatabase tag="v.0.4"/>
     </changeSet>
     
+    <!--   Модификация тегов и тотальное упрощение сути записок -->
+    <include file="v-0.5/db.changelog-v.0.5.xml" relativeToChangelogFile="true"/>
+
+    <changeSet id="0.5" author="anywaythanks">
+        <tagDatabase tag="v.0.5"/>
+    </changeSet>
 </databaseChangeLog>
