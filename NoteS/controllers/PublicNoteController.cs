@@ -4,21 +4,30 @@ using Microsoft.AspNetCore.Mvc;
 namespace NoteS.controllers;
 
 [ApiController]
-[Route("api/public/notes")]
-public class PublicNoteController() : Controller
+[Route("api/notes")]
+public class PublicNoteController : Controller
 {
     [HttpGet]
-    [AllowAnonymous]
-    public IResult Notes()//TODO: List DTO заметок без контента.
+    [Authorize(Policy = "READ_NOTES")]
+    [Route("")]
+    public IResult Notes() //TODO: List DTO заметок(Type:Note) без контента, но с title.
     {
         return null!;
     }
+
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize(Policy = "READ_NOTES")]
     [Route("{pathNote}")]
-    public IResult GetNote([FromRoute] string pathNote)//TODO: DTO заметка с контентом.
+    public IResult GetNote([FromRoute] string pathNote) //TODO: DTO заметка(Type:Note) с контентом.
     {
         return null!;
     }
-    
+
+    [HttpGet]
+    [Authorize(Policy = "READ_COMMENTS")]
+    [Route("{pathNote}/comments")]
+    public IResult Comments([FromRoute] string pathNote) //TODO: List DTO комментариев(Type:Comments) c контентом. 
+    {
+        return null!;
+    }
 }

@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace NoteS.controllers;
 
 [ApiController]
-[Route("api/private/notes")]
-public class PrivateNoteController() : Controller
+[Route("api/{account_name}/notes")]
+public class PrivateNoteController : Controller
 {
     [HttpPut]
-    [Authorize(Policy = "edit_own_notes")]
+    [Authorize(Policy = "edit_own_notes")]//TODO: что типа проверки, что ты можешь редактировать own ноты и ты own или ты просто вседозволено можешь менять все. 
     [Route("{pathNote}")]
     public IResult EditNote([FromRoute] string pathNote /*TODO: Пусть будет автогенерация GUID, потом юзер меняет*/,
         [FromBody] Object noteDto/*TODO: Дто с основными данными, типа блоков, которые надо добавить*/)
