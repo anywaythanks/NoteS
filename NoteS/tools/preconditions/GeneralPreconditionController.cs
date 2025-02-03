@@ -1,11 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using NoteS.exceptions;
 
 namespace NoteS.tools.preconditions;
 
-public class GeneralPreconditionController(GeneralPrecondition generalPrecondition) : Controller
+public abstract class GeneralPreconditionController(params IGeneralPrecondition[] generalPreconditions) : Controller
 {
-    public IResult Execute<T>(string accountName, T value)
+    public IActionResult Execute<T>(Func<T> f, params IGeneralPrecondition[] generalPreconditionsIntern)
     {
-        return generalPrecondition.check(User.Identity, accountName) ? Results.Unauthorized() : Results.Json(value);
+        try
+        {
+            var uuid = User.FindFirstValue("uuid") ?? throw new NotFound();
+            foreach (var precondition in generalPreconditions)
+            {
+                if (!precondition.Check(User.Identity, uuid)) return BadRequest();
+            }
+
+            foreach (var precondition in generalPreconditionsIntern)
+            {
+                if (!precondition.Check(User.Identity, uuid)) return BadRequest();
+            }
+            return Ok(f());
+        }
+        catch (StatusCodeException se)
+        {
+            return se.Result;
+        }
     }
 }

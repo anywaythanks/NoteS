@@ -1,21 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using NoteS.exceptions;
 using NoteS.Models;
-using NoteS.models.dto.accounts;
 using NoteS.repositories;
-using AccountMapper = NoteS.mappers.AccountMapper;
-
 
 namespace NoteS.services;
 
-public class AccountRegisterService()
+public class AccountRegisterService(IAccountRepository accountRepository)
 {
-    public AccountPartialDto Register(string accountName, AccountRegisterDto registerDto)
+    public Account Register(string accountName, string uuid)
     {
-        // Account account = accountRepository.FindByName(accountName) ??
-        //                   new Account(registerDto.Role, accountName);
-        // account.Password = passwordHasher.HashPassword(account, registerDto.Password);
-        // account.Role = registerDto.Role;
-        // return accountMapper.ToPartialDto(accountRepository.Detach(accountRepository.Save(account)));
-        return null!;
+        Account account = accountRepository.FindByName(accountName) ??
+                          accountRepository.FindByUuid(uuid) ??
+                          new Account(accountName, uuid);
+        if (account.Name != accountName || account.Uid != uuid) throw new Forbidden();
+        return accountRepository.Save(account);
     }
 }

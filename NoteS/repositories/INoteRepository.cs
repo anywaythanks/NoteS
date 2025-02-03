@@ -7,7 +7,6 @@ public interface INoteRepository
     public Note Save(Note note);
     public Note? FindByPath(string path);
     public Note LoadTags(Note note);
-    public Note Detach(Note note);
     
     public List<Note> FindByTitle(string title);
     public void SaveContent(string content);

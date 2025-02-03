@@ -9,9 +9,9 @@ namespace NoteS.Attributes;
  */
 public class KeycloakAuthorizeAttribute : AuthorizeAttribute
 {
-    public KeycloakAuthorizeAttribute(Policies policy)
+    public KeycloakAuthorizeAttribute(params Policies[] policy)
     {
-        Roles = PolicyTransform(policy);
+        Roles = string.Join(",", policy.Select(PolicyTransform));
     }
 
     private static string PolicyTransform(Policies policy)
@@ -21,6 +21,7 @@ public class KeycloakAuthorizeAttribute : AuthorizeAttribute
             case Policies.READ_NOTES: return "read-notes";
             case Policies.SEARCH_OWN_NOTES: return "search-own-notes";
             case Policies.EDIT_OWN_NOTES: return "edit-own-notes";
+            case Policies.EDIT_ALL_NOTES: return "edit-all-notes";
             case Policies.READ_COMMENTS: return "read-comments";
             case Policies.EDIT_OWN_COMMENTS: return "edit-own-comments";
             case Policies.EDIT_ALL_COMMENTS: return "edit-all-comments";

@@ -1,8 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿namespace NoteS.exceptions;
 
-namespace LR.exceptions;
-
-//404
-public class NotFound : MyException
+public class NotFound() : StatusCodeException(StatusCodes.Status404NotFound)
 {
 }

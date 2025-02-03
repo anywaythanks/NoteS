@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using NoteS.Models;
 
 namespace NoteS.repositories;
@@ -15,7 +16,7 @@ public sealed class AccountRepositoryDb(DbContextOptions<AccountRepositoryDb> op
         //     .HasConversion<string>();
     }
 
-    public Account Save(Account account)
+    public Account? Save(Account account)
     {
         var a = account;
         if (account.Id != null)
@@ -29,18 +30,24 @@ public sealed class AccountRepositoryDb(DbContextOptions<AccountRepositoryDb> op
         }
 
         SaveChanges();
-        return a;
+        return Detach(a);
     }
 
     public Account? FindByName(string name)
     {
-        return Accounts.FirstOrDefault(a => a.Name == name);
+        return Detach(Accounts.FirstOrDefault(a => a.Name == name));
     }
 
-    public Account Detach(Account account)
+    public Account? FindByUuid(string uuid)
     {
+        throw new NotImplementedException();
+    }
+
+    private Account? Detach(Account? account)
+    {
+        if (account == null) return null;
         Attach(account);
-        var e =  Entry(account);
+        EntityEntry<Account> e =  Entry(account);
         e.State = EntityState.Detached;
         SaveChanges();
         return e.Entity;

@@ -1,12 +1,8 @@
-﻿using System.Security.Claims;
-using System.Security.Principal;
-using NoteS.Models;
+﻿using System.Security.Principal;
 
 namespace NoteS.tools.preconditions;
 
-public interface GeneralPrecondition
+public interface IGeneralPrecondition
 {
-    public bool check(IIdentity? identity, string accountName);
-
-    
+    public bool Check(IIdentity? identity, string uuid);
 }

@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using NoteS.models.dto.accounts;
+﻿using Microsoft.AspNetCore.Mvc;
+using NoteS.models.mappers;
 using NoteS.services;
 using NoteS.tools.preconditions;
 
@@ -8,15 +7,16 @@ namespace NoteS.controllers;
 
 [Route("api/")]
 [ApiController]
-public class AccountController(EqualNameP equalNameP,
-    AccountRegisterService registerService) : GeneralPreconditionController(equalNameP)
+public class AccountController(
+    AccountRegisterService registerService,
+    UniversalMapper um) : GeneralPreconditionController
 {
-    //PUT /accounts/{name}
-    [HttpPut]
-    [Authorize]
-    public AccountPartialDto Add([FromRoute] string accountName,
-        [FromBody] AccountRegisterDto accountRegisterDto)
-    {
-        return registerService.Register(accountName, accountRegisterDto);
-    }
+    // //PUT /accounts/{name}
+    // [HttpPut]
+    // [Authorize]
+    // public IActionResult Add([FromRoute] string accountName,
+    //     [FromBody] AccountRegisterRequestDto accountRegisterDto)
+    // {
+    //     return Execute(() => um.Of(registerService.Register(accountName, accountRegisterDto)));
+    // }
 }

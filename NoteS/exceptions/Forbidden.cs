@@ -1,8 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿namespace NoteS.exceptions;
 
-namespace LR.exceptions;
-
-//403
-public class Forbidden : MyException
+public class Forbidden() : StatusCodeException(StatusCodes.Status403Forbidden)
 {
 }

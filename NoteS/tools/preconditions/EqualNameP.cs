@@ -1,13 +1,17 @@
 ﻿using System.Security.Principal;
-using NoteS.Models;
+using NoteS.exceptions;
+using NoteS.services;
 
 namespace NoteS.tools.preconditions;
 
-public class EqualNameP : GeneralPrecondition
+public readonly struct EqualNameP(AccountRegisterService service, string accountName) : IGeneralPrecondition
 {
-    public bool check(IIdentity? identity, string accountName)
+    private string AccountName { get; } = accountName;
+
+    public bool Check(IIdentity? identity, string uuid)
     {
-        if (identity == null) return false;
-        return accountName != identity.Name;
+        if (identity?.Name != AccountName) throw new Forbidden();
+        service.Register(AccountName, uuid);
+        return true;
     }
 }

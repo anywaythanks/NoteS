@@ -8,5 +8,6 @@ public class ServicesConfig
     {
         builder.Services.AddTransient<AccountInformationService>();
         builder.Services.AddTransient<AccountRegisterService>();
+        builder.Services.AddTransient<NoteInformationService>();
     }
 }

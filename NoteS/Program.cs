@@ -10,6 +10,7 @@ RepositoriesConfig.Configuration(builder);
 SwaggerConfig.Configuration(builder);
 
 var app = builder.Build();
+AuthConfig.AfterConfiguration(app);
 RepositoriesConfig.AfterConfiguration(app);
 SwaggerConfig.AfterConfiguration(app);
 

@@ -1,8 +1,6 @@
-﻿using System.Linq.Expressions;
-
-namespace LR.exceptions;
+﻿namespace NoteS.exceptions;
 
 //404
-public class NotEnoughProducts : MyException
+public class NotEnoughProducts() : StatusCodeException(StatusCodes.Status409Conflict)
 {
 }
