@@ -7,10 +7,7 @@ using AccountMapper = NoteS.mappers.AccountMapper;
 
 namespace NoteS.services;
 
-public class AccountRegisterService(
-    IAccountRepository accountRepository,
-    AccountMapper accountMapper,
-    PasswordHasher<Account> passwordHasher)
+public class AccountRegisterService()
 {
     public AccountPartialDto Register(string accountName, AccountRegisterDto registerDto)
     {

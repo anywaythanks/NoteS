@@ -1,50 +1,57 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace NoteS.configs;
 
 public class AuthConfig
 {
+    //TODO: По хорошему ssl нужен, но пофиг
     public static void Configuration(IHostApplicationBuilder builder)
     {
-      
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+        // https://stackoverflow.com/questions/77084743/secure-asp-net-core-rest-api-with-keycloak
+        var services = builder.Services;
+        var configuration = builder.Configuration;
+        services
+            .AddAuthentication()
+            .AddJwtBearer(x =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters()
+                x.RequireHttpsMetadata = Convert.ToBoolean($"{configuration["Keycloak:require-https"]}");
+                x.MetadataAddress =
+                    $"{configuration["Keycloak:server-url"]}/realms/projects/.well-known/openid-configuration";
+                x.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    // указывает, будет ли валидироваться издатель при валидации токена
-                    ValidateIssuer = true,
-                    // строка, представляющая издателя
-                    ValidIssuer = AuthOptions.ISSUER,
-                    // будет ли валидироваться потребитель токена
-                    ValidateAudience = true,
-                    // установка потребителя токена
-                    ValidAudience = AuthOptions.AUDIENCE,
-                    // будет ли валидироваться время существования
-                    ValidateLifetime = true,
-                    // установка ключа безопасности
-                    IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-                    // валидация ключа безопасности
-                    ValidateIssuerSigningKey = true,
+                    RoleClaimType = "groups",
+                    NameClaimType = $"{configuration["Keycloak:name_claim"]}",
+                    ValidAudience = $"{configuration["Keycloak:audience"]}",
+                    // https://stackoverflow.com/questions/60306175/bearer-error-invalid-token-error-description-the-issuer-is-invalid
+                    ValidateIssuer = Convert.ToBoolean($"{configuration["Keycloak:validate-issuer"]}"),
                 };
-            }); // подключение аутентификации с помощью jwt-токенов
-        builder.Services.AddAuthorization();
+            });
+        services.AddAuthorization(o =>
+        {
+            o.DefaultPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                // .RequireClaim("email_verified", "true")
+                .Build();
+        });
+        
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: "MyAllowSpecificOrigins",
+                policy  =>
+                {
+                    policy.WithOrigins("http://localhost:8080");
+                });
+        });
+
     }
     
     public static void AfterConfiguration(WebApplication app)
     {
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseCors("MyAllowSpecificOrigins");
     }
-}
-
-class AuthOptions
-{
-    public const string ISSUER = "MyAuthServer"; // издатель токена
-    public const string AUDIENCE = "MyAuthClient"; // потребитель токена
-    const string KEY = "mysupersecret_secretsecretsecretkey!123"; // ключ для шифрации
-
-    public static SymmetricSecurityKey GetSymmetricSecurityKey() => new(Encoding.UTF8.GetBytes(KEY));
 }

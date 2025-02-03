@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NoteS.tools.preconditions;
+using NoteS.Attributes;
+using NoteS.Models;
 
 namespace NoteS.controllers;
 
@@ -9,7 +10,7 @@ namespace NoteS.controllers;
 public class PrivateNoteController(EqualNameP equalNameP) : GeneralPreconditionController(equalNameP)
 {
     [HttpPut]
-    [Authorize(Policy = "edit_own_notes")]
+    [KeycloakAuthorize(Policies.EDIT_OWN_NOTES)]
     //TODO: что типа проверки, что ты можешь редактировать own ноты и ты own или ты просто вседозволено можешь менять все. 
     [Route("{pathNote}")]
     public IResult EditNote([FromRoute] string accountName,
@@ -21,7 +22,7 @@ public class PrivateNoteController(EqualNameP equalNameP) : GeneralPreconditionC
     }
 
     [HttpPatch]
-    [Authorize(Policy = "edit_own_notes")]
+    [KeycloakAuthorize(Policies.EDIT_OWN_NOTES)]
     [Route("{pathNote}")]
     public IResult EditBlocks([FromRoute] string accountName,
         [FromRoute] string pathNote /*TODO: Пусть будет автогенерация GUID, потом юзер меняет*/,
@@ -32,7 +33,7 @@ public class PrivateNoteController(EqualNameP equalNameP) : GeneralPreconditionC
     }
 
     [HttpGet]
-    [Authorize(Policy = "search_own_notes")]
+    [KeycloakAuthorize(Policies.SEARCH_OWN_NOTES)]
     [Route("search")]
     public IResult SearchNotes([FromRoute] string accountName,
             [FromQuery] String query) //TODO: Це выборка из эластика
@@ -42,7 +43,7 @@ public class PrivateNoteController(EqualNameP equalNameP) : GeneralPreconditionC
     }
 
     [HttpGet]
-    [Authorize(Policy = "search_own_notes")]
+    [KeycloakAuthorize(Policies.SEARCH_OWN_NOTES)]
     [Route("semantic_search")]
     public IResult SemanticSearchNotes([FromRoute] string accountName,
             [FromQuery] String query) //TODO: Це выборка из эластика
@@ -52,14 +53,14 @@ public class PrivateNoteController(EqualNameP equalNameP) : GeneralPreconditionC
     }
 
     [HttpGet]
-    [Authorize(Policy = "read_notes")]
+    [KeycloakAuthorize(Policies.READ_NOTES)]
     public IResult Notes([FromRoute] string accountName) //TODO: List DTO заметок ЮЗЕРА без контента.
     {
         return Execute<>(accountName, null);
     }
 
     [HttpGet]
-    [Authorize(Policy = "read_notes")]
+    [KeycloakAuthorize(Policies.READ_NOTES)]
     [Route("{pathNote}")]
     public IResult GetNote([FromRoute] string accountName,
             [FromRoute] string pathNot)
