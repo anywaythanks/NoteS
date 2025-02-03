@@ -11,3 +11,7 @@ services:
     extends:
       file: elastic/compose.yaml
       service: elastic
+  Client:
+    extends:
+      file: Client/compose.yaml
+      service: angular
