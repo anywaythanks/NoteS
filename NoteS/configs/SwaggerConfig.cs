@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 
 namespace NoteS.configs;
@@ -10,18 +12,41 @@ public class SwaggerConfig
         // Add services to the container.
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
+        var configuration = builder.Configuration;
+
         builder.Services.AddSwaggerGen(setup =>
         {
+            var exts = new Dictionary<string, IOpenApiExtension>();
             // Include 'SecurityScheme' to use JWT Authentication
             var jwtSecurityScheme = new OpenApiSecurityScheme()
             {
                 BearerFormat = "JWT",
                 Name = "JWT Authentication",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
+                Type = SecuritySchemeType.OAuth2,
                 Scheme = JwtBearerDefaults.AuthenticationScheme,
-                Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
-
+                Description = "API использует [OAuth2 authorizationCode]" +
+                              "(https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow).",
+                Flows = new OpenApiOAuthFlows
+                {
+                    AuthorizationCode = new OpenApiOAuthFlow
+                    {
+                        AuthorizationUrl = new Uri($"{configuration["Keycloak:server-url"]}" +
+                                                   $"/realms/{configuration["Keycloak:name_claim"]}" +
+                                                   $"/protocol/openid-connect/auth"),
+                        TokenUrl = new Uri($"{configuration["Keycloak:server-url"]}" +
+                                           $"/realms/{configuration["Keycloak:name_claim"]}" +
+                                           $"/protocol/openid-connect/token"),
+                        Scopes = new Dictionary<string, string>
+                        {
+                            { "read" , "Balea Server HTTP Api" }
+                        },
+                         // Extensions = new Dictionary<string, IOpenApiExtension>
+                         // {
+                         //     {"client_id", new OpenApiString($"{configuration["Keycloak:Swagger:Client"]}")},
+                         //     {"client_secret", new OpenApiString($"{configuration["Keycloak:Swagger:Secret"]}")}
+                         // }
+                    }
+                },
                 Reference = new OpenApiReference
                 {
                     Id = JwtBearerDefaults.AuthenticationScheme,
@@ -40,10 +65,16 @@ public class SwaggerConfig
 
     public static void AfterConfiguration(WebApplication app)
     {
+        var configuration = app.Configuration;
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(options =>
+            {
+                options.OAuthClientId($"{configuration["Keycloak:Swagger:Client"]}");
+                options.OAuthClientSecret(configuration["Keycloak:Swagger:Secret"]);
+                options.DisplayRequestDuration();
+            });
         }
 
         app.MapControllers()

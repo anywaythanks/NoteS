@@ -27,11 +27,11 @@
   "oauth2DevicePollingInterval": 5,
   "enabled": true,
   "sslRequired": "external",
-  "registrationAllowed": false,
+  "registrationAllowed": true,
   "registrationEmailAsUsername": false,
-  "rememberMe": false,
+  "rememberMe": true,
   "verifyEmail": false,
-  "loginWithEmailAllowed": true,
+  "loginWithEmailAllowed": false,
   "duplicateEmailsAllowed": false,
   "resetPasswordAllowed": false,
   "editUsernameAllowed": false,
@@ -46,6 +46,33 @@
   "roles": {
     "realm": [
       {
+        "id": "7ffaae54-d348-43a2-8836-fc0d6049a799",
+        "name": "edit-own-comments",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
+        "id": "2f4ef5f3-8bd1-4708-a450-63cc21075dfb",
+        "name": "read-comments",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
+        "id": "d387ff46-9302-4f45-9c75-31a60bbecd7d",
+        "name": "search-own-notes",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
         "id": "1345a23a-6f01-4d2f-ae57-b28ffad37257",
         "name": "uma_authorization",
         "description": "${role_uma_authorization}",
@@ -55,9 +82,27 @@
         "attributes": {}
       },
       {
+        "id": "6a6619f6-a6dc-4ef4-9607-d099596dd314",
+        "name": "edit-own-notes",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
         "id": "35227701-c8c2-40bd-b8b8-789f57a909a8",
         "name": "offline_access",
         "description": "${role_offline-access}",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
+        "id": "6fc2d510-342b-414c-b2a1-383e12784359",
+        "name": "edit-all-comments",
+        "description": "",
         "composite": false,
         "clientRole": false,
         "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
@@ -80,6 +125,15 @@
             ]
           }
         },
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
+        "id": "a92ba346-1955-4318-8cf6-467e4b91d10b",
+        "name": "read-notes",
+        "description": "",
+        "composite": false,
         "clientRole": false,
         "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
         "attributes": {}
@@ -298,7 +352,27 @@
           "attributes": {}
         }
       ],
+      "swager-api": [
+        {
+          "id": "ff12e385-11f0-4e78-a70a-3c797906acfe",
+          "name": "uma_protection",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "09ef1664-281d-4982-bb08-82d2e0a61ec0",
+          "attributes": {}
+        }
+      ],
       "security-admin-console": [],
+      "browser": [
+        {
+          "id": "7fb940de-59f6-4567-b94a-5ce7d69109c0",
+          "name": "uma_protection",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "a5cbff21-1487-4f41-a423-3debcc8611ca",
+          "attributes": {}
+        }
+      ],
       "admin-cli": [],
       "account-console": [],
       "broker": [
@@ -453,6 +527,50 @@
   "webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister": false,
   "webAuthnPolicyPasswordlessAcceptableAaguids": [],
   "webAuthnPolicyPasswordlessExtraOrigins": [],
+  "users": [
+    {
+      "id": "9c68e108-e548-4b86-8a40-4690254d52c7",
+      "createdTimestamp": 1738563645313,
+      "username": "service-account-browser",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": false,
+      "serviceAccountClientId": "browser",
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-notes"
+      ],
+      "clientRoles": {
+        "browser": [
+          "uma_protection"
+        ]
+      },
+      "notBefore": 0,
+      "groups": []
+    },
+    {
+      "id": "cd6610e4-e40c-420b-ac8f-0bedecbc289d",
+      "createdTimestamp": 1738561194317,
+      "username": "service-account-swager-api",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": false,
+      "serviceAccountClientId": "swager-api",
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-notes"
+      ],
+      "clientRoles": {
+        "swager-api": [
+          "uma_protection"
+        ]
+      },
+      "notBefore": 0,
+      "groups": []
+    }
+  ],
   "scopeMappings": [
     {
       "clientScope": "offline_access",
@@ -649,6 +767,152 @@
       ]
     },
     {
+      "id": "a5cbff21-1487-4f41-a423-3debcc8611ca",
+      "clientId": "browser",
+      "name": "browser",
+      "description": "",
+      "rootUrl": "http://localhost:8080",
+      "adminUrl": "http://localhost:8080",
+      "baseUrl": "http://localhost:8080/",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "2WMsJxH7QYAo8RNZbZ6nhGfaLOCrDZN4",
+      "redirectUris": [
+        "*"
+      ],
+      "webOrigins": [
+        "http://localhost:5267"
+      ],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": true,
+      "publicClient": false,
+      "frontchannelLogout": true,
+      "protocol": "openid-connect",
+      "attributes": {
+        "oidc.ciba.grant.enabled": "false",
+        "client.secret.creation.time": "1738563645",
+        "backchannel.logout.session.required": "true",
+        "post.logout.redirect.uris": "*",
+        "display.on.consent.screen": "false",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "backchannel.logout.revoke.offline.tokens": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "protocolMappers": [
+        {
+          "id": "938812d4-630c-4e7a-94d6-a27f76885fe2",
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "client_id",
+            "introspection.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "client_id",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "419650bd-6b8d-4414-a069-e468322b74f2",
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "introspection.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "ac476788-48a7-4f64-8d29-27c60fdefc83",
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "introspection.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        }
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ],
+      "authorizationSettings": {
+        "allowRemoteResourceManagement": true,
+        "policyEnforcementMode": "ENFORCING",
+        "resources": [
+          {
+            "name": "Default Resource",
+            "type": "urn:browser:resources:default",
+            "ownerManagedAccess": false,
+            "attributes": {},
+            "_id": "b29df74f-1677-4801-853a-3ac64472d9fe",
+            "uris": [
+              "/*"
+            ]
+          }
+        ],
+        "policies": [
+          {
+            "id": "eb570aba-fa9c-494b-800d-bf0d696c2679",
+            "name": "Default Policy",
+            "description": "A policy that grants access only for users within this realm",
+            "type": "js",
+            "logic": "POSITIVE",
+            "decisionStrategy": "AFFIRMATIVE",
+            "config": {
+              "code": "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
+            }
+          },
+          {
+            "id": "12b64f6f-1b96-4caf-a579-ae3e7f41c616",
+            "name": "Default Permission",
+            "description": "A permission that applies to the default resource type",
+            "type": "resource",
+            "logic": "POSITIVE",
+            "decisionStrategy": "UNANIMOUS",
+            "config": {
+              "defaultResourceType": "urn:browser:resources:default",
+              "applyPolicies": "[\"Default Policy\"]"
+            }
+          }
+        ],
+        "scopes": [],
+        "decisionStrategy": "UNANIMOUS"
+      }
+    },
+    {
       "id": "03e91d2c-5ddc-4721-b82f-8aba67e7a8df",
       "clientId": "realm-management",
       "name": "${client_realm-management}",
@@ -750,6 +1014,152 @@
         "offline_access",
         "microprofile-jwt"
       ]
+    },
+    {
+      "id": "09ef1664-281d-4982-bb08-82d2e0a61ec0",
+      "clientId": "swager-api",
+      "name": "swager-api",
+      "description": "",
+      "rootUrl": "http://localhost:8080",
+      "adminUrl": "http://localhost:8080",
+      "baseUrl": "http://localhost:8080/swagger",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "VRwEkXlojgt5Jt2yv8b040EOBX73ijwt",
+      "redirectUris": [
+        "*"
+      ],
+      "webOrigins": [
+        "http://localhost:5267"
+      ],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": true,
+      "publicClient": false,
+      "frontchannelLogout": true,
+      "protocol": "openid-connect",
+      "attributes": {
+        "oidc.ciba.grant.enabled": "false",
+        "client.secret.creation.time": "1738561194",
+        "backchannel.logout.session.required": "true",
+        "post.logout.redirect.uris": "*/swagger/*",
+        "display.on.consent.screen": "false",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "backchannel.logout.revoke.offline.tokens": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "protocolMappers": [
+        {
+          "id": "c6aeac28-93f0-481b-baef-44c59c527404",
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "introspection.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "ded6ab85-9c69-40d8-8515-30b049763078",
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "client_id",
+            "introspection.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "client_id",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "01b06176-11de-4d3a-9fd8-38b12b26ca16",
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "introspection.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        }
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ],
+      "authorizationSettings": {
+        "allowRemoteResourceManagement": true,
+        "policyEnforcementMode": "ENFORCING",
+        "resources": [
+          {
+            "name": "Default Resource",
+            "type": "urn:swager-api:resources:default",
+            "ownerManagedAccess": false,
+            "attributes": {},
+            "_id": "2b0a38c1-2f4a-47c4-aef4-a15080afe42f",
+            "uris": [
+              "/*"
+            ]
+          }
+        ],
+        "policies": [
+          {
+            "id": "3148f28e-3caf-4c0f-804c-89e1001803e2",
+            "name": "Default Policy",
+            "description": "A policy that grants access only for users within this realm",
+            "type": "js",
+            "logic": "POSITIVE",
+            "decisionStrategy": "AFFIRMATIVE",
+            "config": {
+              "code": "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
+            }
+          },
+          {
+            "id": "23665b15-8788-4477-ab80-b145abc6a2bf",
+            "name": "Default Permission",
+            "description": "A permission that applies to the default resource type",
+            "type": "resource",
+            "logic": "POSITIVE",
+            "decisionStrategy": "UNANIMOUS",
+            "config": {
+              "defaultResourceType": "urn:swager-api:resources:default",
+              "applyPolicies": "[\"Default Policy\"]"
+            }
+          }
+        ],
+        "scopes": [],
+        "decisionStrategy": "UNANIMOUS"
+      }
     }
   ],
   "clientScopes": [
@@ -2111,7 +2521,11 @@
     "cibaAuthRequestedUserHint": "login_hint",
     "oauth2DeviceCodeLifespan": "600",
     "oauth2DevicePollingInterval": "5",
+    "clientOfflineSessionMaxLifespan": "0",
+    "clientSessionIdleTimeout": "0",
     "parRequestUriLifespan": "60",
+    "clientSessionMaxLifespan": "0",
+    "clientOfflineSessionIdleTimeout": "0",
     "cibaInterval": "5",
     "realmReusableOtpCode": "false"
   },
