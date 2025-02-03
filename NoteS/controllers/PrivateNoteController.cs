@@ -13,63 +13,78 @@ namespace NoteS.controllers;
 public class PrivateNoteController(
     AccountRegisterService registerService,
     NoteInformationService noteInformationService,
+    NoteEditService editService,
     UniversalMapper um)
     : GeneralPreconditionController
 {
-    [HttpPut]
+    [HttpPatch]
+    [KeycloakAuthorize(Policies.READ_NOTES, Policies.SET_OWN_PUBLIC_STATUS_NOTES)]
+    [Route("{pathNote}/publish")]
+    [ProducesResponseType<NoteEditPublicResponseDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public IActionResult EditPublicNote([FromRoute] string accountName,
+        [FromRoute] string pathNote,
+        [FromBody] NoteEditPublicRequestDto editDto)
+    {
+        return Execute(() => um.OfEdit(editService.PublishNote(pathNote, accountName, editDto)),
+            new EqualNameP(registerService, accountName));
+    }
+
+    [HttpPatch]
+    [KeycloakAuthorize(Policies.READ_All_NOTES, Policies.SET_ALL_PUBLIC_STATUS_NOTES)]
+    [Route("private/{pathNote}/publish")]
+    [ProducesResponseType<Account>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public IActionResult EditPublicAllNote([FromRoute] string accountName,
+        [FromRoute] string pathNote,
+        [FromBody] NoteEditPublicRequestDto editDto)
+    {
+        return Execute(() => um.OfEdit(editService.PublishNote(pathNote, editDto)),
+            new EqualNameP(registerService, accountName));
+    }
+
+    [HttpPatch]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.EDIT_OWN_NOTES)]
     [Route("{pathNote}")]
-    [ProducesResponseType<Account>(StatusCodes.Status200OK)]
+    [ProducesResponseType<NoteEditContentResponseDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult EditNote([FromRoute] string accountName,
-        [FromRoute] string pathNote /*TODO: Пусть будет автогенерация GUID, потом юзер меняет*/,
-        [FromBody] Object noteDto /*TODO: Дто с основными данными, типа блоков, которые надо добавить*/)
+        [FromRoute] string pathNote,
+        [FromBody] NoteEditContentRequestDto editDto)
     {
-        //TODO: DTO заметка ЮЗЕРА с контентом.
-        return Execute(() => new Account(accountName, accountName), new EqualNameP(registerService, accountName));
+        return Execute(() => um.OfEditContent(editService.EditContentNote(pathNote, accountName, editDto)),
+            new EqualNameP(registerService, accountName));
     }
 
-    [HttpPut]
-    [KeycloakAuthorize(Policies.READ_NOTES, Policies.EDIT_ALL_NOTES)]
+    [HttpPatch]
+    [KeycloakAuthorize(Policies.READ_All_NOTES, Policies.EDIT_ALL_NOTES)]
     [Route("private/{pathNote}")]
-    [ProducesResponseType<Account>(StatusCodes.Status200OK)]
+    [ProducesResponseType<NoteEditContentResponseDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult EditNoteAll([FromRoute] string accountName,
-        [FromRoute] string pathNote /*TODO: Пусть будет автогенерация GUID, потом юзер меняет*/,
-        [FromBody] Object noteDto /*TODO: Дто с основными данными, типа блоков, которые надо добавить*/)
+        [FromRoute] string pathNote,
+        [FromBody] NoteEditContentRequestDto editDto)
     {
-        //TODO: DTO заметка ЮЗЕРА с контентом.
-        return Execute(() => new Account(accountName, accountName), new EqualNameP(registerService, accountName));
+        return Execute(() => um.OfEditContent(editService.EditContentNote(pathNote, editDto)),
+            new EqualNameP(registerService, accountName));
     }
 
-    [HttpPut]
-    [KeycloakAuthorize(Policies.READ_NOTES, Policies.EDIT_OWN_NOTES)]
-    [Route("content/{pathNote}")]
-    [ProducesResponseType<Account>(StatusCodes.Status200OK)]
+    [HttpPatch]
+    [KeycloakAuthorize(Policies.READ_All_NOTES, Policies.EDIT_ALL_NOTES)]
+    [Route("private/{pathNote}")]
+    [ProducesResponseType<NoteEditContentResponseDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public IActionResult EditContentNote([FromRoute] string accountName,
-        [FromRoute] string pathNote /*TODO: Пусть будет автогенерация GUID, потом юзер меняет*/,
-        [FromBody] Object noteDto /*TODO: Дто с основными данными, типа блоков, которые надо добавить*/)
+    public IActionResult CreateNote([FromRoute] string accountName,
+        [FromRoute] string pathNote,
+        [FromBody] NoteEditContentRequestDto editDto)
     {
-        //TODO: DTO заметка ЮЗЕРА с контентом.
-        return Execute(() => new Account(accountName, accountName), new EqualNameP(registerService, accountName));
-    }
-
-    [HttpPut]
-    [KeycloakAuthorize(Policies.READ_NOTES, Policies.EDIT_ALL_NOTES)]
-    //TODO: что типа проверки, что ты можешь редактировать own ноты и ты own или ты просто вседозволено можешь менять все.
-    [Route("content/private/{pathNote}")]
-    [ProducesResponseType<Account>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public IActionResult EditContentNoteAll([FromRoute] string accountName,
-        [FromRoute] string pathNote /*TODO: Пусть будет автогенерация GUID, потом юзер меняет*/,
-        [FromBody] Object noteDto /*TODO: Дто с основными данными, типа блоков, которые надо добавить*/)
-    {
-        return Execute(() => new Account(accountName, accountName), new EqualNameP(registerService, accountName));
+        return Execute(() => um.OfEditContent(editService.EditContentNote(pathNote, editDto)),
+            new EqualNameP(registerService, accountName));
     }
 
     [HttpGet]
@@ -92,7 +107,7 @@ public class PrivateNoteController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Route("semantic_search")]
     public IActionResult SemanticSearchNotes([FromRoute] string accountName,
-            [FromBody] NoteSemanticSearchRequestDto noteSearch)
+        [FromBody] NoteSemanticSearchRequestDto noteSearch)
     {
         return Execute(() => um.OfSearch(
                 noteInformationService.FindSemantic(accountName, noteSearch.Query)),
@@ -120,6 +135,19 @@ public class PrivateNoteController(
         [FromRoute] string path)
     {
         return Execute(() => um.OfContentSearch(noteInformationService.GetFull(path, accountName)),
+            new EqualNameP(registerService, accountName));
+    }
+
+    [HttpGet]
+    [KeycloakAuthorize(Policies.READ_All_NOTES)]
+    [Route("private/{pathNote}")]
+    [ProducesResponseType<NoteCreateResponseDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public IActionResult GetNoteAll([FromRoute] string accountName,
+        [FromBody] NoteCreateRequestDto noteCreate)
+    {
+        return Execute(() => um.OfCreateNote(editService.CreateNote(accountName, noteCreate)),
             new EqualNameP(registerService, accountName));
     }
 }

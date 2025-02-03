@@ -8,7 +8,7 @@ alter table if exists notes
 GO
 
 alter table if exists notes
-    add path char(64) not null unique;
+    add path char(128) not null unique;
 
 GO
 
