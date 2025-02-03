@@ -82,6 +82,15 @@
         "attributes": {}
       },
       {
+        "id": "d6ee0f27-6015-4eaa-be68-fae5aa4b2ba7",
+        "name": "edit-all-notes",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
         "id": "6a6619f6-a6dc-4ef4-9607-d099596dd314",
         "name": "edit-own-notes",
         "description": "",
@@ -539,7 +548,12 @@
       "disableableCredentialTypes": [],
       "requiredActions": [],
       "realmRoles": [
-        "default-roles-notes"
+        "edit-own-comments",
+        "read-comments",
+        "search-own-notes",
+        "edit-own-notes",
+        "default-roles-notes",
+        "read-notes"
       ],
       "clientRoles": {
         "browser": [
@@ -560,7 +574,12 @@
       "disableableCredentialTypes": [],
       "requiredActions": [],
       "realmRoles": [
-        "default-roles-notes"
+        "edit-own-comments",
+        "read-comments",
+        "search-own-notes",
+        "edit-own-notes",
+        "default-roles-notes",
+        "read-notes"
       ],
       "clientRoles": {
         "swager-api": [
