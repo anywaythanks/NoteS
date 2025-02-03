@@ -109,6 +109,15 @@
         "attributes": {}
       },
       {
+        "id": "01c2888f-64e7-41ef-a20f-5a5f78ac4774",
+        "name": "read-all-notes",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
         "id": "6fc2d510-342b-414c-b2a1-383e12784359",
         "name": "edit-all-comments",
         "description": "",
@@ -124,8 +133,13 @@
         "composite": true,
         "composites": {
           "realm": [
+            "edit-own-notes",
+            "search-own-notes",
+            "edit-own-comments",
             "offline_access",
-            "uma_authorization"
+            "uma_authorization",
+            "read-notes",
+            "read-comments"
           ],
           "client": {
             "account": [
