@@ -1,0 +1,13 @@
+services:
+  main-data-base:
+    extends:
+      file: db/compose.yaml
+      service: main-data-base
+  keycloak:
+    extends:
+      file: keycloak/compose.yaml
+      service: keycloak
+  elastic:
+    extends:
+      file: elastic/compose.yaml
+      service: elastic
