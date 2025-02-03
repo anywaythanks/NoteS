@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using NoteS.models.dto.accounts;
 using NoteS.services;
+using NoteS.tools.preconditions;
 
 namespace NoteS.controllers;
 
 [Route("api/")]
 [ApiController]
-public class AccountController(
-    AccountRegisterService registerService) : Controller
+public class AccountController(EqualNameP equalNameP,
+    AccountRegisterService registerService) : GeneralPreconditionController(equalNameP)
 {
     //PUT /accounts/{name}
     [HttpPut]
