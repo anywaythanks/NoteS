@@ -14,7 +14,7 @@ public class CommentEditService(
     public Note EditContentComment(string pathComment, string owner, CommentEditRequestDto requestDto)
     {
         var comment = noteInformationService.Get(pathComment, owner);
-        if (!comment.IsEditable()) throw new TimeMissed();
+        if (!comment.IsEditable()) throw new TimeMissed("редактирования комментариев");
         comment.SyntaxType = requestDto.Type;
         comment.Content = requestDto.Content;
         comment.Title = requestDto.Title;
@@ -42,5 +42,12 @@ public class CommentEditService(
         comment.Owner = account;
         comment.SyntaxType = requestDto.Type;
         return repository.Save(comment);
+    }
+
+    public bool Delete(string pathComment, string owner)
+    {
+        var note = noteInformationService.Get(pathComment, owner);
+        if (!note.IsEditable()) throw new TimeMissed("удаления комментариев");
+        return repository.Delete(note);
     }
 }

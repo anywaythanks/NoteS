@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NoteS.Attributes;
+using NoteS.exceptions;
 using NoteS.Models;
 using NoteS.models.dto;
 using NoteS.models.mappers;
 using NoteS.services;
 using NoteS.tools.preconditions;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace NoteS.controllers;
 
@@ -23,6 +25,7 @@ public class PublicNoteController(
     [ProducesResponseType<NoteEditPublicResponseDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [SwaggerOperation(Description = "Редактирование публичности заметки")]
     public IActionResult EditPublicNote([FromRoute] string accountName,
         [FromRoute] string pathNote,
         [FromBody] NoteEditPublicRequestDto editDto)
@@ -37,6 +40,7 @@ public class PublicNoteController(
     [ProducesResponseType<NoteEditContentResponseDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [SwaggerOperation(Description = "Редактирование контента заметки")]
     public IActionResult EditNote([FromRoute] string accountName,
         [FromRoute] string pathNote,
         [FromBody] NoteEditContentRequestDto editDto)
@@ -48,14 +52,20 @@ public class PublicNoteController(
     [HttpPost]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.EDIT_OWN_NOTES)]
     [Route("{pathNote}/create")]
-    [ProducesResponseType<NoteCreateResponseDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [SwaggerOperation(Description = "Создание заметки")]
     public IActionResult CreateNote([FromRoute] string accountName,
         [FromRoute] string pathNote,
         [FromBody] NoteCreateRequestDto editDto)
     {
-        return Execute(() => um.OfCreateNote(editService.CreateNote(pathNote, editDto)),
+        return ExecuteA(() =>
+            {
+                var r = um.OfCreateNote(editService.CreateNote(pathNote, editDto));
+                return Created(new Uri(Url.Link("GetNote", new { accountName, pathNote = r.Path }) ?? string.Empty),
+                    "PublicNoteController");
+            },
             new EqualNameP(registerService, accountName));
     }
 
@@ -65,6 +75,7 @@ public class PublicNoteController(
     [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [SwaggerOperation(Description = "Поиск по заголовку")]
     public IActionResult SearchByTitleNotes([FromRoute] string accountName,
         [FromBody] NoteSearchRequestDto noteSearch)
     {
@@ -78,28 +89,34 @@ public class PublicNoteController(
     [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [SwaggerOperation(Description = "Поиск по тегу")]
     public IActionResult SearchByTagNotes([FromRoute] string accountName,
         [FromBody] NoteSearchTagsRequestDto noteSearch)
     {
         return Execute(() => um.OfSearch(noteInformationService.Find(noteSearch.Tag, accountName)),
             new EqualNameP(registerService, accountName));
     }
-    
+
     [HttpDelete]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.DELETE_NOTES)]
+    [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Route("{pathNote}")]
+    [SwaggerOperation(Description = "Удаление заметки")]
     public IActionResult DelNote([FromRoute] string accountName, [FromRoute] string pathNote)
     {
-        return Execute(() => editService.Delete(pathNote, accountName),
+        return ExecuteA(() => editService.Delete(pathNote, accountName) ? NoContent() : throw new DontDel("Заметка"),
             new EqualNameP(registerService, accountName));
     }
-    
+
     [HttpGet]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.SEARCH_OWN_NOTES)]
     [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Route("search/semantic")]
+    [SwaggerOperation(Description = "Семантический поиск")]
     public IActionResult SemanticSearchNotes([FromRoute] string accountName,
         [FromBody] NoteSemanticSearchRequestDto noteSearch)
     {
@@ -113,6 +130,7 @@ public class PublicNoteController(
     [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [SwaggerOperation(Description = "Список заметок пользователя")]
     public IActionResult Notes([FromRoute] string accountName)
     {
         return Execute(() => um.OfSearch(noteInformationService.Find(accountName)),
@@ -125,6 +143,7 @@ public class PublicNoteController(
     [ProducesResponseType<NoteSearchContentResponseDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [SwaggerOperation(Description = "Данные заметки или комментария")]
     public IActionResult GetNote([FromRoute] string accountName,
         [FromRoute] string pathNote)
     {

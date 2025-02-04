@@ -45,7 +45,8 @@ public class SwaggerConfig
                     Type = ReferenceType.SecurityScheme
                 }
             };
-
+            setup.EnableAnnotations();
+            setup.SwaggerDoc("v1", new OpenApiInfo { Title = "NoteS API", Version = "v1" });
             setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
 
             setup.AddSecurityRequirement(new OpenApiSecurityRequirement

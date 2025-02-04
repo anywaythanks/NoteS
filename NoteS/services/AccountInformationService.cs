@@ -9,6 +9,6 @@ public class AccountInformationService(
 {
     public Account Get(string accountName)
     {
-        return accountRepository.FindByName(accountName) ?? throw new NotFound();
+        return accountRepository.FindByName(accountName) ?? throw new NotFound("аккаунт");
     }
 }

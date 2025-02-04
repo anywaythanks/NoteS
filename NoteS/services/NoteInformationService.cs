@@ -28,13 +28,13 @@ public class NoteInformationService(
 
     public Note Get(string path, string owner)
     {
-        var note = repository.FindByPath(path) ?? throw new NotFound();
-        if (note.Owner.Name != owner) throw new Forbidden();
+        var note = repository.FindByPath(path) ?? throw new NotFound("заметка");
+        if (note.Owner.Name != owner) throw new Forbidden("заметке");
         return note;
     }
     public Note Get(string path)
     {
-        var note = repository.FindByPath(path) ?? throw new NotFound();
+        var note = repository.FindByPath(path) ?? throw new NotFound("заметка");
         return note;
     }
     public Note GetFull(string path, string owner)

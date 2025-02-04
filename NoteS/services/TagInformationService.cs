@@ -24,6 +24,6 @@ public class TagInformationService(
 
     public Tag Get(string accountName, string tag)
     {
-        return tagRepository.FindByName(tag, accountInformationService.Get(accountName)) ?? throw new NotFound();
+        return tagRepository.FindByName(tag, accountInformationService.Get(accountName)) ?? throw new NotFound("тег");
     }
 }

@@ -52,6 +52,11 @@ public sealed class NoteRepositoryDb(DbContextOptions<NoteRepositoryDb> options)
         throw new NotImplementedException();
     }
 
+    public bool IsExists(string name, Note note)
+    {
+        throw new NotImplementedException();
+    }
+
     public List<Note> LoadComments(string path, Account owner)
     {
         throw new NotImplementedException();

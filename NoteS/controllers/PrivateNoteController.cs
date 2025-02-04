@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc;
 using NoteS.tools.preconditions;
 using NoteS.Attributes;
 using NoteS.Models;
 using NoteS.models.dto;
 using NoteS.models.mappers;
 using NoteS.services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace NoteS.controllers;
 
@@ -18,11 +20,13 @@ public class PrivateNoteController(
     : GeneralPreconditionController
 {
     [HttpPatch]
-    [KeycloakAuthorize(Policies.READ_ALL_NOTES, Policies.SET_ALL_PUBLIC_STATUS_NOTES)]
+    [KeycloakAuthorize(Policies.READ_ALL_NOTES)]
+    [KeycloakAuthorize(Policies.SET_ALL_PUBLIC_STATUS_NOTES)]
     [Route("{pathNote}/publish")]
     [ProducesResponseType<Account>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [SwaggerOperation(Description = "Редактирование свойства публичности любой заметки или комментария")]
     public IActionResult EditPublicAllNote([FromRoute] string accountName,
         [FromRoute] string pathNote,
         [FromBody] NoteEditPublicRequestDto editDto)
@@ -37,6 +41,7 @@ public class PrivateNoteController(
     [ProducesResponseType<NoteEditContentResponseDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [SwaggerOperation(Description = "Редактирование контента любой заметки или комментария")]
     public IActionResult EditNoteAll([FromRoute] string accountName,
         [FromRoute] string pathNote,
         [FromBody] NoteEditContentRequestDto editDto)
@@ -51,6 +56,7 @@ public class PrivateNoteController(
     [ProducesResponseType<NoteCreateResponseDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [SwaggerOperation(Description = "Получение данных любой заметки или комментария")]
     public IActionResult GetNoteAll([FromRoute] string accountName)
     {
         return Execute(() => um.OfCreateNote(noteInformationService.GetFull(accountName)),

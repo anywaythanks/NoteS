@@ -10,7 +10,7 @@ public readonly struct EqualNameP(AccountRegisterService service, string account
 
     public bool Check(IIdentity? identity, string uuid)
     {
-        if (identity?.Name != AccountName) throw new Forbidden();
+        if (identity?.Name != AccountName) throw new Forbidden("аккаунту");
         service.Register(AccountName, uuid);
         return true;
     }

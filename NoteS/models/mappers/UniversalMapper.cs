@@ -8,8 +8,9 @@ namespace NoteS.models.mappers;
 public partial class UniversalMapper
 {
     public partial NoteRegisterResponseDto OfRegister(Note source);
-    public partial NoteSearchResponseDto OfSearch(Note source);
+    private partial NoteSearchResponseDto OfSearch(Note source);
     public partial List<NoteSearchResponseDto> OfSearch(List<Note> source);
+    private partial NoteType OfType(NoteTypes type);
     public partial NoteSearchContentResponseDto OfContentSearch(Note source);
     public partial List<NoteSearchContentResponseDto> OfCommentsSearch(List<Note> source);
     public partial NoteEditPublicResponseDto OfEdit(Note source);
