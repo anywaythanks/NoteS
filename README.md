@@ -14,4 +14,4 @@ npm install
 Запустить шапровое чудо. Проще взять бинарники из релиза. Если он будет, ха-ха.
 
 ## Общие мысли по поводу проекта
-[Тык](https://github.com/anywaythanks/NoteS/problems.md)
+[Тык](https://github.com/anywaythanks/NoteS/NoteS/problems.md)
