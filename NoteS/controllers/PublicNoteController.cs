@@ -88,9 +88,10 @@ public class PublicNoteController(
     [HttpDelete]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.DELETE_NOTES)]
     [Route("{pathNote}")]
-    public IResult DelTag([FromRoute] string accountName, [FromRoute] string pathNote)
+    public IActionResult DelNote([FromRoute] string accountName, [FromRoute] string pathNote)
     {
-        return null!;
+        return Execute(() => editService.Delete(pathNote, accountName),
+            new EqualNameP(registerService, accountName));
     }
     
     [HttpGet]

@@ -5,7 +5,7 @@ using NoteS.Models;
 namespace NoteS.Attributes;
 
 /**
- * Какая же чушь, боже. https://stackoverflow.com/questions/16710533/passing-static-array-in-attribute
+ * Какая же чушь, боже. <a href="https://stackoverflow.com/questions/16710533/passing-static-array-in-attribute"/>
  */
 public class KeycloakAuthorizeAttribute : AuthorizeAttribute
 {

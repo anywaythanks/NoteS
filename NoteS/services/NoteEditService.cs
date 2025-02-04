@@ -1,4 +1,5 @@
-﻿using NoteS.Models;
+﻿using NoteS.models;
+using NoteS.Models;
 using NoteS.models.dto;
 using NoteS.repositories;
 
@@ -14,6 +15,11 @@ public class NoteEditService(
         var note = noteInformationService.Get(pathNote, owner);
         note.IsPublic = requestDto.IsPublic;
         return repository.Save(note);
+    }
+    public bool Delete(string pathNote, string owner)
+    {
+        var note = noteInformationService.Get(pathNote, owner);
+        return repository.Delete(note);
     }
 
     public Note PublishNote(string pathNote, NoteEditPublicRequestDto requestDto)
@@ -42,6 +48,7 @@ public class NoteEditService(
         var account = accountInformationService.Get(accountName);
         var note = repository.CreateInElastic(requestDto, account);
         note.Title = requestDto.Title;
+        note.Type = NoteTypes.Note;
         note.Path = Guid.NewGuid().ToString();
         note.Owner = account;
         note.SyntaxType = requestDto.Type;

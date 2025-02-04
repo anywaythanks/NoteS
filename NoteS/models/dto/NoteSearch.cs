@@ -6,11 +6,11 @@ public class NoteSearchResponseDto(string title)
 {
     public string Title => title;
 }
-public class NoteSearchContentResponseDto(string title, string content, List<TagDto> tags)
+public class NoteSearchContentResponseDto(string title, string content, List<TagResponseDto> tags)
 {
     public string Title => title;
     public string Content => content;
-    public List<TagDto> Tags => tags;
+    public List<TagResponseDto> Tags => tags;
 }
 public class NoteSearchRequestDto(string title)
 {

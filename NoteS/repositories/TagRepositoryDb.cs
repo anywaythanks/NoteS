@@ -12,7 +12,22 @@ public sealed class TagRepositoryDb(DbContextOptions<TagRepositoryDb> options)
         throw new NotImplementedException();
     }
 
+    public bool Delete(Tag note)
+    {
+        throw new NotImplementedException();
+    }
+
     public List<Note> FindNotes(Tag tag)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<Tag> FindByOwner(Account owner)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Tag? FindByName(string name, Account owner)
     {
         throw new NotImplementedException();
     }

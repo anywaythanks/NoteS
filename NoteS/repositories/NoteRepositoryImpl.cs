@@ -12,6 +12,11 @@ public sealed class NoteRepositoryDb(DbContextOptions<NoteRepositoryDb> options)
         throw new NotImplementedException();
     }
 
+    public bool Delete(Note note)
+    {
+        throw new NotImplementedException();
+    }
+
     public Note SaveContent(Note note)
     {
         throw new NotImplementedException();
@@ -32,7 +37,22 @@ public sealed class NoteRepositoryDb(DbContextOptions<NoteRepositoryDb> options)
         throw new NotImplementedException();
     }
 
+    public bool DeleteTag(Note note, Tag tag)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Tag AddTag(Note note, Tag tag)
+    {
+        throw new NotImplementedException();
+    }
+
     public List<Note> FindByTitle(string title, Account owner)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<Note> LoadComments(string path, Account owner)
     {
         throw new NotImplementedException();
     }

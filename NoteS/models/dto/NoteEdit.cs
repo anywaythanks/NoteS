@@ -22,10 +22,11 @@ public class NoteEditContentResponseDto(string title, string content)
     public string Content => content;
 }
 
-public class NoteCreateRequestDto(string title, SyntaxType type)
+public class NoteCreateRequestDto(string title, SyntaxType type, string content)
 {
     public string Title => title;
     public SyntaxType Type => type;
+    public string Content => content;
 }
 
 public class NoteCreateResponseDto(string path, string title, NoteTypes type, bool isPublic, SyntaxType syntaxType)

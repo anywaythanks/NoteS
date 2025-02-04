@@ -9,15 +9,12 @@ public class SwaggerConfig
 {
     public static void Configuration(IHostApplicationBuilder builder)
     {
-        // Add services to the container.
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         var configuration = builder.Configuration;
 
         builder.Services.AddSwaggerGen(setup =>
         {
             var exts = new Dictionary<string, IOpenApiExtension>();
-            // Include 'SecurityScheme' to use JWT Authentication
             var jwtSecurityScheme = new OpenApiSecurityScheme()
             {
                 BearerFormat = "JWT",
@@ -39,12 +36,7 @@ public class SwaggerConfig
                         Scopes = new Dictionary<string, string>
                         {
                             { "read" , "Balea Server HTTP Api" }
-                        },
-                         // Extensions = new Dictionary<string, IOpenApiExtension>
-                         // {
-                         //     {"client_id", new OpenApiString($"{configuration["Keycloak:Swagger:Client"]}")},
-                         //     {"client_secret", new OpenApiString($"{configuration["Keycloak:Swagger:Secret"]}")}
-                         // }
+                        }
                     }
                 },
                 Reference = new OpenApiReference
