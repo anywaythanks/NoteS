@@ -5,7 +5,7 @@ using NoteS.tools.preconditions;
 
 namespace NoteS.controllers;
 
-[Route("api/")]
+[Route("api/public/{accountName}")]
 [ApiController]
 public class AccountController(
     AccountRegisterService registerService,

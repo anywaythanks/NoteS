@@ -37,6 +37,11 @@ public sealed class NoteRepositoryDb(DbContextOptions<NoteRepositoryDb> options)
         throw new NotImplementedException();
     }
 
+    public List<Note> FindByTag(string title, Account owner)
+    {
+        throw new NotImplementedException();
+    }
+
     public List<Note> FindByOwner(Account owner)
     {
         throw new NotImplementedException();

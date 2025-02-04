@@ -61,7 +61,7 @@ public class PublicNoteController(
 
     [HttpGet]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.SEARCH_OWN_NOTES)]
-    [Route("search")]
+    [Route("search/title")]
     [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -72,6 +72,27 @@ public class PublicNoteController(
             new EqualNameP(registerService, accountName));
     }
 
+    [HttpGet]
+    [KeycloakAuthorize(Policies.READ_NOTES, Policies.SEARCH_OWN_NOTES)]
+    [Route("search/tag")]
+    [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public IActionResult SearchByTagNotes([FromRoute] string accountName,
+        [FromBody] NoteSearchTagsRequestDto noteSearch)
+    {
+        return Execute(() => um.OfSearch(noteInformationService.Find(noteSearch.Tag, accountName)),
+            new EqualNameP(registerService, accountName));
+    }
+    
+    [HttpDelete]
+    [KeycloakAuthorize(Policies.READ_NOTES, Policies.DELETE_NOTES)]
+    [Route("{pathNote}")]
+    public IResult DelTag([FromRoute] string accountName, [FromRoute] string pathNote)
+    {
+        return null!;
+    }
+    
     [HttpGet]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.SEARCH_OWN_NOTES)]
     [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status200OK)]

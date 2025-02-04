@@ -17,6 +17,10 @@ public class NoteSearchRequestDto(string title)
     public string Title => title;
 }
 
+public class NoteSearchTagsRequestDto(string tag)
+{
+    public string Tag => tag;
+}
 public class NoteSemanticSearchRequestDto(string query)
 {
     public string Query => query;

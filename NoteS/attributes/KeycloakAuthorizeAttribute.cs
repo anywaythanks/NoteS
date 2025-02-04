@@ -16,20 +16,23 @@ public class KeycloakAuthorizeAttribute : AuthorizeAttribute
 
     private static string PolicyTransform(Policies policy)
     {
-        switch (policy)
+        return policy switch
         {
-            case Policies.READ_NOTES: return "read-notes";
-            case Policies.READ_All_NOTES: return "read-all-notes";
-            case Policies.SEARCH_OWN_NOTES: return "search-own-notes";
-            case Policies.EDIT_OWN_NOTES: return "edit-own-notes";
-            case Policies.EDIT_ALL_NOTES: return "edit-all-notes";
-            case Policies.READ_COMMENTS: return "read-comments";
-            case Policies.EDIT_OWN_COMMENTS: return "edit-own-comments";
-            case Policies.EDIT_ALL_COMMENTS: return "edit-all-comments";
-            case Policies.SET_ALL_PUBLIC_STATUS_NOTES: return "set-all-public-status-notes";
-            case Policies.SET_OWN_PUBLIC_STATUS_NOTES: return "set-own-public-status-notes";
-        }
-
-        throw new ArgumentException("Invalid policy"); //Какой же все таки прекрасный язык, да.
+            Policies.READ_NOTES => "read-notes",
+            Policies.READ_ALL_NOTES => "read-all-notes",
+            Policies.SEARCH_OWN_NOTES => "search-own-notes",
+            Policies.EDIT_OWN_NOTES => "edit-own-notes",
+            Policies.EDIT_ALL_NOTES => "edit-all-notes",
+            Policies.READ_COMMENTS => "read-comments",
+            Policies.EDIT_OWN_COMMENTS => "edit-own-comments",
+            Policies.EDIT_ALL_COMMENTS => "edit-all-comments",
+            Policies.SET_ALL_PUBLIC_STATUS_NOTES => "set-all-public-status-notes",
+            Policies.SET_OWN_PUBLIC_STATUS_NOTES => "set-own-public-status-notes",
+            Policies.CREATE_COMMENTS => "create-comments",
+            Policies.CREATE_NOTES => "create-notes",
+            Policies.DELETE_NOTES => "delete-notes",
+            Policies.DELETE_COMMENTS  => "delete-comments",
+            _ => throw new ArgumentException("Invalid policy") //Какой же все таки прекрасный язык, да.
+        };
     }
 }

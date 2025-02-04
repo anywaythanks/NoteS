@@ -18,7 +18,7 @@ public class PrivateNoteController(
     : GeneralPreconditionController
 {
     [HttpPatch]
-    [KeycloakAuthorize(Policies.READ_All_NOTES, Policies.SET_ALL_PUBLIC_STATUS_NOTES)]
+    [KeycloakAuthorize(Policies.READ_ALL_NOTES, Policies.SET_ALL_PUBLIC_STATUS_NOTES)]
     [Route("{pathNote}/publish")]
     [ProducesResponseType<Account>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -32,7 +32,7 @@ public class PrivateNoteController(
     }
 
     [HttpPatch]
-    [KeycloakAuthorize(Policies.READ_All_NOTES, Policies.EDIT_ALL_NOTES)]
+    [KeycloakAuthorize(Policies.READ_ALL_NOTES, Policies.EDIT_ALL_NOTES)]
     [Route("{pathNote}")]
     [ProducesResponseType<NoteEditContentResponseDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -46,7 +46,7 @@ public class PrivateNoteController(
     }
 
     [HttpGet]
-    [KeycloakAuthorize(Policies.READ_All_NOTES)]
+    [KeycloakAuthorize(Policies.READ_ALL_NOTES)]
     [Route("{pathNote}")]
     [ProducesResponseType<NoteCreateResponseDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]

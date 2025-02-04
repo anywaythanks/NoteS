@@ -12,7 +12,10 @@ public class NoteInformationService(
     {
         return repository.FindByTitle(title, informationService.Get(owner));
     }
-
+    public List<Note> FindTag(string tag, string owner)
+    {
+        return repository.FindByTag(tag, informationService.Get(owner));
+    }
     public List<Note> Find(string owner)
     {
         return repository.FindByOwner(informationService.Get(owner));

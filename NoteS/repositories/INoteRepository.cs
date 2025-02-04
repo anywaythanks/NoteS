@@ -12,6 +12,8 @@ public interface INoteRepository
     public Note LoadTags(Note note);
 
     public List<Note> FindByTitle(string title, Account owner);
+
+    public List<Note> FindByTag(string title, Account owner);
     public List<Note> FindByOwner(Account owner);
     public void SaveContent(string content);
     public List<Note> SemanticFind(string find, Account owner);

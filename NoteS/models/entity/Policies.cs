@@ -6,7 +6,7 @@ public enum Policies
     READ_NOTES,
 
     /// Право читать все заметки
-    READ_All_NOTES,
+    READ_ALL_NOTES,
 
     /// Право пользоваться поиском по собственным заметкам
     SEARCH_OWN_NOTES,
@@ -31,4 +31,16 @@ public enum Policies
     
     /// Право делать все заметки публичными/непубличными
     SET_ALL_PUBLIC_STATUS_NOTES,
+    
+    /// Право комментировать заметки
+    CREATE_COMMENTS,
+    
+    /// Право создавать заметки
+    CREATE_NOTES,
+    
+    /// Право удалять заметки
+    DELETE_NOTES,
+    
+    /// Право удалять комментарии
+    DELETE_COMMENTS,
 }
