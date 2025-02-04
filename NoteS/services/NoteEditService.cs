@@ -16,6 +16,7 @@ public class NoteEditService(
         note.IsPublic = requestDto.IsPublic;
         return repository.Save(note);
     }
+
     public bool Delete(string pathNote, string owner)
     {
         var note = noteInformationService.Get(pathNote, owner);

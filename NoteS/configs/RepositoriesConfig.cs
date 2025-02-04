@@ -9,7 +9,7 @@ public class RepositoriesConfig
     {
         var configuration = builder.Configuration;
         var db = "Host=localhost;Port=5432;Database=NoteS_db;Username=anyway;Password=anyway;";
-        
+
         builder.Services.AddDbContext<IAccountRepository, AccountRepositoryDb>(options =>
             options.UseNpgsql(db).EnableSensitiveDataLogging());
         builder.Services.AddDbContext<INoteRepository, NoteRepositoryDbAndElastic>(options =>
@@ -17,7 +17,7 @@ public class RepositoriesConfig
         builder.Services.AddDbContext<ITagRepository, TagRepositoryDb>(options =>
             options.UseNpgsql(db).EnableSensitiveDataLogging());
     }
-    
+
     public static void AfterConfiguration(WebApplication app)
     {
         using (var scope = app.Services.CreateScope())

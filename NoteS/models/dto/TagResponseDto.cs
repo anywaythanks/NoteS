@@ -9,6 +9,7 @@ public class CreateTagRequestDto(string name)
 {
     public string Name => name;
 }
+
 public class DeleteTagRequestDto(string name)
 {
     public string Name => name;

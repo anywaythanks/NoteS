@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 
@@ -35,7 +34,7 @@ public class SwaggerConfig
                                            $"/protocol/openid-connect/token"),
                         Scopes = new Dictionary<string, string>
                         {
-                            { "read" , "Balea Server HTTP Api" }
+                            { "read", "Balea Server HTTP Api" }
                         }
                     }
                 },

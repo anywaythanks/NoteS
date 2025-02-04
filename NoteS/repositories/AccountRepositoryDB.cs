@@ -47,7 +47,7 @@ public sealed class AccountRepositoryDb(DbContextOptions<AccountRepositoryDb> op
     {
         if (account == null) return null;
         Attach(account);
-        EntityEntry<Account> e =  Entry(account);
+        EntityEntry<Account> e = Entry(account);
         e.State = EntityState.Detached;
         SaveChanges();
         return e.Entity;

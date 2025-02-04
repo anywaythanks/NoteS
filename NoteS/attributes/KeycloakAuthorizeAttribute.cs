@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NoteS.Models;
 
 namespace NoteS.Attributes;
@@ -31,7 +30,7 @@ public class KeycloakAuthorizeAttribute : AuthorizeAttribute
             Policies.CREATE_COMMENTS => "create-comments",
             Policies.CREATE_NOTES => "create-notes",
             Policies.DELETE_NOTES => "delete-notes",
-            Policies.DELETE_COMMENTS  => "delete-comments",
+            Policies.DELETE_COMMENTS => "delete-comments",
             _ => throw new ArgumentException("Invalid policy") //Какой же все таки прекрасный язык, да.
         };
     }

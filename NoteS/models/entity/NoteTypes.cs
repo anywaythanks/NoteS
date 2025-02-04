@@ -6,7 +6,7 @@ public class NoteTypes
     public string Name { get; }
     public static readonly NoteTypes Note = new(0, "NOTE");
     public static readonly NoteTypes Comment = new(1, "COMMENT");
-    
+
     public static NoteTypes NumToType(int num)
     {
         switch (num)
@@ -15,7 +15,7 @@ public class NoteTypes
             case 1: return Comment;
         }
 
-        throw new ArgumentException();//TODO: другая ошибка
+        throw new ArgumentException(); //TODO: другая ошибка
     }
 
     private NoteTypes(int num, string name)

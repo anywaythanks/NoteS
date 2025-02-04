@@ -25,22 +25,22 @@ public enum Policies
 
     /// Право изменять все комментарии
     EDIT_ALL_COMMENTS,
-    
+
     /// Право делать собственные заметки публичными/непубличными
     SET_OWN_PUBLIC_STATUS_NOTES,
-    
+
     /// Право делать все заметки публичными/непубличными
     SET_ALL_PUBLIC_STATUS_NOTES,
-    
+
     /// Право комментировать заметки
     CREATE_COMMENTS,
-    
+
     /// Право создавать заметки
     CREATE_NOTES,
-    
+
     /// Право удалять заметки
     DELETE_NOTES,
-    
+
     /// Право удалять комментарии
     DELETE_COMMENTS,
 }

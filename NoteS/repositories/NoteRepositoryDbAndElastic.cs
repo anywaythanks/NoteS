@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NoteS.Models;
+﻿using NoteS.Models;
 using NoteS.models.dto;
 
 namespace NoteS.repositories;

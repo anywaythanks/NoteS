@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 
 namespace NoteS.configs;
@@ -36,18 +34,14 @@ public class AuthConfig
                 // .RequireClaim("email_verified", "true")
                 .Build();
         });
-        
+
         builder.Services.AddCors(options =>
         {
             options.AddPolicy(name: "MyAllowSpecificOrigins",
-                policy  =>
-                {
-                    policy.WithOrigins("http://localhost:8080");
-                });
+                policy => { policy.WithOrigins("http://localhost:8080"); });
         });
-
     }
-    
+
     public static void AfterConfiguration(WebApplication app)
     {
         app.UseAuthentication();

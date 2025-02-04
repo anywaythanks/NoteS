@@ -69,8 +69,8 @@ public class PublicTagsController(
         [FromRoute] string pathNote,
         [FromBody] DeleteTagRequestDto delete)
     {
-        return ExecuteA(() => tagEditService.Delete(pathNote, accountName, delete.Name) ? NoContent() : 
-                throw new DontDel("Тег"),
+        return ExecuteA(
+            () => tagEditService.Delete(pathNote, accountName, delete.Name) ? NoContent() : throw new DontDel("Тег"),
             new EqualNameP(registerService, accountName));
     }
 

@@ -42,7 +42,8 @@ public class PublicCommentsController(
         [FromRoute] string pathNote,
         [FromBody] CommentCreateRequestDto createDto)
     {
-        return ExecuteA(() => {
+        return ExecuteA(() =>
+            {
                 var r = um.OfCreateComment(
                     commentEditService.CreateComment(accountName, pathNote, createDto));
                 return Created(new Uri(Url.Link("GetNote", new { accountName, pathNote = r.Path }) ?? string.Empty),
@@ -66,7 +67,7 @@ public class PublicCommentsController(
         return Execute(() => um.OfEditComment(commentEditService.EditContentComment(accountName, pathNote, createDto)),
             new EqualNameP(registerService, accountName));
     }
-    
+
     [HttpDelete]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.DELETE_COMMENTS)]
     [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status204NoContent)]
@@ -76,7 +77,8 @@ public class PublicCommentsController(
     [SwaggerOperation(Description = "Удаление комментария")]
     public IActionResult DelComment([FromRoute] string accountName, [FromRoute] string pathComment)
     {
-        return ExecuteA(() => commentEditService.Delete(pathComment, accountName) ? NoContent() : throw new DontDel("Комментарий"),
+        return ExecuteA(
+            () => commentEditService.Delete(pathComment, accountName) ? NoContent() : throw new DontDel("Комментарий"),
             new EqualNameP(registerService, accountName));
     }
 }
