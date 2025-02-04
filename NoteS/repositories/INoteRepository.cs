@@ -15,7 +15,7 @@ public interface INoteRepository
     public bool DeleteTag(Note note, Tag tag);
     public Tag AddTag(Note note, Tag tag);
     public List<Note> FindByTitle(string title, Account owner);
-    public bool IsExists(string name, Note note);
+    public bool IsTagExists(string name, Note note);
 
     /**
      * todo: Должно быть с контентом, по идее целой пачкой надо отправлять в elastic

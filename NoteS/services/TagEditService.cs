@@ -20,7 +20,7 @@ public class TagEditService(
     public Tag Add(string pathNote, string accountName, string tag)
     {
         var note = noteInformationService.Get(pathNote, accountName);
-        if (noteRepository.IsExists(tag, note)) throw new AlreadyExists("Тег у заметки");
+        if (noteRepository.IsTagExists(tag, note)) throw new AlreadyExists("Тег у заметки");
         return noteRepository.AddTag(note, tagInformationService.Get(accountName, tag));
     }
 

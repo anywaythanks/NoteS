@@ -12,7 +12,7 @@ public class RepositoriesConfig
         
         builder.Services.AddDbContext<IAccountRepository, AccountRepositoryDb>(options =>
             options.UseNpgsql(db).EnableSensitiveDataLogging());
-        builder.Services.AddDbContext<INoteRepository, NoteRepositoryDb>(options =>
+        builder.Services.AddDbContext<INoteRepository, NoteRepositoryDbAndElastic>(options =>
             options.UseNpgsql(db).EnableSensitiveDataLogging());
         builder.Services.AddDbContext<ITagRepository, TagRepositoryDb>(options =>
             options.UseNpgsql(db).EnableSensitiveDataLogging());
@@ -23,7 +23,7 @@ public class RepositoriesConfig
         using (var scope = app.Services.CreateScope())
         {
             scope.ServiceProvider.GetRequiredService<AccountRepositoryDb>().Database.EnsureCreated();
-            scope.ServiceProvider.GetRequiredService<NoteRepositoryDb>().Database.EnsureCreated();
+            scope.ServiceProvider.GetRequiredService<NoteRepositoryDbAndElastic>().Database.EnsureCreated();
             scope.ServiceProvider.GetRequiredService<TagRepositoryDb>().Database.EnsureCreated();
         }
     }
