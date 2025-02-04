@@ -9,7 +9,7 @@ using NoteS.services;
 namespace NoteS.controllers;
 
 [ApiController]
-[Route("api/{account_name}/notes")]
+[Route("api/{accountName}/notes")]
 public class PrivateNoteController(
     AccountRegisterService registerService,
     NoteInformationService noteInformationService,
@@ -73,9 +73,9 @@ public class PrivateNoteController(
             new EqualNameP(registerService, accountName));
     }
 
-    [HttpPatch]
+    [HttpPost]
     [KeycloakAuthorize(Policies.READ_All_NOTES, Policies.EDIT_ALL_NOTES)]
-    [Route("private/{pathNote}")]
+    [Route("private/{pathNote}/create")]
     [ProducesResponseType<NoteEditContentResponseDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -89,7 +89,7 @@ public class PrivateNoteController(
 
     [HttpGet]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.SEARCH_OWN_NOTES)]
-    [Route("search/{title}")]
+    [Route("search")]
     [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -132,9 +132,9 @@ public class PrivateNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult GetNote([FromRoute] string accountName,
-        [FromRoute] string path)
+        [FromRoute] string pathNote)
     {
-        return Execute(() => um.OfContentSearch(noteInformationService.GetFull(path, accountName)),
+        return Execute(() => um.OfContentSearch(noteInformationService.GetFull(pathNote, accountName)),
             new EqualNameP(registerService, accountName));
     }
 
