@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using NoteS.Models;
 
 namespace NoteS.Attributes;
@@ -6,18 +8,13 @@ namespace NoteS.Attributes;
 /**
  * Какая же чушь, боже. <a href="https://stackoverflow.com/questions/16710533/passing-static-array-in-attribute"/>
  */
-public class KeycloakAuthorizeAttribute : AuthorizeAttribute
+public class KeycloakAuthorizeAttribute(params Policies[] policies) : AuthorizeAttribute, IAuthorizationFilter
 {
-    public KeycloakAuthorizeAttribute(params Policies[] policy)
-    {
-        Roles = string.Join(",", policy.Select(PolicyTransform));
-    }
-
     private static string PolicyTransform(Policies policy)
     {
         return policy switch
         {
-            Policies.READ_NOTES => "read-notes",
+            Policies.READ_NOTES => "read-notes", //TODO: добавить в кейклок
             Policies.READ_ALL_NOTES => "read-all-notes",
             Policies.SEARCH_OWN_NOTES => "search-own-notes",
             Policies.EDIT_OWN_NOTES => "edit-own-notes",
@@ -33,5 +30,19 @@ public class KeycloakAuthorizeAttribute : AuthorizeAttribute
             Policies.DELETE_COMMENTS => "delete-comments",
             _ => throw new ArgumentException("Invalid policy") //Какой же все таки прекрасный язык, да.
         };
+    }
+
+    public void OnAuthorization(AuthorizationFilterContext context)
+    {
+        var user = context.HttpContext.User;
+        
+        if (user.Identity is not { IsAuthenticated: true })
+        {
+            context.Result = new UnauthorizedResult();
+            return;
+        }
+
+        if (policies.All(policy => user.IsInRole(PolicyTransform(policy)))) return;
+        context.Result = new ForbidResult();
     }
 }

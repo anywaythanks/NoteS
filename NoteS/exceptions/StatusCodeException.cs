@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace NoteS.exceptions;
@@ -12,12 +13,13 @@ public abstract class StatusCodeException : Exception
         Result = new ContentResult
         {
             StatusCode = statusCode,
-            Content = "{" +
-                      $"status: '{statusCode}'," +
-                      $"internal_code: '{code}'," +
-                      $"message: '{reason}'," +
-                      "}",
-            ContentType = "json"
+            Content =JsonSerializer.Serialize(new
+            {
+                status = statusCode,
+                interalCode = code,
+                mesage = reason
+            }),
+            ContentType = "application/json"
         };
     }
 }

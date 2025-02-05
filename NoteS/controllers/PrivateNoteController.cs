@@ -19,8 +19,7 @@ public class PrivateNoteController(
     : GeneralPreconditionController
 {
     [HttpPatch]
-    [KeycloakAuthorize(Policies.READ_ALL_NOTES)]
-    [KeycloakAuthorize(Policies.SET_ALL_PUBLIC_STATUS_NOTES)]
+    [KeycloakAuthorize(Policies.READ_ALL_NOTES, Policies.SET_ALL_PUBLIC_STATUS_NOTES)]
     [Route("{pathNote}/publish")]
     [ProducesResponseType<Account>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]

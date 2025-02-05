@@ -1,6 +1,8 @@
 {
   "id": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
   "realm": "NoteS",
+  "displayName": "NoteS",
+  "displayNameHtml": "<div class=\"kc-logo-text\"><span>NoteS</span></div>",
   "notBefore": 0,
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,
@@ -26,7 +28,7 @@
   "oauth2DeviceCodeLifespan": 600,
   "oauth2DevicePollingInterval": 5,
   "enabled": true,
-  "sslRequired": "external",
+  "sslRequired": "none",
   "registrationAllowed": true,
   "registrationEmailAsUsername": false,
   "rememberMe": true,
@@ -46,6 +48,15 @@
   "roles": {
     "realm": [
       {
+        "id": "4a21e14b-5314-4c01-9337-f9e6720a0765",
+        "name": "create-comments",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
         "id": "7ffaae54-d348-43a2-8836-fc0d6049a799",
         "name": "edit-own-comments",
         "description": "",
@@ -55,8 +66,8 @@
         "attributes": {}
       },
       {
-        "id": "2f4ef5f3-8bd1-4708-a450-63cc21075dfb",
-        "name": "read-comments",
+        "id": "82fb2aa5-a8ab-48bc-bb58-7417d85f6fa3",
+        "name": "create-notes",
         "description": "",
         "composite": false,
         "clientRole": false,
@@ -66,6 +77,100 @@
       {
         "id": "d387ff46-9302-4f45-9c75-31a60bbecd7d",
         "name": "search-own-notes",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
+        "id": "20fb70b9-c259-4716-a569-4354f07f72e4",
+        "name": "set-all-public-status-notes",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
+        "id": "6a6619f6-a6dc-4ef4-9607-d099596dd314",
+        "name": "edit-own-notes",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
+        "id": "2b754e2f-9d5a-4ffd-b2c3-4b5d7ea0ef96",
+        "name": "set-own-public-status-notes",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
+        "id": "06092a4b-14ca-4d6d-909d-ebaec3d40aba",
+        "name": "delete-comments",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
+        "id": "ef83f035-f373-473b-94a8-2cfb23161f10",
+        "name": "delete-notes",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
+        "id": "ff5a4229-999c-4e82-a4b3-4094e242b48e",
+        "name": "default-roles-notes",
+        "description": "${role_default-roles}",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "edit-own-notes",
+            "search-own-notes",
+            "edit-own-comments",
+            "offline_access",
+            "set-own-public-status-notes",
+            "delete-notes",
+            "delete-comments",
+            "read-notes",
+            "uma_authorization",
+            "create-comments",
+            "create-notes",
+            "read-comments"
+          ],
+          "client": {
+            "account": [
+              "manage-account",
+              "view-profile"
+            ]
+          }
+        },
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
+        "id": "a92ba346-1955-4318-8cf6-467e4b91d10b",
+        "name": "read-notes",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
+        "attributes": {}
+      },
+      {
+        "id": "2f4ef5f3-8bd1-4708-a450-63cc21075dfb",
+        "name": "read-comments",
         "description": "",
         "composite": false,
         "clientRole": false,
@@ -84,15 +189,6 @@
       {
         "id": "d6ee0f27-6015-4eaa-be68-fae5aa4b2ba7",
         "name": "edit-all-notes",
-        "description": "",
-        "composite": false,
-        "clientRole": false,
-        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
-        "attributes": {}
-      },
-      {
-        "id": "6a6619f6-a6dc-4ef4-9607-d099596dd314",
-        "name": "edit-own-notes",
         "description": "",
         "composite": false,
         "clientRole": false,
@@ -120,41 +216,6 @@
       {
         "id": "6fc2d510-342b-414c-b2a1-383e12784359",
         "name": "edit-all-comments",
-        "description": "",
-        "composite": false,
-        "clientRole": false,
-        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
-        "attributes": {}
-      },
-      {
-        "id": "ff5a4229-999c-4e82-a4b3-4094e242b48e",
-        "name": "default-roles-notes",
-        "description": "${role_default-roles}",
-        "composite": true,
-        "composites": {
-          "realm": [
-            "edit-own-notes",
-            "search-own-notes",
-            "edit-own-comments",
-            "offline_access",
-            "uma_authorization",
-            "read-notes",
-            "read-comments"
-          ],
-          "client": {
-            "account": [
-              "view-profile",
-              "manage-account"
-            ]
-          }
-        },
-        "clientRole": false,
-        "containerId": "2da778cc-05af-44b6-b0db-8a48c0e294e8",
-        "attributes": {}
-      },
-      {
-        "id": "a92ba346-1955-4318-8cf6-467e4b91d10b",
-        "name": "read-notes",
         "description": "",
         "composite": false,
         "clientRole": false,
@@ -2550,17 +2611,19 @@
   "dockerAuthenticationFlow": "docker auth",
   "attributes": {
     "cibaBackchannelTokenDeliveryMode": "poll",
-    "cibaExpiresIn": "120",
     "cibaAuthRequestedUserHint": "login_hint",
-    "oauth2DeviceCodeLifespan": "600",
     "oauth2DevicePollingInterval": "5",
     "clientOfflineSessionMaxLifespan": "0",
     "clientSessionIdleTimeout": "0",
-    "parRequestUriLifespan": "60",
-    "clientSessionMaxLifespan": "0",
     "clientOfflineSessionIdleTimeout": "0",
     "cibaInterval": "5",
-    "realmReusableOtpCode": "false"
+    "realmReusableOtpCode": "false",
+    "cibaExpiresIn": "120",
+    "oauth2DeviceCodeLifespan": "600",
+    "parRequestUriLifespan": "60",
+    "clientSessionMaxLifespan": "0",
+    "frontendUrl": "",
+    "acr.loa.map": "{}"
   },
   "keycloakVersion": "23.0.7",
   "userManagedAccessAllowed": false,
