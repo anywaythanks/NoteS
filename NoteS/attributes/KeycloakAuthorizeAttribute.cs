@@ -14,7 +14,7 @@ public class KeycloakAuthorizeAttribute(params Policies[] policies) : AuthorizeA
     {
         return policy switch
         {
-            Policies.READ_NOTES => "read-notes", //TODO: добавить в кейклок
+            Policies.READ_NOTES => "read-notes",
             Policies.READ_ALL_NOTES => "read-all-notes",
             Policies.SEARCH_OWN_NOTES => "search-own-notes",
             Policies.EDIT_OWN_NOTES => "edit-own-notes",
