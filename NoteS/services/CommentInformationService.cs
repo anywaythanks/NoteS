@@ -5,10 +5,11 @@ namespace NoteS.services;
 
 public class CommentInformationService(
     INoteRepository repository,
-    AccountInformationService informationService)
+    NoteInformationService noteInformationService)
 {
-    public List<Note> Comments(string title, string owner)
+    public List<Note> Comments(string pathNote, string owner)
     {
-        return repository.LoadComments(title, informationService.Get(owner));
+        var note = noteInformationService.Get(pathNote, owner);
+        return repository.LoadComments(note);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using NoteS.models;
+using NoteS.models.entity;
 
 namespace NoteS.Models;
 
@@ -18,16 +19,15 @@ public class Note(string title, string elasticUuid)
 
     public string? Content { get; set; } //TODO: из эластика
     [Column("account_id")] public required Account Owner { get; set; }
-    public required List<Tag> Tags { get; init; } //many-to-many
+    
+    public required List<NoteTag> Tags { get; set; } = []; //many-to-many
 
     [Column("type")] public NoteTypes? Type { get; set; }
     [Column("is_public")] public bool IsPublic { get; set; }
     [Column("prev")] public Note? MainNote { get; set; } //поскольку это дерево, то не следует вовсе заполнять
 
     [Column("syntax_type_id")] public SyntaxType? SyntaxType { get; set; }
-
-    //https://ru.stackoverflow.com/questions/1416392/%D0%9E%D1%88%D0%B8%D0%B1%D0%BA%D0%B0-cannot-write-datetime-with-kind-local-to-postgresql-type-timestamp-with
-    [Column("created_on")] public DateTime? CreatedOn { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)] [Column("created_on")] public DateTime? CreatedOn { get; set; }
 
     public bool IsEditable()
     {

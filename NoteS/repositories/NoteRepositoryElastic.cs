@@ -20,6 +20,11 @@ public partial class NoteRepositoryDbAndElastic
         return note;
     }
 
+    private partial List<Note> LoadContent(List<Note> notes)
+    {
+        return notes.Select(LoadContent).ToList();
+    }
+
     public partial List<Note> FindByTitle(string title, Account owner)
     {
         return [];

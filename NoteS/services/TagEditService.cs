@@ -20,15 +20,16 @@ public class TagEditService(
     public Tag Add(string pathNote, string accountName, string tag)
     {
         var note = noteInformationService.Get(pathNote, accountName);
-        if (noteRepository.IsTagExists(tag, note)) throw new AlreadyExists("Тег у заметки");
-        return noteRepository.AddTag(note, tagInformationService.Get(accountName, tag));
+        var tagI = tagInformationService.Get(accountName, tag);
+        if (noteRepository.IsTagExists(tagI, note)) throw new AlreadyExists("Тег у заметки");
+        return noteRepository.AddTag(note, tagInformationService.Get(accountName, tag)).Tag;
     }
 
     public Tag Create(string accountName, string tag)
     {
         var acc = accountInformationService.Get(accountName);
         if (tagRepository.FindByName(tag, acc) != null) throw new AlreadyExists("Тег");
-        var tagNew = new Tag(tag, acc);
+        var tagNew = new Tag(tag) {Owner = acc};
         return tagRepository.Save(tagNew);
     }
 }

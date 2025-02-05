@@ -19,7 +19,7 @@ public class TagInformationService(
     {
         var note = noteInformationService.Get(pathNote, accountName);
         noteRepository.LoadTags(note);
-        return note.Tags;
+        return note.Tags.Select(n => n.Tag).ToList();
     }
 
     public Tag Get(string accountName, string tag)

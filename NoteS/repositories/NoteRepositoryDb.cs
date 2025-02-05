@@ -1,58 +1,183 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
+using NoteS.models;
 using NoteS.Models;
+using NoteS.models.entity;
 
 namespace NoteS.repositories;
 
 public partial class NoteRepositoryDbAndElastic(DbContextOptions<NoteRepositoryDbAndElastic> options)
     : DbContext(options)
 {
+    public DbSet<Note> Notes { get; set; }
+    public DbSet<Tag> Tags { get; set; }
+    public DbSet<NoteTag> NoteTags { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // modelBuilder.Entity<NoteTag>()
+        //     .HasKey(nt => new { nt.NoteId, nt.TagId });
+
+        modelBuilder.Entity<NoteTag>()
+            .HasOne(nt => nt.Tag)
+            .WithMany(n => n.Notes)
+            .HasForeignKey(nt => nt.TagId);
+
+        modelBuilder.Entity<NoteTag>()
+            .HasOne(nt => nt.Note)
+            .WithMany(n => n.Tags)
+            .HasForeignKey(nt => nt.NoteId)
+            .OnDelete(DeleteBehavior.Cascade); // Cascade delete when a Note is deleted
+
+        modelBuilder
+            .Entity<Note>()
+            .Property(e => e.Type)
+            .HasConversion(
+                v => NoteTypes.TypeToNum(v),
+                v => NoteTypes.NumToType(v));
+
+        modelBuilder
+            .Entity<Note>()
+            .Property(e => e.SyntaxType)
+            .HasConversion(
+                v => SyntaxType.TypeToNum(v),
+                v => SyntaxType.NumToType(v));
+    }
+
     public partial Note Save(Note note)
     {
-        throw new NotImplementedException();
+        bool isNew = note.Id == null;
+        note.CreatedOn = null;//делаем null,
+        if (isNew)
+        {
+            
+            Notes.Add(note);
+        }
+        else
+        {
+            Notes.Update(note);
+        }
+
+        SaveChanges();
+        return Detach(note);
     }
 
     private partial bool DeleteInDb(Note note)
     {
-        throw new NotImplementedException();
+        Notes.Remove(note);
+        return SaveChanges() >= 1;
     }
 
     public partial Note? FindByPath(string path)
     {
-        throw new NotImplementedException();
+        return Detach((from n in Notes
+            where n.Path == path
+            select n).FirstOrDefault());
     }
 
     public partial Note LoadTags(Note note)
     {
-        throw new NotImplementedException();
+        note.Tags = (Detach((from n in Notes.Include(n => n.Tags)
+                where n.Id == note.Id
+                select n).FirstOrDefault())?.Tags ?? [])
+            .Select(n => Detach(n))
+            .ToList();
+        return note;
     }
 
     public partial bool DeleteTag(Note note, Tag tag)
     {
-        throw new NotImplementedException();
+        var noteTag = NoteTags
+            .FirstOrDefault(nt => nt.NoteId == note.Id && nt.TagId == tag.Id);
+
+        if (noteTag != null) NoteTags.Remove(noteTag);
+
+
+        return SaveChanges() >= 1;
     }
 
-    public partial Tag AddTag(Note note, Tag tag)
+    public partial NoteTag AddTag(Note note, Tag tag)
     {
-        throw new NotImplementedException();
+        var nt = new NoteTag
+        {
+            Note = note,
+            Tag = tag
+        };
+        if (note.Id != null)
+        {
+            NoteTags.Add(nt);
+            NoteTags.Update(nt);
+        }
+        else
+        {
+            nt = NoteTags.Add(nt).Entity;
+        }
+
+        SaveChanges();
+        return Detach(nt);
     }
 
-    public partial bool IsTagExists(string name, Note note)
+    public partial bool IsTagExists(Tag tag, Note note)
     {
-        throw new NotImplementedException();
+        var noteTag = NoteTags
+            .FirstOrDefault(nt => nt.NoteId == note.Id && nt.TagId == tag.Id);
+        return noteTag != null;
     }
 
-    public partial List<Note> LoadComments(string path, Account owner)
+    private partial List<Note> LoadCommentsInDb(Note note)
     {
-        throw new NotImplementedException();
+        return (from n in Notes
+                where n.Owner.Id == note.Id &&
+                      n.Type == NoteTypes.Comment &&
+                      n.IsPublic == true
+                select n)
+            .Select(n => Detach(n))
+            .ToList();
     }
 
-    public partial List<Note> FindByTag(string title, Account owner)
+    public partial List<Note> FindByTag(Tag tag, Account owner)
     {
-        throw new NotImplementedException();
+        return (Detach((from t in Tags.Include(n => n.Notes)
+                where t.Id == tag.Id && t.Owner.Id == owner.Id
+                select t).FirstOrDefault())?.Notes ?? [])
+            .Select(nt => Detach(nt))
+            .Select(nt => nt.Note)
+            .ToList();
     }
 
     public partial List<Note> FindByOwner(Account owner)
     {
-        throw new NotImplementedException();
+        return (from n in Notes
+                where n.Owner.Id == owner.Id
+                select n)
+            .Select(n => Detach(n))
+            .ToList();
+    }
+
+    [return: NotNullIfNotNull(nameof(tag))]
+    private Tag? Detach(Tag? tag)
+    {
+        if (tag == null) return null;
+        var entry = Entry(tag);
+        entry.State = EntityState.Detached;
+        return entry.Entity;
+    }
+
+    [return: NotNullIfNotNull(nameof(ntg))]
+    private NoteTag? Detach(NoteTag? ntg)
+    {
+        if (ntg == null) return null;
+        var entry = Entry(ntg);
+        entry.State = EntityState.Detached;
+        return entry.Entity;
+    }
+
+    [return: NotNullIfNotNull(nameof(note))]
+    private Note? Detach(Note? note)
+    {
+        if (note == null) return null;
+        var entry = Entry(note);
+        entry.State = EntityState.Detached;
+        return entry.Entity;
     }
 }

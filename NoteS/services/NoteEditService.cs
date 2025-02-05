@@ -1,6 +1,7 @@
 ﻿using NoteS.models;
 using NoteS.Models;
 using NoteS.models.dto;
+using NoteS.models.entity;
 using NoteS.repositories;
 
 namespace NoteS.services;

@@ -1,5 +1,6 @@
 ﻿using NoteS.Models;
 using NoteS.models.dto;
+using NoteS.models.entity;
 
 namespace NoteS.repositories;
 
@@ -24,19 +25,26 @@ public partial class NoteRepositoryDbAndElastic : INoteRepository
 
     public partial Note LoadContent(Note note);
 
+    private partial List<Note> LoadContent(List<Note> notes);
+
     public partial Note LoadTags(Note note);
 
     public partial bool DeleteTag(Note note, Tag tag);
 
-    public partial Tag AddTag(Note note, Tag tag);
+    public partial NoteTag AddTag(Note note, Tag tag);
 
     public partial List<Note> FindByTitle(string title, Account owner);
 
-    public partial bool IsTagExists(string name, Note note);
+    public partial bool IsTagExists(Tag tag, Note note);
 
-    public partial List<Note> LoadComments(string path, Account owner);
+    public List<Note> LoadComments(Note note)
+    {
+        return LoadContent(LoadCommentsInDb(note));
+    }
 
-    public partial List<Note> FindByTag(string title, Account owner);
+    private partial List<Note> LoadCommentsInDb(Note note);
+
+    public partial List<Note> FindByTag(Tag tag, Account owner);
 
     public partial List<Note> FindByOwner(Account owner);
 

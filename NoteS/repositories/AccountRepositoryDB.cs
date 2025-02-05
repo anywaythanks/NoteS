@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using NoteS.Models;
 
@@ -16,7 +17,7 @@ public sealed class AccountRepositoryDb(DbContextOptions<AccountRepositoryDb> op
         //     .HasConversion<string>();
     }
 
-    public Account? Save(Account account)
+    public Account Save(Account account)
     {
         var a = account;
         if (account.Id != null)
@@ -40,9 +41,10 @@ public sealed class AccountRepositoryDb(DbContextOptions<AccountRepositoryDb> op
 
     public Account? FindByUuid(string uuid)
     {
-        throw new NotImplementedException();
+        return Detach(Accounts.FirstOrDefault(a => a.Uuid == uuid));
     }
 
+    [return: NotNullIfNotNull(nameof(account))]
     private Account? Detach(Account? account)
     {
         if (account == null) return null;

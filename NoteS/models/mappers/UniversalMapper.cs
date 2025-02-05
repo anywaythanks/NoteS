@@ -1,5 +1,6 @@
 ﻿using NoteS.Models;
 using NoteS.models.dto;
+using NoteS.models.entity;
 using Riok.Mapperly.Abstractions;
 
 namespace NoteS.models.mappers;
@@ -7,11 +8,18 @@ namespace NoteS.models.mappers;
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
 public partial class UniversalMapper
 {
-    public partial NoteRegisterResponseDto OfRegister(Note source);
     private partial NoteSearchResponseDto OfSearch(Note source);
     public partial List<NoteSearchResponseDto> OfSearch(List<Note> source);
     private partial NoteType OfType(NoteTypes type);
     public partial NoteSearchContentResponseDto OfContentSearch(Note source);
+
+    private TagResponseDto Of(NoteTag nt)
+    {
+        return Of(nt.Tag);
+    }
+
+    private partial List<TagResponseDto> Of(List<NoteTag> nt);
+    
     public partial List<NoteSearchContentResponseDto> OfCommentsSearch(List<Note> source);
     public partial NoteEditPublicResponseDto OfEdit(Note source);
     public partial NoteEditContentResponseDto OfEditContent(Note source);

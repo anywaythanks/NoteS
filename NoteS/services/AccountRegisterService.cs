@@ -11,7 +11,7 @@ public class AccountRegisterService(IAccountRepository accountRepository)
         Account account = accountRepository.FindByName(accountName) ??
                           accountRepository.FindByUuid(uuid) ??
                           new Account(accountName, uuid);
-        if (account.Name != accountName || account.Uid != uuid) throw new Forbidden("аккаунту");
+        if (account.Name != accountName || account.Uuid != uuid) throw new Forbidden("аккаунту");
         return accountRepository.Save(account);
     }
 }

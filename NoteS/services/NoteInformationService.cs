@@ -6,6 +6,7 @@ namespace NoteS.services;
 
 public class NoteInformationService(
     INoteRepository repository,
+    ITagRepository tagRepository,
     AccountInformationService informationService)
 {
     public List<Note> Find(string title, string owner)
@@ -15,7 +16,9 @@ public class NoteInformationService(
 
     public List<Note> FindTag(string tag, string owner)
     {
-        return repository.FindByTag(tag, informationService.Get(owner));
+        var acc = informationService.Get(owner);
+        var tagI = tagRepository.FindByName(tag, acc) ?? throw new NotFound("Тег"); 
+        return repository.FindByTag(tagI, acc);
     }
 
     public List<Note> Find(string owner)
