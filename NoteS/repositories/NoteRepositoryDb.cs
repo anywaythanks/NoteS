@@ -50,7 +50,7 @@ public partial class NoteRepositoryDbAndElastic
         throw new NotImplementedException();
     }
 
-    public partial Task<List<Note>> FindByOwner(Account owner)
+    public partial List<Note> FindByOwner(Account owner)
     {
         throw new NotImplementedException();
     }

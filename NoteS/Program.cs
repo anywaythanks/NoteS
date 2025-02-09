@@ -8,6 +8,7 @@ ServicesConfig.Configuration(builder);
 AuthConfig.Configuration(builder);
 RepositoriesConfig.Configuration(builder);
 SwaggerConfig.Configuration(builder);
+ElasticConfig.Configuration(builder);
 
 var app = builder.Build();
 AuthConfig.AfterConfiguration(app);

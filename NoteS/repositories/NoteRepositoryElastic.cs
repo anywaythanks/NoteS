@@ -79,7 +79,7 @@ public partial class NoteRepositoryDbAndElastic
         {
             title = requestDto.Title,
             content = requestDto.Content,
-            syntax = requestDto.Type.Name,
+            syntax_type = requestDto.Type.Name,
             owner = owner.Id
         });
         return new Note(requestDto.Title, response.Id)

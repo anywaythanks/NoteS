@@ -25,7 +25,8 @@
         "type": "text",
         "analyzer": "russian_search"
       },
-      "syntax_type": { "type": "keyword" },
+      "syntax_type": { "type": "text" },
+      "owner": { "type": "number" },
       "vector": {
         "type": "dense_vector",
         "dims": 384,

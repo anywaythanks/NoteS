@@ -1,5 +1,4 @@
-﻿using Elastic.Clients.Elasticsearch;
-using NoteS.Models;
+﻿using NoteS.Models;
 using NoteS.models.dto;
 
 namespace NoteS.repositories;
@@ -24,7 +23,7 @@ public interface INoteRepository
     public List<Note> LoadComments(string path, Account owner);
 
     public List<Note> FindByTag(string title, Account owner);
-    public Task<List<Note>> FindByOwner(Account owner);
+    public List<Note> FindByOwner(Account owner);
     public Task<List<Note>> SemanticFind(string find, int ownerId);
     public Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Account owner);
 }

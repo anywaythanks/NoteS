@@ -42,7 +42,7 @@ public partial class NoteRepositoryDbAndElastic(
 
     public partial List<Note> FindByTag(string title, Account owner);
 
-    public partial Task<List<Note>> FindByOwner(Account owner);
+    public partial List<Note> FindByOwner(Account owner);
 
     public partial Task<List<Note>> SemanticFind(string find, int ownerId);
 
