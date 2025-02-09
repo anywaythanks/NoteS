@@ -3,8 +3,7 @@ using NoteS.Models;
 
 namespace NoteS.repositories;
 
-public partial class NoteRepositoryDbAndElastic(DbContextOptions<NoteRepositoryDbAndElastic> options)
-    : DbContext(options)
+public partial class NoteRepositoryDbAndElastic
 {
     public partial Note Save(Note note)
     {
@@ -51,7 +50,7 @@ public partial class NoteRepositoryDbAndElastic(DbContextOptions<NoteRepositoryD
         throw new NotImplementedException();
     }
 
-    public partial List<Note> FindByOwner(Account owner)
+    public partial Task<List<Note>> FindByOwner(Account owner)
     {
         throw new NotImplementedException();
     }
