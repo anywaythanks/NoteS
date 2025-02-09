@@ -39,3 +39,9 @@ public class NoteCreateResponseDto(string path, string title, NoteTypes type, bo
     public bool IsPublic { get; } = isPublic;
     public SyntaxType SyntaxType { get; } = syntaxType;
 }
+
+public class SemanticSearchQuery(string query)
+{
+    public required string Query { get; init; } = query;
+}
+

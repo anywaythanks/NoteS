@@ -1,5 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using NoteS.models.entity;
 using NoteS.models;
 using NoteS.Models;
 using NoteS.models.entity;
@@ -67,7 +68,7 @@ public partial class NoteRepositoryDbAndElastic
         return SaveChanges() >= 1;
     }
 
-    public partial Note? FindByPath(string path)
+    public partial Note? FindByPath(Field<INotePath, string> path)
     {
         return Detach((from n in Notes
             where n.Path == path
@@ -115,14 +116,14 @@ public partial class NoteRepositoryDbAndElastic
         SaveChanges();
         return Detach(nt);
     }
-
+    
     public partial bool IsTagExists(Tag tag, Note note)
     {
         var noteTag = NoteTags
             .FirstOrDefault(nt => nt.NoteId == note.Id && nt.TagId == tag.Id);
         return noteTag != null;
     }
-
+    
     private partial List<Note> LoadCommentsInDb(Note note)
     {
         return (from n in Notes

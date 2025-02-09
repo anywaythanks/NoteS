@@ -1,4 +1,4 @@
-﻿namespace NoteS.Models;
+﻿namespace NoteS.models.entity;
 
 public enum Policies
 {

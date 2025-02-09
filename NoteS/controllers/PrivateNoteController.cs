@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NoteS.Attributes;
-using NoteS.Models;
 using NoteS.models.dto;
+using NoteS.models.entity;
 using NoteS.models.mappers;
 using NoteS.services;
 using NoteS.tools.preconditions;
@@ -15,7 +15,9 @@ public class PrivateNoteController(
     AccountRegisterService registerService,
     NoteInformationService noteInformationService,
     NoteEditService editService,
-    UniversalMapper um)
+    UniversalDtoMapper um,
+    AccountMapper am,
+    NoteMapper nm)
     : GeneralPreconditionController
 {
     [HttpPatch]
@@ -25,12 +27,12 @@ public class PrivateNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Редактирование свойства публичности любой заметки или комментария")]
-    public Task<IActionResult> EditPublicAllNote([FromRoute] string accountName,
-        [FromRoute] string pathNote,
+    public Task<IActionResult> EditPublicAllNote([FromRoute] AccountName accountName,
+        [FromRoute] NotePath pathNote,
         [FromBody] NoteEditPublicRequestDto editDto)
     {
-        return Execute(() => um.OfEdit(editService.PublishNote(pathNote, editDto)),
-            new EqualNameP(registerService, accountName));
+        return Execute(() => um.OfEdit(editService.PublishNote(nm.Of(pathNote), editDto)),
+            new EqualNameP(registerService, am.Of(accountName)));
     }
 
     [HttpPatch]
@@ -40,12 +42,12 @@ public class PrivateNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Редактирование контента любой заметки или комментария")]
-    public Task<IActionResult> EditNoteAll([FromRoute] string accountName,
-        [FromRoute] string pathNote,
+    public Task<IActionResult> EditNoteAll([FromRoute] AccountName accountName,
+        [FromRoute] NotePath pathNote,
         [FromBody] NoteEditContentRequestDto editDto)
     {
-        return Execute(async () => um.OfEditContent(await editService.EditContentNote(pathNote, editDto)),
-            new EqualNameP(registerService, accountName));
+        return Execute(async () => um.OfEditContent(await editService.EditContentNote(nm.Of(pathNote), editDto)),
+            new EqualNameP(registerService, am.Of(accountName)));
     }
 
     [HttpGet]
@@ -55,9 +57,10 @@ public class PrivateNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Получение данных любой заметки или комментария")]
-    public Task<IActionResult> GetNoteAll([FromRoute] string accountName)
+    public Task<IActionResult> GetNoteAll([FromRoute] AccountName accountName,
+        [FromRoute] NotePath pathNote)
     {
-        return Execute(() => um.OfCreateNote(noteInformationService.GetFull(accountName)),
-            new EqualNameP(registerService, accountName));
+        return Execute(() => um.OfCreateNote(noteInformationService.GetFull(nm.Of(pathNote))),
+            new EqualNameP(registerService, am.Of(accountName)));
     }
 }

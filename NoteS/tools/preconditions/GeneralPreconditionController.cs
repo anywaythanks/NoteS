@@ -18,12 +18,12 @@ public abstract class GeneralPreconditionController(params IGeneralPrecondition[
             var sid = User.FindFirst("sid")?.Value ?? throw new NotFound("пользователь");
             foreach (var precondition in generalPreconditions)
             {
-                if (!precondition.Check(User.Identity, sid)) return BadRequest(mess);
+                if (!precondition.Check(User.Identity, new(sid))) return BadRequest(mess);
             }
 
             foreach (var precondition in generalPreconditionsIntern)
             {
-                if (!precondition.Check(User.Identity, sid)) return BadRequest(mess);
+                if (!precondition.Check(User.Identity, new(sid))) return BadRequest(mess);
             }
 
             return await f();

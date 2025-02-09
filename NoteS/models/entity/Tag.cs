@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using NoteS.models.entity;
 
-namespace NoteS.Models;
+namespace NoteS.models.entity;
 
 [Table("tags")]
 public class Tag(string name)
@@ -15,3 +15,7 @@ public class Tag(string name)
 
     public List<NoteTag> Notes { get; init; } = []; //many-to-many
 }
+
+public interface ITagId : ITypeMarker<int>;
+
+public interface ITagName : ITypeMarker<string>;

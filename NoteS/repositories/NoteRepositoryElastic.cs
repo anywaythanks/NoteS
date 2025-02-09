@@ -1,6 +1,7 @@
-﻿using NoteS.exceptions;
+using NoteS.exceptions;
 using NoteS.Models;
 using NoteS.models.dto;
+using NoteS.models.entity;
 
 namespace NoteS.repositories;
 
@@ -19,7 +20,7 @@ public partial class NoteRepositoryDbAndElastic
         note.ElasticUuid = result.Id;
         return note;
     }
-
+   
     public async partial Task<Note> LoadContent(Note note)
     {
         var response = await client.SearchAsync<Note>(r => r
@@ -41,7 +42,7 @@ public partial class NoteRepositoryDbAndElastic
         return [];
     }
 
-    public async partial Task<List<Note>> FindByTitle(string title, int ownerId)
+    public async partial Task<List<Note>> FindByTitle(Field<INoteContent, string> content, int ownerId)
     {
         var response = await client.SearchAsync<Note>(r => r
             .Query(q =>
@@ -59,7 +60,7 @@ public partial class NoteRepositoryDbAndElastic
         return response.Documents.ToList();
     }
 
-    public async partial Task<List<Note>> SemanticFind(string find, int ownerId)
+    public async partial Task<List<Note>> SemanticFind(SemanticSearchQuery find, int ownerId)
     {
         var response = await client.SearchAsync<Note>(r => r
             .Query(q =>

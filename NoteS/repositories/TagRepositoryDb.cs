@@ -1,6 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
-using NoteS.Models;
+using NoteS.models.entity;
 
 namespace NoteS.repositories;
 
@@ -35,7 +34,7 @@ public sealed class TagRepositoryDb(DbContextOptions<TagRepositoryDb> options)
             .ToList();
     }
 
-    public Tag? FindByName(string name, Account owner)
+    public Tag? FindByName(Field<ITagName, string> name, Account owner)
     {
         var tag = Detach((from t in Tags
             where t.Name == name && t.Owner.Id == owner.Id
