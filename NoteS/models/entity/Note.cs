@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using NoteS.models;
 
-namespace NoteS.Models;
+namespace NoteS.models.entity;
 
 [Table("notes")]
 public class Note(string title, string elasticUuid)
@@ -36,3 +35,10 @@ public class Note(string title, string elasticUuid)
         return true;
     }
 }
+public interface INoteId : ITypeMarker<int>;
+
+public interface INotePath : ITypeMarker<string>;
+public interface INoteTitle : ITypeMarker<string>;
+public interface INoteElasticUid : ITypeMarker<string>;
+public interface INoteContent : ITypeMarker<string>;
+public interface INoteIsPublic : ITypeMarker<bool>;

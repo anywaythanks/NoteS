@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using NoteS.Models;
+using NoteS.models.entity;
 
 namespace NoteS.Attributes;
 

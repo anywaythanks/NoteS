@@ -1,4 +1,6 @@
-﻿namespace NoteS.models.dto;
+﻿using NoteS.models.entity;
+
+namespace NoteS.models.dto;
 
 public class NoteEditPublicRequestDto(bool isPublic)
 {
@@ -37,3 +39,9 @@ public class NoteCreateResponseDto(string path, string title, NoteTypes type, bo
     public bool IsPublic { get; } = isPublic;
     public SyntaxType SyntaxType { get; } = syntaxType;
 }
+
+public class SemanticSearchQuery(string query)
+{
+    public required string Query { get; init; } = query;
+}
+

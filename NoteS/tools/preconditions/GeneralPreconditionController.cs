@@ -19,12 +19,12 @@ public abstract class GeneralPreconditionController(params IGeneralPrecondition[
             var uuid = User.FindFirstValue("uuid") ?? throw new NotFound("пользователь");
             foreach (var precondition in generalPreconditions)
             {
-                if (!precondition.Check(User.Identity, uuid)) return BadRequest(mess);
+                if (!precondition.Check(User.Identity, new(uuid))) return BadRequest(mess);
             }
 
             foreach (var precondition in generalPreconditionsIntern)
             {
-                if (!precondition.Check(User.Identity, uuid)) return BadRequest(mess);
+                if (!precondition.Check(User.Identity, new(uuid))) return BadRequest(mess);
             }
 
             return f();

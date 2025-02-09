@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace NoteS.models;
+namespace NoteS.models.entity;
 
 [Table("custom_type_syntax")]
 public class CustomTypeSyntax(string name)

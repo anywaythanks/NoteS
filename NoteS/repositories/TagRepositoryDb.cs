@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NoteS.Models;
+using NoteS.models.entity;
 
 namespace NoteS.repositories;
 
@@ -26,12 +26,12 @@ public sealed class TagRepositoryDb(DbContextOptions<TagRepositoryDb> options)
         throw new NotImplementedException();
     }
 
-    public Tag? FindByName(string name, Account owner)
+    public Tag? FindByName(Field<ITagName, string> name, Account owner)
     {
         throw new NotImplementedException();
     }
 
-    public Tag FindByName(string name)
+    public Tag FindByName(Field<ITagName, string> name)
     {
         throw new NotImplementedException();
     }

@@ -1,4 +1,4 @@
-﻿namespace NoteS.models;
+﻿namespace NoteS.models.entity;
 
 public class NoteTypes
 {

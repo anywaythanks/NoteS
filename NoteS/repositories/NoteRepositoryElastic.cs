@@ -1,5 +1,5 @@
-﻿using NoteS.Models;
-using NoteS.models.dto;
+﻿using NoteS.models.dto;
+using NoteS.models.entity;
 
 namespace NoteS.repositories;
 
@@ -20,16 +20,16 @@ public partial class NoteRepositoryDbAndElastic
         return note;
     }
 
-    public partial List<Note> FindByTitle(string title, Account owner)
+    public partial List<Note> FindByTitle(Field<INoteTitle, string> title, Account owner)
     {
         return [];
     }
 
-    public partial void SaveContent(string content)
+    public partial void SaveContent(Field<INoteContent, string> content)
     {
     }
 
-    public partial List<Note> SemanticFind(string find, Account owner)
+    public partial List<Note> SemanticFind(SemanticSearchQuery find, Account owner)
     {
         return [];
     }

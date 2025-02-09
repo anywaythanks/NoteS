@@ -1,5 +1,5 @@
 ﻿using NoteS.exceptions;
-using NoteS.Models;
+using NoteS.models.entity;
 using NoteS.repositories;
 
 namespace NoteS.services;
@@ -7,8 +7,8 @@ namespace NoteS.services;
 public class AccountInformationService(
     IAccountRepository accountRepository)
 {
-    public Account Get(string accountName)
+    public Account Get(Field<IAccName, string> name)
     {
-        return accountRepository.FindByName(accountName) ?? throw new NotFound("аккаунт");
+        return accountRepository.FindByName(name) ?? throw new NotFound("аккаунт");
     }
 }

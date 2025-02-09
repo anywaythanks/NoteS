@@ -1,5 +1,5 @@
-﻿using NoteS.Models;
-using NoteS.models.dto;
+﻿using NoteS.models.dto;
+using NoteS.models.entity;
 
 namespace NoteS.repositories;
 
@@ -20,7 +20,7 @@ public partial class NoteRepositoryDbAndElastic : INoteRepository
 
     public partial Note SaveContent(Note note);
 
-    public partial Note? FindByPath(string path);
+    public partial Note? FindByPath(Field<INotePath, string> path);
 
     public partial Note LoadContent(Note note);
 
@@ -30,19 +30,19 @@ public partial class NoteRepositoryDbAndElastic : INoteRepository
 
     public partial Tag AddTag(Note note, Tag tag);
 
-    public partial List<Note> FindByTitle(string title, Account owner);
+    public partial List<Note> FindByTitle(Field<INoteTitle, string> title, Account owner);
 
-    public partial bool IsTagExists(string name, Note note);
+    public partial bool IsTagExists(Field<ITagName, string>  name, Note note);
 
-    public partial List<Note> LoadComments(string path, Account owner);
+    public partial List<Note> LoadComments(Field<INotePath, string> path, Account owner);
 
-    public partial List<Note> FindByTag(string title, Account owner);
+    public partial List<Note> FindByTag(Field<ITagName, string> tag, Account owner);
 
     public partial List<Note> FindByOwner(Account owner);
 
-    public partial void SaveContent(string content);
+    public partial void SaveContent(Field<INoteContent, string> content);
 
-    public partial List<Note> SemanticFind(string find, Account owner);
+    public partial List<Note> SemanticFind(SemanticSearchQuery find, Account owner);
 
     public partial Note CreateInElastic(NoteCreateRequestDto requestDto, Account owner);
 }

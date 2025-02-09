@@ -1,4 +1,6 @@
-﻿namespace NoteS.models.dto;
+﻿using NoteS.models.entity;
+
+namespace NoteS.models.dto;
 
 public class CommentCreateRequestDto(string title, SyntaxType type, string content)
     : NoteCreateRequestDto(title, type, content)

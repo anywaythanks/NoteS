@@ -1,11 +1,12 @@
-﻿using NoteS.Models;
-using NoteS.models.dto;
+﻿using NoteS.models.dto;
+using NoteS.models.entity;
+using NoteS.tools.preconditions;
 using Riok.Mapperly.Abstractions;
 
 namespace NoteS.models.mappers;
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
-public partial class UniversalMapper
+public partial class UniversalDtoMapper
 {
     public partial NoteRegisterResponseDto OfRegister(Note source);
     private partial NoteSearchResponseDto OfSearch(Note source);
@@ -20,4 +21,5 @@ public partial class UniversalMapper
     public partial CommentCreateResponseDto OfCreateComment(Note source);
     public partial TagResponseDto Of(Tag tag);
     public partial List<TagResponseDto> Of(List<Tag> tag);
+    public partial SemanticSearchQuery Of(NoteSemanticSearchRequestDto tag);
 }

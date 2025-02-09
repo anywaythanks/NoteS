@@ -1,4 +1,4 @@
-﻿namespace NoteS.Models;
+﻿namespace NoteS.models.entity;
 
 public class User(Policies policies, string login, string uid)
 {

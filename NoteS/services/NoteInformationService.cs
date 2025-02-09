@@ -1,5 +1,6 @@
 ﻿using NoteS.exceptions;
-using NoteS.Models;
+using NoteS.models.dto;
+using NoteS.models.entity;
 using NoteS.repositories;
 
 namespace NoteS.services;
@@ -8,40 +9,40 @@ public class NoteInformationService(
     INoteRepository repository,
     AccountInformationService informationService)
 {
-    public List<Note> Find(string title, string owner)
+    public List<Note> Find(Field<INoteTitle, string> title, Field<IAccName, string> owner)
     {
         return repository.FindByTitle(title, informationService.Get(owner));
     }
 
-    public List<Note> FindTag(string tag, string owner)
+    public List<Note> FindTag(Field<ITagName, string> tag, Field<IAccName, string> owner)
     {
         return repository.FindByTag(tag, informationService.Get(owner));
     }
 
-    public List<Note> Find(string owner)
+    public List<Note> Find(Field<IAccName, string> owner)
     {
         return repository.FindByOwner(informationService.Get(owner));
     }
 
-    public List<Note> FindSemantic(string owner, string query)
+    public List<Note> FindSemantic(Field<IAccName, string> owner, SemanticSearchQuery query)
     {
         return repository.SemanticFind(query, informationService.Get(owner));
     }
 
-    public Note Get(string path, string owner)
+    public Note Get(Field<INotePath, string> path, Field<IAccName, string> owner)
     {
         var note = repository.FindByPath(path) ?? throw new NotFound("заметка");
-        if (note.Owner.Name != owner) throw new Forbidden("заметке");
+        if (note.Owner.Name != owner.Val) throw new Forbidden("заметке");
         return note;
     }
 
-    public Note Get(string path)
+    public Note Get(Field<INotePath, string> path)
     {
         var note = repository.FindByPath(path) ?? throw new NotFound("заметка");
         return note;
     }
 
-    public Note GetFull(string path, string owner)
+    public Note GetFull(Field<INotePath, string> path, Field<IAccName, string> owner)
     {
         var note = Get(path, owner);
         repository.LoadContent(note);
@@ -49,7 +50,7 @@ public class NoteInformationService(
         return note;
     }
 
-    public Note GetFull(string path)
+    public Note GetFull(Field<INotePath, string> path)
     {
         var note = Get(path);
         repository.LoadContent(note);

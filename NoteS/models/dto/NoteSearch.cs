@@ -34,3 +34,12 @@ public class NoteSemanticSearchRequestDto(string query)
 {
     public string Query => query;
 }
+
+public class NotePath(string path)
+{
+    public required string Path { get; init; } = path;
+}
+public class AccountName(string name)
+{
+    public required string Name { get; init; } = name;
+}

@@ -1,5 +1,5 @@
 ﻿using NoteS.exceptions;
-using NoteS.Models;
+using NoteS.models.entity;
 using NoteS.repositories;
 
 namespace NoteS.services;
@@ -10,19 +10,19 @@ public class TagInformationService(
     INoteRepository noteRepository,
     ITagRepository tagRepository)
 {
-    public List<Tag> Tags(string accountName)
+    public List<Tag> Tags(Field<IAccName, string> accountName)
     {
         return tagRepository.FindByOwner(accountInformationService.Get(accountName));
     }
 
-    public List<Tag> Tags(string pathNote, string accountName)
+    public List<Tag> Tags(Field<INotePath, string> pathNote, Field<IAccName, string> accountName)
     {
         var note = noteInformationService.Get(pathNote, accountName);
         noteRepository.LoadTags(note);
         return note.Tags;
     }
 
-    public Tag Get(string accountName, string tag)
+    public Tag Get(Field<IAccName, string> accountName, Field<ITagName, string> tag)
     {
         return tagRepository.FindByName(tag, accountInformationService.Get(accountName)) ?? throw new NotFound("тег");
     }

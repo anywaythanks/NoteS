@@ -6,6 +6,9 @@ public class MapperConfig
 {
     public static void Configuration(IHostApplicationBuilder builder)
     {
-        builder.Services.AddTransient<UniversalMapper>();
+        builder.Services.AddTransient<UniversalDtoMapper>();
+        builder.Services.AddTransient<AccountMapper>();
+        builder.Services.AddTransient<TagMapper>();
+        builder.Services.AddTransient<NoteMapper>();
     }
 }

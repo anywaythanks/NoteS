@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NoteS.Models;
+using NoteS.models.entity;
 
 namespace NoteS.repositories;
 
@@ -16,7 +16,7 @@ public partial class NoteRepositoryDbAndElastic(DbContextOptions<NoteRepositoryD
         throw new NotImplementedException();
     }
 
-    public partial Note? FindByPath(string path)
+    public partial Note? FindByPath(Field<INotePath, string> path)
     {
         throw new NotImplementedException();
     }
@@ -36,17 +36,17 @@ public partial class NoteRepositoryDbAndElastic(DbContextOptions<NoteRepositoryD
         throw new NotImplementedException();
     }
 
-    public partial bool IsTagExists(string name, Note note)
+    public partial bool IsTagExists(Field<ITagName, string> name, Note note)
     {
         throw new NotImplementedException();
     }
 
-    public partial List<Note> LoadComments(string path, Account owner)
+    public partial List<Note> LoadComments(Field<INotePath, string> path, Account owner)
     {
         throw new NotImplementedException();
     }
 
-    public partial List<Note> FindByTag(string title, Account owner)
+    public partial List<Note> FindByTag(Field<ITagName, string> tag, Account owner)
     {
         throw new NotImplementedException();
     }

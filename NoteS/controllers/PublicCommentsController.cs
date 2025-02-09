@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using NoteS.Attributes;
 using NoteS.exceptions;
-using NoteS.Models;
 using NoteS.models.dto;
+using NoteS.models.entity;
 using NoteS.models.mappers;
 using NoteS.services;
 using NoteS.tools.preconditions;
@@ -16,7 +17,9 @@ public class PublicCommentsController(
     AccountRegisterService registerService,
     CommentInformationService commentInformationService,
     CommentEditService commentEditService,
-    UniversalMapper um)
+    UniversalDtoMapper um,
+    AccountMapper am,
+    NoteMapper nm)
     : GeneralPreconditionController
 {
     [HttpGet]
@@ -25,11 +28,12 @@ public class PublicCommentsController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Список комментариев к заметке")]
-    public IActionResult Comments([FromRoute] string accountName,
-        [FromRoute] string pathNote)
+    public IActionResult Comments([FromRoute] AccountName accountName,
+        [FromRoute] NotePath pathNote)
     {
-        return Execute(() => um.OfCommentsSearch(commentInformationService.Comments(pathNote, accountName)),
-            new EqualNameP(registerService, accountName));
+        return Execute(() => um.OfCommentsSearch(commentInformationService.Comments(
+                am.Of(accountName), nm.Of(pathNote))),
+            new EqualNameP(registerService, am.Of(accountName)));
     }
 
     [HttpPost]
@@ -38,18 +42,18 @@ public class PublicCommentsController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Создание комментария к заметке")]
-    public IActionResult CreateComment([FromRoute] string accountName,
-        [FromRoute] string pathNote,
+    public IActionResult CreateComment([FromRoute] AccountName accountName,
+        [FromRoute] NotePath pathNote,
         [FromBody] CommentCreateRequestDto createDto)
     {
         return ExecuteA(() =>
             {
                 var r = um.OfCreateComment(
-                    commentEditService.CreateComment(accountName, pathNote, createDto));
+                    commentEditService.CreateComment(am.Of(accountName), nm.Of(pathNote), createDto));
                 return Created(new Uri(Url.Link("GetNote", new { accountName, pathNote = r.Path }) ?? string.Empty),
                     "PublicNoteController");
             },
-            new EqualNameP(registerService, accountName));
+            new EqualNameP(registerService, am.Of(accountName)));
     }
 
     [HttpPost]
@@ -59,13 +63,15 @@ public class PublicCommentsController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Редактирование комментария")]
-    public IActionResult EditComment([FromRoute] string accountName,
-        [FromRoute] string pathNote,
-        [FromRoute] string pathComment,
+    public IActionResult EditComment([FromRoute] AccountName accountName,
+        [FromRoute] NotePath pathNote,
+        [FromRoute] NotePath pathComment,
         [FromBody] CommentEditRequestDto createDto)
     {
-        return Execute(() => um.OfEditComment(commentEditService.EditContentComment(accountName, pathNote, createDto)),
-            new EqualNameP(registerService, accountName));
+        return Execute(
+            () => um.OfEditComment(
+                commentEditService.EditContentComment(nm.Of(pathNote), am.Of(accountName), createDto)),
+            new EqualNameP(registerService, am.Of(accountName)));
     }
 
     [HttpDelete]
@@ -75,10 +81,12 @@ public class PublicCommentsController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Route("{pathComment}")]
     [SwaggerOperation(Description = "Удаление комментария")]
-    public IActionResult DelComment([FromRoute] string accountName, [FromRoute] string pathComment)
+    public IActionResult DelComment([FromRoute] AccountName accountName, [FromRoute] NotePath pathComment)
     {
         return ExecuteA(
-            () => commentEditService.Delete(pathComment, accountName) ? NoContent() : throw new DontDel("Комментарий"),
-            new EqualNameP(registerService, accountName));
+            () => commentEditService.Delete(nm.Of(pathComment), am.Of(accountName))
+                ? NoContent()
+                : throw new DontDel("Комментарий"),
+            new EqualNameP(registerService, am.Of(accountName)));
     }
 }

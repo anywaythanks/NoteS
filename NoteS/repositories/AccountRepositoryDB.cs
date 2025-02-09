@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using NoteS.Models;
+using NoteS.models.entity;
 
 namespace NoteS.repositories;
 
@@ -33,12 +33,12 @@ public sealed class AccountRepositoryDb(DbContextOptions<AccountRepositoryDb> op
         return Detach(a);
     }
 
-    public Account? FindByName(string name)
+    public Account? FindByName(Field<IAccName, string> name)
     {
-        return Detach(Accounts.FirstOrDefault(a => a.Name == name));
+        return Detach(Accounts.FirstOrDefault(a => a.Name == name.Val));
     }
 
-    public Account? FindByUuid(string uuid)
+    public Account? FindByUuid(Field<IAccUid, string> uuid)
     {
         throw new NotImplementedException();
     }

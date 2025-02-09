@@ -1,4 +1,4 @@
-﻿using NoteS.Models;
+﻿using NoteS.models.entity;
 using NoteS.repositories;
 
 namespace NoteS.services;
@@ -7,8 +7,8 @@ public class CommentInformationService(
     INoteRepository repository,
     AccountInformationService informationService)
 {
-    public List<Note> Comments(string title, string owner)
+    public List<Note> Comments(Field<IAccName, string> name, Field<INotePath, string> path)
     {
-        return repository.LoadComments(title, informationService.Get(owner));
+        return repository.LoadComments(path, informationService.Get(name));
     }
 }

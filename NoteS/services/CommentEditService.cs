@@ -1,7 +1,7 @@
 ﻿using NoteS.exceptions;
 using NoteS.models;
-using NoteS.Models;
 using NoteS.models.dto;
+using NoteS.models.entity;
 using NoteS.repositories;
 
 namespace NoteS.services;
@@ -11,7 +11,8 @@ public class CommentEditService(
     INoteRepository repository,
     AccountInformationService accountInformationService)
 {
-    public Note EditContentComment(string pathComment, string owner, CommentEditRequestDto requestDto)
+    public Note EditContentComment(Field<INotePath, string> pathComment, Field<IAccName, string> owner,
+        CommentEditRequestDto requestDto)
     {
         var comment = noteInformationService.Get(pathComment, owner);
         if (!comment.IsEditable()) throw new TimeMissed("редактирования комментариев");
@@ -21,7 +22,7 @@ public class CommentEditService(
         return repository.Save(repository.SaveContent(comment));
     }
 
-    public Note EditContentComment(string pathComment, CommentEditRequestDto requestDto)
+    public Note EditContentComment(Field<INotePath, string> pathComment, CommentEditRequestDto requestDto)
     {
         var comment = noteInformationService.Get(pathComment);
         comment.SyntaxType = requestDto.Type;
@@ -30,7 +31,8 @@ public class CommentEditService(
         return repository.Save(repository.SaveContent(comment));
     }
 
-    public Note CreateComment(string accountName, string pathNote, CommentCreateRequestDto requestDto)
+    public Note CreateComment(Field<IAccName, string> accountName, Field<INotePath, string> pathNote,
+        CommentCreateRequestDto requestDto)
     {
         var note = noteInformationService.Get(pathNote);
         var account = accountInformationService.Get(accountName);
@@ -44,7 +46,7 @@ public class CommentEditService(
         return repository.Save(comment);
     }
 
-    public bool Delete(string pathComment, string owner)
+    public bool Delete(Field<INotePath, string> pathComment, Field<IAccName, string> owner)
     {
         var note = noteInformationService.Get(pathComment, owner);
         if (!note.IsEditable()) throw new TimeMissed("удаления комментариев");
