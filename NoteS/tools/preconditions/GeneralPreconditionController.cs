@@ -16,15 +16,15 @@ public abstract class GeneralPreconditionController(params IGeneralPrecondition[
         var mess = "Что-то пошло не так.";
         try
         {
-            var uuid = User.FindFirstValue("uuid") ?? throw new NotFound("пользователь");
+            var sid = User.FindFirst("sid")?.Value ?? throw new NotFound("пользователь");
             foreach (var precondition in generalPreconditions)
             {
-                if (!precondition.Check(User.Identity, uuid)) return BadRequest(mess);
+                if (!precondition.Check(User.Identity, sid)) return BadRequest(mess);
             }
 
             foreach (var precondition in generalPreconditionsIntern)
             {
-                if (!precondition.Check(User.Identity, uuid)) return BadRequest(mess);
+                if (!precondition.Check(User.Identity, sid)) return BadRequest(mess);
             }
 
             return f();

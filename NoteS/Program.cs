@@ -1,5 +1,7 @@
+using Microsoft.IdentityModel.Logging;
 using NoteS.configs;
 
+IdentityModelEventSource.ShowPII = true; // Add this early in your app startup
 var builder = WebApplication.CreateBuilder(args);
 ControllersConfig.Configuration(builder);
 LoggerConfig.Configuration(builder);
