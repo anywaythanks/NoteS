@@ -5,46 +5,90 @@ namespace NoteS.repositories;
 
 public partial class NoteRepositoryDbAndElastic
 {
-    private partial bool DeleteInElastic(Note note)
+    private async partial Task<bool> DeleteInElastic(Note note)
     {
-        return true;
+        if (note.Id == null) return false;
+        var response = await client.DeleteAsync<Note>(note.Id);
+        return response.IsValidResponse;
     }
 
-    public partial Note SaveContent(Note note)
+    public async partial Task<Note> SaveContent(Note note)
     {
+        var result = await client.CreateAsync(note);
+        note.ElasticUuid = result.Id;
         return note;
     }
 
-    public partial Note LoadContent(Note note)
+    public async partial Task<Note> LoadContent(Note note)
     {
-        return note;
+        var response = await client.SearchAsync<Note>(r => r
+            .Query(q =>
+                q.Script(s =>
+                    s.Script(script =>
+                        script.Params(p =>
+                            p.Add("id", note.ElasticUuid)
+                        )))));
+        if (!response.IsValidResponse)
+        {
+            throw new NotFound("Записка");
+        }
     }
 
     private partial List<Note> LoadContent(List<Note> notes)
     {
-        return notes.Select(LoadContent).ToList();
-    }
-
-    public partial List<Note> FindByTitle(string title, Account owner)
-    {
         return [];
     }
 
-    public partial void SaveContent(string content)
+    public async partial Task<List<Note>> FindByTitle(string title, int ownerId)
     {
+        var response = await client.SearchAsync<Note>(r => r
+            .Query(q =>
+                q.Script(s =>
+                    s.Script(script =>
+                        script.Params(p =>
+                            p.Add("title", title)
+                                .Add("owner", ownerId)
+                        )))));
+        if (!response.IsValidResponse)
+        {
+            throw new NotFound("Записка");
+        }
+
+        return response.Documents.ToList();
     }
 
-    public partial List<Note> SemanticFind(string find, Account owner)
+    public async partial Task<List<Note>> SemanticFind(string find, int ownerId)
     {
-        return [];
+        var response = await client.SearchAsync<Note>(r => r
+            .Query(q =>
+                q.Script(s =>
+                    s.Script(script =>
+                        script.Params(p =>
+                            p.Add("query", find)
+                                .Add("owner", ownerId)
+                        )))));
+        if (!response.IsValidResponse)
+        {
+            throw new NotFound("Записка");
+        }
+
+        return response.Documents.ToList();
     }
 
-    public partial Note CreateInElastic(NoteCreateRequestDto requestDto, Account owner)
+    public async partial Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Account owner)
     {
-        return new Note(requestDto.Title, Guid.NewGuid().ToString())
+        var response = await client.CreateAsync(new
+        {
+            title = requestDto.Title,
+            content = requestDto.Content,
+            syntax_type = requestDto.Type.Name,
+            owner = owner.Id
+        });
+        return new Note(requestDto.Title, response.Id)
         {
             Owner = owner,
-            Tags = []
+            Content = requestDto.Content,
+            SyntaxType = requestDto.Type,
         };
     }
 }

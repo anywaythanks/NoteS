@@ -7,15 +7,15 @@ namespace NoteS.repositories;
 public interface INoteRepository
 {
     public Note Save(Note note);
-    public bool Delete(Note note);
-    public Note SaveContent(Note note);
+    public Task<bool> Delete(Note note);
+    public Task<Note> SaveContent(Note note);
     public Note? FindByPath(string path);
-    public Note LoadContent(Note note);
+    public Task<Note> LoadContent(Note note);
     public Note LoadTags(Note note);
 
     public bool DeleteTag(Note note, Tag tag);
     public NoteTag AddTag(Note note, Tag tag);
-    public List<Note> FindByTitle(string title, Account owner);
+    public Task<List<Note>> FindByTitle(string title, Account owner);
     public bool IsTagExists(Tag tag, Note note);
 
     /**
@@ -25,7 +25,6 @@ public interface INoteRepository
 
     public List<Note> FindByTag(Tag tag, Account owner);
     public List<Note> FindByOwner(Account owner);
-    public void SaveContent(string content);
-    public List<Note> SemanticFind(string find, Account owner);
-    public Note CreateInElastic(NoteCreateRequestDto requestDto, Account owner);
+    public Task<List<Note>> SemanticFind(string find, int ownerId);
+    public Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Account owner);
 }

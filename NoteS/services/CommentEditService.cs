@@ -12,30 +12,30 @@ public class CommentEditService(
     INoteRepository repository,
     AccountInformationService accountInformationService)
 {
-    public Note EditContentComment(string pathComment, string owner, CommentEditRequestDto requestDto)
+    public async Task<Note> EditContentComment(string pathComment, string owner, CommentEditRequestDto requestDto)
     {
         var comment = noteInformationService.Get(pathComment, owner);
         if (!comment.IsEditable()) throw new TimeMissed("редактирования комментариев");
         comment.SyntaxType = requestDto.Type;
         comment.Content = requestDto.Content;
         comment.Title = requestDto.Title;
-        return repository.Save(repository.SaveContent(comment));
+        return repository.Save(await repository.SaveContent(comment));
     }
 
-    public Note EditContentComment(string pathComment, CommentEditRequestDto requestDto)
+    public async Task<Note> EditContentComment(string pathComment, CommentEditRequestDto requestDto)
     {
         var comment = noteInformationService.Get(pathComment);
         comment.SyntaxType = requestDto.Type;
         comment.Content = requestDto.Content;
         comment.Title = requestDto.Title;
-        return repository.Save(repository.SaveContent(comment));
+        return repository.Save(await repository.SaveContent(comment));
     }
 
-    public Note CreateComment(string accountName, string pathNote, CommentCreateRequestDto requestDto)
+    public async Task<Note> CreateComment(string accountName, string pathNote, CommentCreateRequestDto requestDto)
     {
         var note = noteInformationService.Get(pathNote);
         var account = accountInformationService.Get(accountName);
-        var comment = repository.CreateInElastic(requestDto, account);
+        var comment = await repository.CreateInElastic(requestDto, account);
         comment.Title = requestDto.Title;
         comment.Type = NoteTypes.Comment;
         comment.MainNote = note;
@@ -45,7 +45,7 @@ public class CommentEditService(
         return repository.Save(comment);
     }
 
-    public bool Delete(string pathComment, string owner)
+    public Task<bool> Delete(string pathComment, string owner)
     {
         var note = noteInformationService.Get(pathComment, owner);
         if (!note.IsEditable()) throw new TimeMissed("удаления комментариев");

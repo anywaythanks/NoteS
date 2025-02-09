@@ -6,12 +6,11 @@ namespace NoteS.tools.preconditions;
 
 public abstract class GeneralPreconditionController(params IGeneralPrecondition[] generalPreconditions) : Controller
 {
-    protected IActionResult Execute<T>(Func<T> f, params IGeneralPrecondition[] generalPreconditionsIntern)
+    protected async Task<IActionResult> Execute<T>(Func<T> f, params IGeneralPrecondition[] generalPreconditionsIntern)
     {
-        return ExecuteA(() => Ok(f()), generalPreconditionsIntern);
+        return await ExecuteA(() => Task.FromResult<IActionResult>(Ok(f())), generalPreconditionsIntern);
     }
-
-    protected IActionResult ExecuteA(Func<IActionResult> f, params IGeneralPrecondition[] generalPreconditionsIntern)
+    protected async Task<IActionResult> ExecuteA(Func<Task<IActionResult>> f, params IGeneralPrecondition[] generalPreconditionsIntern)
     {
         var mess = "Что-то пошло не так.";
         try
@@ -27,7 +26,7 @@ public abstract class GeneralPreconditionController(params IGeneralPrecondition[
                 if (!precondition.Check(User.Identity, sid)) return BadRequest(mess);
             }
 
-            return f();
+            return await f();
         }
         catch (StatusCodeException se)
         {

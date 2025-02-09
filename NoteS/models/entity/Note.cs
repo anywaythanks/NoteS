@@ -20,8 +20,8 @@ public class Note(string title, string elasticUuid)
     public string? Content { get; set; } //TODO: из эластика
     [Column("account_id")] public required Account Owner { get; set; }
     
-    public required List<NoteTag> Tags { get; set; } = []; //many-to-many
-
+    public List<NoteTag> Tags { get; set; } = []; //many-to-many
+    
     [Column("type")] public NoteTypes? Type { get; set; }
     [Column("is_public")] public bool IsPublic { get; set; }
     [Column("prev")] public Note? MainNote { get; set; } //поскольку это дерево, то не следует вовсе заполнять

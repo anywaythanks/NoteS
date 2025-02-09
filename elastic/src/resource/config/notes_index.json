@@ -1,0 +1,38 @@
+﻿{
+  "settings": {
+    "number_of_shards": 1,
+    "analysis": {
+      "analyzer": {
+        "russian_search": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "russian_stemmer"]
+        }
+      },
+      "filter": {
+        "russian_stemmer": {
+          "type": "stemmer",
+          "language": "russian"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "id": { "type": "keyword" },
+      "title": { "type": "text" },
+      "content": {
+        "type": "text",
+        "analyzer": "russian_search"
+      },
+      "syntax_type": { "type": "text" },
+      "owner": { "type": "number" },
+      "vector": {
+        "type": "dense_vector",
+        "dims": 384,
+        "index": true,
+        "similarity": "cosine"
+      }
+    }
+  }
+}

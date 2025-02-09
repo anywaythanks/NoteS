@@ -9,9 +9,9 @@ public class NoteInformationService(
     ITagRepository tagRepository,
     AccountInformationService informationService)
 {
-    public List<Note> Find(string title, string owner)
+    public Task<List<Note>> Find(string title, string owner)
     {
-        return repository.FindByTitle(title, informationService.Get(owner));
+        return repository.FindByTitle(title, informationService.Get(owner).Id ?? throw new NotFound("Заметка"));
     }
 
     public List<Note> FindTag(string tag, string owner)
@@ -26,9 +26,9 @@ public class NoteInformationService(
         return repository.FindByOwner(informationService.Get(owner));
     }
 
-    public List<Note> FindSemantic(string owner, string query)
+    public Task<List<Note>> FindSemantic(string owner, string query)
     {
-        return repository.SemanticFind(query, informationService.Get(owner));
+        return repository.SemanticFind(query, informationService.Get(owner).Id ?? throw new NotFound("Заметка"));
     }
 
     public Note Get(string path, string owner)

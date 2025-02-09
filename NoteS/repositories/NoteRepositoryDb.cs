@@ -6,8 +6,7 @@ using NoteS.models.entity;
 
 namespace NoteS.repositories;
 
-public partial class NoteRepositoryDbAndElastic(DbContextOptions<NoteRepositoryDbAndElastic> options)
-    : DbContext(options)
+public partial class NoteRepositoryDbAndElastic
 {
     public DbSet<Note> Notes { get; set; }
     public DbSet<Tag> Tags { get; set; }

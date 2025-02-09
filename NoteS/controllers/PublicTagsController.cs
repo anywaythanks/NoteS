@@ -26,7 +26,7 @@ public class PublicTagsController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Route("{pathNote}")]
     [SwaggerOperation(Description = "Теги конкрентной заметки")]
-    public IActionResult Tags([FromRoute] string accountName,
+    public Task<IActionResult> Tags([FromRoute] string accountName,
         [FromRoute] string pathNote)
     {
         return Execute(() => um.Of(tagInformationService.Tags(pathNote, accountName)),
@@ -39,7 +39,7 @@ public class PublicTagsController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Создание тега")]
-    public IActionResult CreateTag([FromRoute] string accountName,
+    public Task<IActionResult> CreateTag([FromRoute] string accountName,
         [FromBody] CreateTagRequestDto createTagRequestDto)
     {
         return Execute(() => um.Of(tagEditService.Create(accountName, createTagRequestDto.Name)),
@@ -52,7 +52,7 @@ public class PublicTagsController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [KeycloakAuthorize(Policies.READ_NOTES)]
     [SwaggerOperation(Description = "Список тегов пользователя")]
-    public IActionResult Tags([FromRoute] string accountName)
+    public Task<IActionResult> Tags([FromRoute] string accountName)
     {
         return Execute(() => um.Of(tagInformationService.Tags(accountName)),
             new EqualNameP(registerService, accountName));
@@ -65,12 +65,12 @@ public class PublicTagsController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Route("{pathNote}")]
     [SwaggerOperation(Description = "Удаление тега для заметки")]
-    public IActionResult DelTag([FromRoute] string accountName,
+    public Task<IActionResult> DelTag([FromRoute] string accountName,
         [FromRoute] string pathNote,
         [FromBody] DeleteTagRequestDto delete)
     {
-        return ExecuteA(
-            () => tagEditService.Delete(pathNote, accountName, delete.Name) ? NoContent() : throw new DontDel("Тег"),
+        return ExecuteA(() => Task.FromResult<IActionResult>(
+                tagEditService.Delete(pathNote, accountName, delete.Name) ? NoContent() : throw new DontDel("Тег")),
             new EqualNameP(registerService, accountName));
     }
 
@@ -78,7 +78,7 @@ public class PublicTagsController(
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.CREATE_NOTES)]
     [Route("{pathNote}")]
     [SwaggerOperation(Description = "Добавить тег к заметке")]
-    public IActionResult AddTag([FromRoute] string accountName,
+    public Task<IActionResult> AddTag([FromRoute] string accountName,
         [FromRoute] string pathNote,
         [FromBody] CreateTagRequestDto createTagRequestDto)
     {

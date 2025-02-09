@@ -18,7 +18,7 @@ public class NoteEditService(
         return repository.Save(note);
     }
 
-    public bool Delete(string pathNote, string owner)
+    public Task<bool> Delete(string pathNote, string owner)
     {
         var note = noteInformationService.Get(pathNote, owner);
         return repository.Delete(note);
@@ -31,24 +31,24 @@ public class NoteEditService(
         return repository.Save(note);
     }
 
-    public Note EditContentNote(string pathNote, string owner, NoteEditContentRequestDto requestDto)
+    public Task<Note> EditContentNote(string pathNote, string owner, NoteEditContentRequestDto requestDto)
     {
         var note = noteInformationService.Get(pathNote, owner);
         note.Content = requestDto.Content;
         return repository.SaveContent(note);
     }
 
-    public Note EditContentNote(string pathNote, NoteEditContentRequestDto requestDto)
+    public Task<Note> EditContentNote(string pathNote, NoteEditContentRequestDto requestDto)
     {
         var note = noteInformationService.Get(pathNote);
         note.Content = requestDto.Content;
         return repository.SaveContent(note);
     }
 
-    public Note CreateNote(string accountName, NoteCreateRequestDto requestDto)
+    public async Task<Note> CreateNote(string accountName, NoteCreateRequestDto requestDto)
     {
         var account = accountInformationService.Get(accountName);
-        var note = repository.CreateInElastic(requestDto, account);
+        var note = await repository.CreateInElastic(requestDto, account);
         note.Title = requestDto.Title;
         note.Type = NoteTypes.Note;
         note.Path = Guid.NewGuid().ToString();
