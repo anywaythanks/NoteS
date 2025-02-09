@@ -4,18 +4,37 @@
     container_name: elasticsearch
     environment:
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - http.cors.enabled=false
       - xpack.security.enabled=false
       - discovery.type=single-node
+      - xpack.ml.max_model_memory_limit=2gb
+      - ES_JAVA_OPTS=-Xms4g -Xmx4g
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
       - esdata1:/usr/share/elasticsearch/data
+      - ./src/resource/analysis:/usr/share/elasticsearch/config/analysis
     ports:
       - "9200:9200"
+    networks:
+      - esnet
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -sS http://localhost:9200/_cluster/health | grep -qE '(green|yellow)'" ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+  es-init:
+    build: ./src/es-init
+    container_name: es-initializer
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - ./src/resource:/resource
+    command: [ "sh", "/resource/scripts/init.sh" ]
+    restart: 'no'
     networks:
       - esnet
   kibana:
