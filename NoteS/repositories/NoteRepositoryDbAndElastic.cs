@@ -34,7 +34,7 @@ public partial class NoteRepositoryDbAndElastic(
 
     public partial Tag AddTag(Note note, Tag tag);
 
-    public partial Task<List<Note>> FindByTitle(string title, Account owner);
+    public partial Task<List<Note>> FindByTitle(string title, int ownerId);
 
     public partial bool IsTagExists(string name, Note note);
 
@@ -44,7 +44,7 @@ public partial class NoteRepositoryDbAndElastic(
 
     public partial Task<List<Note>> FindByOwner(Account owner);
 
-    public partial Task<List<Note>> SemanticFind(string find, Account owner);
+    public partial Task<List<Note>> SemanticFind(string find, int ownerId);
 
     public partial Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Account owner);
 }

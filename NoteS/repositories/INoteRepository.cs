@@ -15,7 +15,7 @@ public interface INoteRepository
 
     public bool DeleteTag(Note note, Tag tag);
     public Tag AddTag(Note note, Tag tag);
-    public Task<List<Note>> FindByTitle(string title, Account owner);
+    public Task<List<Note>> FindByTitle(string title, int ownerId);
     public bool IsTagExists(string name, Note note);
 
     /**
@@ -25,6 +25,6 @@ public interface INoteRepository
 
     public List<Note> FindByTag(string title, Account owner);
     public Task<List<Note>> FindByOwner(Account owner);
-    public Task<List<Note>> SemanticFind(string find, Account owner);
+    public Task<List<Note>> SemanticFind(string find, int ownerId);
     public Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Account owner);
 }

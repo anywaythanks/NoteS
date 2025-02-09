@@ -1,5 +1,4 @@
-﻿using Elastic.Clients.Elasticsearch;
-using NoteS.exceptions;
+﻿using NoteS.exceptions;
 using NoteS.Models;
 using NoteS.models.dto;
 
@@ -11,7 +10,7 @@ public partial class NoteRepositoryDbAndElastic
     {
         if (note.Id == null) return false;
         var response = await client.DeleteAsync<Note>(note.Id);
-        return response.IsSuccess();
+        return response.IsValidResponse;
     }
 
     public async partial Task<Note> SaveContent(Note note)
@@ -38,16 +37,15 @@ public partial class NoteRepositoryDbAndElastic
         return response.Documents.FirstOrDefault() ?? throw new NotFound("Записка");
     }
 
-    public async partial Task<List<Note>> FindByTitle(string title, Account owner)
+    public async partial Task<List<Note>> FindByTitle(string title, int ownerId)
     {
-        if (owner.Id == null) throw new Forbidden("Записка");
         var response = await client.SearchAsync<Note>(r => r
             .Query(q =>
                 q.Script(s =>
                     s.Script(script =>
                         script.Params(p =>
                             p.Add("title", title)
-                                .Add("owner", owner.Id)
+                                .Add("owner", ownerId)
                         )))));
         if (!response.IsValidResponse)
         {
@@ -57,16 +55,15 @@ public partial class NoteRepositoryDbAndElastic
         return response.Documents.ToList();
     }
 
-    public async partial Task<List<Note>> SemanticFind(string find, Account owner)
+    public async partial Task<List<Note>> SemanticFind(string find, int ownerId)
     {
-        if (owner.Id == null) throw new Forbidden("Записка");
         var response = await client.SearchAsync<Note>(r => r
             .Query(q =>
                 q.Script(s =>
                     s.Script(script =>
                         script.Params(p =>
                             p.Add("query", find)
-                                .Add("owner", owner.Id)
+                                .Add("owner", ownerId)
                         )))));
         if (!response.IsValidResponse)
         {
