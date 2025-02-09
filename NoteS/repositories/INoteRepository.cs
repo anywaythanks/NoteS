@@ -15,7 +15,7 @@ public interface INoteRepository
 
     public bool DeleteTag(Note note, Tag tag);
     public NoteTag AddTag(Note note, Tag tag);
-    public Task<List<Note>> FindByTitle(string title, Account owner);
+    public Task<List<Note>> FindByTitle(string title,  int ownerId);
     public bool IsTagExists(Tag tag, Note note);
 
     /**

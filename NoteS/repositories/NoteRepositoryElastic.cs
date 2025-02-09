@@ -1,4 +1,5 @@
-﻿using NoteS.Models;
+﻿using NoteS.exceptions;
+using NoteS.Models;
 using NoteS.models.dto;
 
 namespace NoteS.repositories;
@@ -32,6 +33,7 @@ public partial class NoteRepositoryDbAndElastic
         {
             throw new NotFound("Записка");
         }
+        return response.Documents.FirstOrDefault() ?? throw new NotFound("Записка");
     }
 
     private partial List<Note> LoadContent(List<Note> notes)
