@@ -1,5 +1,4 @@
 ﻿using NoteS.exceptions;
-using NoteS.models;
 using NoteS.models.dto;
 using NoteS.models.entity;
 using NoteS.repositories;
@@ -16,7 +15,7 @@ public class CommentEditService(
     {
         var comment = noteInformationService.Get(pathComment, owner);
         if (!comment.IsEditable()) throw new TimeMissed("редактирования комментариев");
-        comment.SyntaxType = requestDto.Type;
+        comment.SyntaxType = requestDto.SyntaxType;
         comment.Content = requestDto.Content;
         comment.Title = requestDto.Title;
         return repository.Save(await repository.SaveContent(comment));
@@ -25,7 +24,7 @@ public class CommentEditService(
     public async Task<Note> EditContentComment(Field<INotePath, string> pathComment, CommentEditRequestDto requestDto)
     {
         var comment = noteInformationService.Get(pathComment);
-        comment.SyntaxType = requestDto.Type;
+        comment.SyntaxType = requestDto.SyntaxType;
         comment.Content = requestDto.Content;
         comment.Title = requestDto.Title;
         return repository.Save(await repository.SaveContent(comment));
@@ -46,7 +45,7 @@ public class CommentEditService(
         return repository.Save(comment);
     }
 
-    public Task<bool>  Delete(Field<INotePath, string> pathComment, Field<IAccName, string> owner)
+    public Task<bool> Delete(Field<INotePath, string> pathComment, Field<IAccName, string> owner)
     {
         var note = noteInformationService.Get(pathComment, owner);
         if (!note.IsEditable()) throw new TimeMissed("удаления комментариев");

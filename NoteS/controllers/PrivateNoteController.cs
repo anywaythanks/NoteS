@@ -27,8 +27,8 @@ public class PrivateNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Редактирование свойства публичности любой заметки или комментария")]
-    public Task<IActionResult> EditPublicAllNote([FromRoute] AccountName accountName,
-        [FromRoute] NotePath pathNote,
+    public Task<IActionResult> EditPublicAllNote([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote,
         [FromBody] NoteEditPublicRequestDto editDto)
     {
         return Execute(() => um.OfEdit(editService.PublishNote(nm.Of(pathNote), editDto)),
@@ -42,8 +42,8 @@ public class PrivateNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Редактирование контента любой заметки или комментария")]
-    public Task<IActionResult> EditNoteAll([FromRoute] AccountName accountName,
-        [FromRoute] NotePath pathNote,
+    public Task<IActionResult> EditNoteAll([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote,
         [FromBody] NoteEditContentRequestDto editDto)
     {
         return Execute(async () => um.OfEditContent(await editService.EditContentNote(nm.Of(pathNote), editDto)),
@@ -57,8 +57,8 @@ public class PrivateNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Получение данных любой заметки или комментария")]
-    public Task<IActionResult> GetNoteAll([FromRoute] AccountName accountName,
-        [FromRoute] NotePath pathNote)
+    public Task<IActionResult> GetNoteAll([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote)
     {
         return Execute(() => um.OfCreateNote(noteInformationService.GetFull(nm.Of(pathNote))),
             new EqualNameP(registerService, am.Of(accountName)));

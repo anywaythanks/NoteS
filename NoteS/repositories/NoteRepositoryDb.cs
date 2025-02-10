@@ -1,9 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using NoteS.models.entity;
-using NoteS.models;
-using NoteS.Models;
-using NoteS.models.entity;
 
 namespace NoteS.repositories;
 
@@ -47,10 +44,9 @@ public partial class NoteRepositoryDbAndElastic
     public partial Note Save(Note note)
     {
         bool isNew = note.Id == null;
-        note.CreatedOn = null;//делаем null,
+        note.CreatedOn = null; //делаем null,
         if (isNew)
         {
-            
             Notes.Add(note);
         }
         else
@@ -71,7 +67,7 @@ public partial class NoteRepositoryDbAndElastic
     public partial Note? FindByPath(Field<INotePath, string> path)
     {
         return Detach((from n in Notes
-            where n.Path == path
+            where n.Path == path.Val
             select n).FirstOrDefault());
     }
 
@@ -116,14 +112,14 @@ public partial class NoteRepositoryDbAndElastic
         SaveChanges();
         return Detach(nt);
     }
-    
-    public partial bool IsTagExists(Tag tag, Note note)
+
+    public partial bool IsTagExists(Field<ITagId, int> tag, Note note)
     {
         var noteTag = NoteTags
-            .FirstOrDefault(nt => nt.NoteId == note.Id && nt.TagId == tag.Id);
+            .FirstOrDefault(nt => nt.NoteId == note.Id && nt.TagId == tag.Val);
         return noteTag != null;
     }
-    
+
     private partial List<Note> LoadCommentsInDb(Note note)
     {
         return (from n in Notes
@@ -135,10 +131,10 @@ public partial class NoteRepositoryDbAndElastic
             .ToList();
     }
 
-    public partial List<Note> FindByTag(Tag tag, Account owner)
+    public partial List<Note> FindByTag(Field<ITagId, int> tag, Account owner)
     {
         return (Detach((from t in Tags.Include(n => n.Notes)
-                where t.Id == tag.Id && t.Owner.Id == owner.Id
+                where t.Id == tag.Val && t.Owner.Id == owner.Id
                 select t).FirstOrDefault())?.Notes ?? [])
             .Select(nt => Detach(nt))
             .Select(nt => nt.Note)

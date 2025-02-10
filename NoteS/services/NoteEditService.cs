@@ -1,5 +1,4 @@
-﻿using NoteS.models;
-using NoteS.models.dto;
+﻿using NoteS.models.dto;
 using NoteS.models.entity;
 using NoteS.repositories;
 

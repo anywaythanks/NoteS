@@ -1,16 +1,16 @@
 ﻿namespace NoteS.models.dto;
 
-public class TagResponseDto(string name)
+public class TagResponseDto
 {
-    public string Name => name;
+    public string Name { get; set; }
 }
 
-public class CreateTagRequestDto(string name)
+public class CreateTagRequestDto
 {
-    public string Name => name;
+    public string Name { get; set; }
 }
 
-public class DeleteTagRequestDto(string name)
+public class DeleteTagRequestDto
 {
-    public string Name => name;
+    public string Name { get; set; }
 }

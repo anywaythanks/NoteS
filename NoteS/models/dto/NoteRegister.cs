@@ -1,11 +1,11 @@
 ﻿namespace NoteS.models.dto;
 
-public class NoteRegisterRequestDto(string title)
+public class NoteRegisterRequestDto
 {
-    public string Title => title;
+    public string Title { get; set; }
 }
 
-public class NoteRegisterResponseDto(string title)
+public class NoteRegisterResponseDto
 {
-    public string Title => title;
+    public string Title { get; set; }
 }

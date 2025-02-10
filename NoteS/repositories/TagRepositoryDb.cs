@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using NoteS.models.entity;
 
@@ -37,7 +38,7 @@ public sealed class TagRepositoryDb(DbContextOptions<TagRepositoryDb> options)
     public Tag? FindByName(Field<ITagName, string> name, Account owner)
     {
         var tag = Detach((from t in Tags
-            where t.Name == name && t.Owner.Id == owner.Id
+            where t.Name == name.Val && t.Owner.Id == owner.Id
             select t).FirstOrDefault());
         if (tag == null) return null;
         tag.Owner = owner;

@@ -1,6 +1,6 @@
 create table accounts (
       id bigint not null,
-      uid char(64) not null unique,
+      uuid char(64) not null unique,
       name char(32) not null unique,
       modified_by timestamp(6) with time zone not null,
       created_on timestamp(6) with time zone not null,

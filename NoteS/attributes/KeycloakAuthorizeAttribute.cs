@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using NoteS.models.entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using NoteS.models.entity;
 
 namespace NoteS.Attributes;
 
@@ -35,7 +35,7 @@ public class KeycloakAuthorizeAttribute(params Policies[] policies) : AuthorizeA
     public void OnAuthorization(AuthorizationFilterContext context)
     {
         var user = context.HttpContext.User;
-        
+
         if (user.Identity is not { IsAuthenticated: true })
         {
             context.Result = new UnauthorizedResult();

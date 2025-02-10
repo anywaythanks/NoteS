@@ -6,7 +6,7 @@ namespace NoteS.services;
 
 public class AccountRegisterService(IAccountRepository accountRepository)
 {
-    public Account Register(Field<IAccName, string> accountName, Field<IAccUid, string> uuid)
+    public Account Register(Field<IAccName, string> accountName, Field<IAccUuid, string> uuid)
     {
         Account account = accountRepository.FindByName(accountName) ??
                           accountRepository.FindByUuid(uuid) ??

@@ -1,3 +1,5 @@
+using Elastic.Clients.Elasticsearch;
+using Microsoft.EntityFrameworkCore;
 using NoteS.models.dto;
 using NoteS.models.entity;
 
@@ -34,10 +36,10 @@ public partial class NoteRepositoryDbAndElastic(
 
     public partial NoteTag AddTag(Note note, Tag tag);
 
-    public partial Task<List<Note>> FindByTitle(Field<INoteTitle, string> title, int ownerId);
+    public partial Task<List<Note>> FindByTitle(Field<INoteTitle, string> title, Field<IAccId, int> ownerId);
 
-    public partial bool IsTagExists(Tag tag, Note note);
-    
+    public partial bool IsTagExists(Field<ITagId, int> tag, Note note);
+
     public List<Note> LoadComments(Note note)
     {
         return LoadContent(LoadCommentsInDb(note));
@@ -45,11 +47,11 @@ public partial class NoteRepositoryDbAndElastic(
 
     private partial List<Note> LoadCommentsInDb(Note note);
 
-    public partial List<Note> FindByTag(Tag tag, Account owner);
+    public partial List<Note> FindByTag(Field<ITagId, int> tag, Account owner);
 
     public partial List<Note> FindByOwner(Account owner);
 
-    public partial Task<List<Note>> SemanticFind(SemanticSearchQuery find, int ownerId);
-    
+    public partial Task<List<Note>> SemanticFind(SemanticSearchQuery find, Field<IAccId, int> ownerId);
+
     public partial Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Account owner);
 }

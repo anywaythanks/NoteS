@@ -13,7 +13,7 @@ public abstract class StatusCodeException : Exception
         Result = new ContentResult
         {
             StatusCode = statusCode,
-            Content =JsonSerializer.Serialize(new
+            Content = JsonSerializer.Serialize(new
             {
                 status = statusCode,
                 interalCode = code,

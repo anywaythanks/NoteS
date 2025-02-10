@@ -17,4 +17,4 @@ public interface IAccId : ITypeMarker<int>;
 
 public interface IAccName : ITypeMarker<string>;
 
-public interface IAccUid : ITypeMarker<string>;
+public interface IAccUuid : ITypeMarker<string>;

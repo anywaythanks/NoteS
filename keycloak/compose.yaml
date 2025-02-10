@@ -8,7 +8,7 @@ services:
       - ./src/imports:/opt/jboss/keycloak/imports
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://keycloakdb:5432/keycloak
+      KC_DB_URL: jdbc:postgresql://keycloak_db:5433/keycloak
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: password
 
@@ -34,10 +34,15 @@ services:
     image: postgres:15
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    expose:
+      - "5433"
     environment:
       POSTGRES_DB: keycloak
+      POSTGRES_PGPORT: 5433
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
-
+    ports:
+      - "5433:5433"
+    command: -p 5433
 volumes:
   postgres_data:

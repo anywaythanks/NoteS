@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NoteS.exceptions;
 
 namespace NoteS.tools.preconditions;
@@ -10,7 +9,9 @@ public abstract class GeneralPreconditionController(params IGeneralPrecondition[
     {
         return await ExecuteA(() => Task.FromResult<IActionResult>(Ok(f())), generalPreconditionsIntern);
     }
-    protected async Task<IActionResult> ExecuteA(Func<Task<IActionResult>> f, params IGeneralPrecondition[] generalPreconditionsIntern)
+
+    protected async Task<IActionResult> ExecuteA(Func<Task<IActionResult>> f,
+        params IGeneralPrecondition[] generalPreconditionsIntern)
     {
         var mess = "Что-то пошло не так.";
         try

@@ -1,47 +1,77 @@
-﻿using NoteS.models.entity;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using NoteS.models.entity;
 
 namespace NoteS.models.dto;
 
-public class NoteEditPublicRequestDto(bool isPublic)
+public class NoteEditPublicRequestDto
 {
-    public bool IsPublic => isPublic;
+    [JsonPropertyName("is_public")] public bool IsPublic { get; set; }
 }
 
-public class NoteEditPublicResponseDto(string title, bool isPublic)
+public class NoteEditPublicResponseDto
 {
-    public string Title => title;
-    public bool IsPublic => isPublic;
+    public string Title { get; set; }
+    [JsonPropertyName("is_public")] public bool IsPublic { get; set; }
 }
 
-public class NoteEditContentRequestDto(string content)
+public class NoteEditContentRequestDto
 {
-    public string Content => content;
+    public string Content { get; set; }
 }
 
-public class NoteEditContentResponseDto(string title, string content)
+public class NoteEditContentResponseDto
 {
-    public string Title => title;
-    public string Content => content;
+    public string Title { get; set; }
+    public string Content { get; set; }
 }
 
-public class NoteCreateRequestDto(string title, SyntaxType type, string content)
+public class NoteCreateRequestDto
 {
-    public string Title => title;
-    public SyntaxType Type => type;
-    public string Content => content;
+    public string Title { get; set; }
+    [JsonIgnore] public SyntaxType Type { get; set; }
+
+    [JsonPropertyName("syntax_name")]
+    [Required]
+    [EnumDataType(typeof(SyntaxType.SyntaxTypeName))]
+    public SyntaxType.SyntaxTypeName TypeName
+    {
+        get => Type.Name;
+        set => Type = SyntaxType.NameToType(value);
+    }
+
+    public string Content { get; set; }
 }
 
-public class NoteCreateResponseDto(string path, string title, NoteTypes type, bool isPublic, SyntaxType syntaxType)
+public class NoteCreateResponseDto
 {
-    public string Path { get; } = path;
-    public string Title { get; } = title;
-    public NoteTypes Type { get; } = type;
-    public bool IsPublic { get; } = isPublic;
-    public SyntaxType SyntaxType { get; } = syntaxType;
+    public string Path { get; set; }
+    public string Title { get; set; }
+    [JsonIgnore] public NoteTypes Type { get; set; }
+
+    [JsonPropertyName("note_type")]
+    [Required]
+    [EnumDataType(typeof(NoteTypes.NoteTypeName))]
+    public NoteTypes.NoteTypeName NoteTypeName
+    {
+        get => Type.Name;
+        set => Type = NoteTypes.NameToType(value);
+    }
+
+    [JsonPropertyName("is_public")] public bool IsPublic { get; set; }
+    [JsonIgnore] public SyntaxType SyntaxType { get; set; }
+
+    [JsonPropertyName("syntax_name")]
+    [Required]
+    [EnumDataType(typeof(SyntaxType.SyntaxTypeName))]
+    public SyntaxType.SyntaxTypeName TypeName
+    {
+        get => SyntaxType.Name;
+        set => SyntaxType = SyntaxType.NameToType(value);
+    }
 }
 
 public class SemanticSearchQuery(string query)
 {
-    public required string Query { get; init; } = query;
+    public string Query { get; init; } = query;
 }
-

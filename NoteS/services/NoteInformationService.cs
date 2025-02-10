@@ -1,25 +1,19 @@
 ﻿using NoteS.exceptions;
 using NoteS.models.dto;
 using NoteS.models.entity;
+using NoteS.models.mappers;
 using NoteS.repositories;
 
 namespace NoteS.services;
 
 public class NoteInformationService(
     INoteRepository repository,
-    ITagRepository tagRepository,
-    AccountInformationService informationService)
+    AccountInformationService informationService,
+    AccountMapper am)
 {
     public Task<List<Note>> Find(Field<INoteTitle, string> title, Field<IAccName, string> owner)
     {
-        return repository.FindByTitle(title, informationService.Get(owner).Id ?? throw new NotFound("Заметка"));
-    }
-
-    public List<Note> FindTag(Field<ITagName, string> tag, Field<IAccName, string> owner)
-    {
-        var acc = informationService.Get(owner);
-        var tagI = tagRepository.FindByName(tag, acc) ?? throw new NotFound("Тег"); 
-        return repository.FindByTag(tagI, acc);
+        return repository.FindByTitle(title, am.ToId(informationService.Get(owner)));
     }
 
     public List<Note> Find(Field<IAccName, string> owner)
@@ -29,7 +23,7 @@ public class NoteInformationService(
 
     public Task<List<Note>> FindSemantic(Field<IAccName, string> owner, SemanticSearchQuery query)
     {
-        return repository.SemanticFind(query, informationService.Get(owner).Id ?? throw new NotFound("Заметка"));
+        return repository.SemanticFind(query, am.ToId(informationService.Get(owner)));
     }
 
     public Note Get(Field<INotePath, string> path, Field<IAccName, string> owner)

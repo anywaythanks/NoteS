@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using NoteS.models;
-using NoteS.models.entity;
 
 namespace NoteS.models.entity;
 
@@ -19,15 +17,18 @@ public class Note(string title, string elasticUuid)
 
     public string? Content { get; set; } //TODO: из эластика
     [Column("account_id")] public required Account Owner { get; set; }
-    
+
     public List<NoteTag> Tags { get; set; } = []; //many-to-many
-    
+
     [Column("type")] public NoteTypes? Type { get; set; }
     [Column("is_public")] public bool IsPublic { get; set; }
     [Column("prev")] public Note? MainNote { get; set; } //поскольку это дерево, то не следует вовсе заполнять
 
     [Column("syntax_type_id")] public SyntaxType? SyntaxType { get; set; }
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)] [Column("created_on")] public DateTime? CreatedOn { get; set; }
+
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Column("created_on")]
+    public DateTime? CreatedOn { get; set; }
 
     public bool IsEditable()
     {
@@ -36,10 +37,15 @@ public class Note(string title, string elasticUuid)
         return true;
     }
 }
+
 public interface INoteId : ITypeMarker<int>;
 
 public interface INotePath : ITypeMarker<string>;
+
 public interface INoteTitle : ITypeMarker<string>;
+
 public interface INoteElasticUid : ITypeMarker<string>;
+
 public interface INoteContent : ITypeMarker<string>;
+
 public interface INoteIsPublic : ITypeMarker<bool>;

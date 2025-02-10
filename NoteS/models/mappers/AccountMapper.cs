@@ -13,9 +13,9 @@ public partial class AccountMapper
     [MapProperty("Name", "Val")]
     public partial Field<IAccName, string> ToName(Account account);
 
-    [MapProperty("Name", "Val")]
-    public partial Field<IAccName, string> Of(AccountName account);
+    [MapProperty("AccountName", "Val")]
+    public partial Field<IAccName, string> Of(AccName account);
 
-    [MapProperty("Uid", "Val")]
-    public partial Field<IAccUid, string> ToUid(Account account);
+    [MapProperty("Uuid", "Val")]
+    public partial Field<IAccUuid, string> ToUuid(Account account);
 }

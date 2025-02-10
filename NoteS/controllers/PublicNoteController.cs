@@ -15,6 +15,7 @@ namespace NoteS.controllers;
 public class PublicNoteController(
     AccountRegisterService registerService,
     NoteInformationService noteInformationService,
+    TagInformationService tagInformationService,
     NoteEditService editService,
     UniversalDtoMapper um,
     AccountMapper am,
@@ -29,8 +30,8 @@ public class PublicNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Редактирование публичности заметки")]
-    public Task<IActionResult> EditPublicNote([FromRoute] AccountName accountName,
-        [FromRoute] NotePath pathNote,
+    public Task<IActionResult> EditPublicNote([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote,
         [FromBody] NoteEditPublicRequestDto editDto)
     {
         return Execute(() => um.OfEdit(editService.PublishNote(nm.Of(pathNote), am.Of(accountName), editDto)),
@@ -44,12 +45,13 @@ public class PublicNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Редактирование контента заметки")]
-    public Task<IActionResult> EditNote([FromRoute] AccountName accountName,
-        [FromRoute] NotePath pathNote,
+    public Task<IActionResult> EditNote([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote,
         [FromBody] NoteEditContentRequestDto editDto)
     {
         return Execute(
-            async () => um.OfEditContent(await editService.EditContentNote(nm.Of(pathNote), am.Of(accountName), editDto)),
+            async () => um.OfEditContent(
+                await editService.EditContentNote(nm.Of(pathNote), am.Of(accountName), editDto)),
             new EqualNameP(registerService, am.Of(accountName)));
     }
 
@@ -60,8 +62,8 @@ public class PublicNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Создание заметки")]
-    public Task<IActionResult> CreateNote([FromRoute] AccountName accountName,
-        [FromRoute] NotePath pathNote,
+    public Task<IActionResult> CreateNote([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote,
         [FromBody] NoteCreateRequestDto editDto)
     {
         return ExecuteA(async () =>
@@ -80,10 +82,11 @@ public class PublicNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Поиск по заголовку")]
-    public Task<IActionResult> SearchByTitleNotes([FromRoute] AccountName accountName,
+    public Task<IActionResult> SearchByTitleNotes([FromQuery] AccName accountName,
         [FromBody] NoteSearchRequestDto noteSearch)
     {
-        return Execute(async () => um.OfSearch(await noteInformationService.Find(nm.Of(noteSearch), am.Of(accountName))),
+        return Execute(
+            async () => um.OfSearch(await noteInformationService.Find(nm.Of(noteSearch), am.Of(accountName))),
             new EqualNameP(registerService, am.Of(accountName)));
     }
 
@@ -94,10 +97,10 @@ public class PublicNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Поиск по тегу")]
-    public Task<IActionResult> SearchByTagNotes([FromRoute] AccountName accountName,
+    public Task<IActionResult> SearchByTagNotes([FromQuery] AccName accountName,
         [FromBody] NoteSearchTagsRequestDto noteSearch)
     {
-        return Execute(async () => um.OfSearch(await noteInformationService.FindTag(tm.Of(noteSearch), am.Of(accountName))),
+        return Execute(() => um.OfSearch(tagInformationService.FindTag(tm.Of(noteSearch), am.Of(accountName))),
             new EqualNameP(registerService, am.Of(accountName)));
     }
 
@@ -108,7 +111,7 @@ public class PublicNoteController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Route("{pathNote}")]
     [SwaggerOperation(Description = "Удаление заметки")]
-    public Task<IActionResult> DelNote([FromRoute] AccountName accountName, [FromRoute] NotePath pathNote)
+    public Task<IActionResult> DelNote([FromQuery] AccName accountName, [FromQuery] NotePath pathNote)
     {
         return ExecuteA(
             async () => await editService.Delete(nm.Of(pathNote),
@@ -125,7 +128,7 @@ public class PublicNoteController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Route("search/semantic")]
     [SwaggerOperation(Description = "Семантический поиск")]
-    public Task<IActionResult> SemanticSearchNotes([FromRoute] AccountName accountName,
+    public Task<IActionResult> SemanticSearchNotes([FromQuery] AccName accountName,
         [FromBody] NoteSemanticSearchRequestDto noteSearch)
     {
         return Execute(async () => um.OfSearch(
@@ -139,7 +142,7 @@ public class PublicNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Список заметок пользователя")]
-    public Task<IActionResult> Notes([FromRoute] AccountName accountName)
+    public Task<IActionResult> Notes([FromQuery] AccName accountName)
     {
         return Execute(() => um.OfSearch(noteInformationService.Find(am.Of(accountName))),
             new EqualNameP(registerService, am.Of(accountName)));
@@ -152,8 +155,8 @@ public class PublicNoteController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Данные заметки или комментария")]
-    public Task<IActionResult> GetNote([FromRoute] AccountName accountName,
-        [FromRoute] NotePath pathNote)
+    public Task<IActionResult> GetNote([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote)
     {
         return Execute(() => um.OfContentSearch(noteInformationService.GetFull(nm.Of(pathNote), am.Of(accountName))),
             new EqualNameP(registerService, am.Of(accountName)));

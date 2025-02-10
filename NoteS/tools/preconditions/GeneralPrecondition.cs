@@ -5,5 +5,5 @@ namespace NoteS.tools.preconditions;
 
 public interface IGeneralPrecondition
 {
-    public bool Check(IIdentity? identity, Field<IAccUid, string> uuid);
+    public bool Check(IIdentity? identity, Field<IAccUuid, string> uuid);
 }

@@ -39,9 +39,9 @@ public sealed class AccountRepositoryDb(DbContextOptions<AccountRepositoryDb> op
         return Detach(Accounts.FirstOrDefault(a => a.Name == name.Val));
     }
 
-    public Account? FindByUuid(Field<IAccUid, string> uuid)
+    public Account? FindByUuid(Field<IAccUuid, string> uuid)
     {
-        return Detach(Accounts.FirstOrDefault(a => a.Uuid == uuid));
+        return Detach(Accounts.FirstOrDefault(a => a.Uuid == uuid.Val));
     }
 
     [return: NotNullIfNotNull(nameof(account))]

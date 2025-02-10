@@ -1,45 +1,61 @@
-﻿namespace NoteS.models.dto;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
+using NoteS.models.entity;
+using Swashbuckle.AspNetCore.Annotations;
 
-public class NoteSearchResponseDto(string title)
+namespace NoteS.models.dto;
+
+public class NoteSearchResponseDto
 {
-    public string Title => title;
+    public string Title { get; set; }
 }
 
-public class NoteSearchContentResponseDto(string title, string content, List<TagResponseDto> tags, NoteType type)
+public class NoteSearchContentResponseDto
 {
-    public string Title => title;
-    public string Content => content;
+    public string Title { get; set; }
+    public string Content { get; set; }
 
-    public NoteType Type => type;
+    [JsonIgnore] public NoteTypes Type { get; set; }
 
-    public List<TagResponseDto> Tags => tags;
+    [JsonPropertyName("note_type")]
+    [Required]
+    [EnumDataType(typeof(NoteTypes.NoteTypeName))]
+    public NoteTypes.NoteTypeName NoteTypeName
+    {
+        get => Type.Name;
+        set => Type = NoteTypes.NameToType(value);
+    }
+
+    public List<TagResponseDto> Tags { get; set; }
 }
 
-public class NoteType(string name)
+public class NoteSearchRequestDto
 {
-    public string Name => name;
+    public string Title { get; set; }
 }
 
-public class NoteSearchRequestDto(string title)
+public class NoteSearchTagsRequestDto
 {
-    public string Title => title;
+    public string Tag { get; set; }
 }
 
-public class NoteSearchTagsRequestDto(string tag)
+public class NoteSemanticSearchRequestDto
 {
-    public string Tag => tag;
+    public string Query { get; set; }
 }
 
-public class NoteSemanticSearchRequestDto(string query)
+public class NotePath
 {
-    public string Query => query;
+    [FromRoute(Name="pathNote")]
+    [MinLength(3)]
+    [MaxLength(128)]
+    public string PathNote { get; set; }
 }
 
-public class NotePath(string path)
+public class AccName
 {
-    public required string Path { get; init; } = path;
-}
-public class AccountName(string name)
-{
-    public required string Name { get; init; } = name;
+    [FromRoute(Name="accountName")]
+    [MaxLength(128)]
+    public string AccountName { get; set; }
 }

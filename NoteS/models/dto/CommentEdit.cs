@@ -1,47 +1,85 @@
-﻿using NoteS.models.entity;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using NoteS.models.entity;
 
 namespace NoteS.models.dto;
 
-public class CommentCreateRequestDto(string title, SyntaxType type, string content)
-    : NoteCreateRequestDto(title, type, content)
+public class CommentCreateRequestDto
+    : NoteCreateRequestDto;
+
+public class CommentCreateResponseDto
 {
+    public string Path { get; set; }
+    public string Title { get; set; }
+    [JsonIgnore] public NoteTypes Type { get; set; }
+
+    [JsonPropertyName("note_type")]
+    [Required]
+    [EnumDataType(typeof(NoteTypes.NoteTypeName))]
+    public NoteTypes.NoteTypeName NoteTypeName
+    {
+        get => Type.Name;
+        set => Type = NoteTypes.NameToType(value);
+    }
+
+    [JsonPropertyName("is_public")] public bool IsPublic { get; set; }
+    [JsonIgnore] public SyntaxType SyntaxType { get; set; }
+
+    [JsonPropertyName("syntax_name")]
+    [Required]
+    [EnumDataType(typeof(SyntaxType.SyntaxTypeName))]
+    public SyntaxType.SyntaxTypeName TypeName
+    {
+        get => SyntaxType.Name;
+        set => SyntaxType = SyntaxType.NameToType(value);
+    }
+
+    public string Content { get; set; }
 }
 
-public class CommentCreateResponseDto(
-    string path,
-    string title,
-    NoteTypes type,
-    bool isPublic,
-    SyntaxType syntaxType,
-    string content)
+public class CommentEditRequestDto
 {
-    public string Path { get; } = path;
-    public string Title { get; } = title;
-    public NoteTypes Type { get; } = type;
-    public bool IsPublic { get; } = isPublic;
-    public SyntaxType SyntaxType { get; } = syntaxType;
-    public string Content { get; } = content;
+    public string Title { get; set; }
+    [JsonIgnore] public SyntaxType SyntaxType { get; set; }
+
+    [JsonPropertyName("syntax_name")]
+    [Required]
+    [EnumDataType(typeof(SyntaxType.SyntaxTypeName))]
+    public SyntaxType.SyntaxTypeName TypeName
+    {
+        get => SyntaxType.Name;
+        set => SyntaxType = SyntaxType.NameToType(value);
+    }
+
+    public string Content { get; set; }
 }
 
-public class CommentEditRequestDto(string title, SyntaxType type, string content)
+public class CommentEditResponseDto
 {
-    public string Title => title;
-    public SyntaxType Type => type;
-    public string Content => content;
-}
+    public string Path { get; set; }
+    public string Title { get; set; }
+    [JsonIgnore] public NoteTypes Type { get; set; }
 
-public class CommentEditResponseDto(
-    string path,
-    string title,
-    NoteTypes type,
-    bool isPublic,
-    SyntaxType syntaxType,
-    string content)
-{
-    public string Path { get; } = path;
-    public string Title { get; } = title;
-    public NoteTypes Type { get; } = type;
-    public bool IsPublic { get; } = isPublic;
-    public SyntaxType SyntaxType { get; } = syntaxType;
-    public string Content { get; } = content;
+    [JsonPropertyName("note_type")]
+    [Required]
+    [EnumDataType(typeof(NoteTypes.NoteTypeName))]
+    public NoteTypes.NoteTypeName NoteTypeName
+    {
+        get => Type.Name;
+        set => Type = NoteTypes.NameToType(value);
+    }
+
+    [JsonPropertyName("is_public")] public bool IsPublic { get; set; }
+    [JsonIgnore] public SyntaxType SyntaxType { get; set; }
+
+    [JsonPropertyName("syntax_name")]
+    [Required]
+    [EnumDataType(typeof(SyntaxType.SyntaxTypeName))]
+    public SyntaxType.SyntaxTypeName TypeName
+    {
+        get => SyntaxType.Name;
+        set => SyntaxType = SyntaxType.NameToType(value);
+    }
+
+    public string Content { get; set; }
 }

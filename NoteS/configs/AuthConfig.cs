@@ -77,12 +77,6 @@ public class AuthConfig
                 // .RequireClaim("email_verified", "true")
                 .Build();
         });
-
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy(name: "MyAllowSpecificOrigins",
-                policy => { policy.WithOrigins("http://localhost:8080"); });
-        });
     }
 
     public static void AfterConfiguration(WebApplication app)

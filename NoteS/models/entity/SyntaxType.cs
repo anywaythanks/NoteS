@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace NoteS.models.entity;
 
@@ -8,13 +9,31 @@ namespace NoteS.models.entity;
 public class SyntaxType
 {
     [Column("id")] [Key] public int Num { get; init; }
-    [Column("syntax")] public string Name { get; init; }
-    public static readonly SyntaxType Plain = new(0, "PLAINTEXT");
-    public static readonly SyntaxType Markdown = new(1, "MARKDOWN");
+    [Column("syntax")] public SyntaxTypeName Name { get; init; }
+    public static readonly SyntaxType Plain = new(0, SyntaxTypeName.PLAINTEXT);
+    public static readonly SyntaxType Markdown = new(1, SyntaxTypeName.MARKDOWN);
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum SyntaxTypeName
+    {
+        PLAINTEXT,
+        MARKDOWN
+    }
 
     public static int? TypeToNum(SyntaxType? syntaxType)
     {
         return syntaxType?.Num;
+    }
+
+    public static SyntaxType NameToType(SyntaxTypeName syntaxType)
+    {
+        switch (syntaxType)
+        {
+            case SyntaxTypeName.PLAINTEXT: return Plain;
+            case SyntaxTypeName.MARKDOWN: return Markdown;
+        }
+
+        throw new ArgumentException();
     }
 
     [return: NotNullIfNotNull(nameof(num))]
@@ -34,7 +53,7 @@ public class SyntaxType
     {
     }
 
-    protected SyntaxType(int num, string name)
+    protected SyntaxType(int num, SyntaxTypeName name)
     {
         Num = num;
         Name = name;

@@ -19,12 +19,12 @@ public partial class NoteMapper
     [MapProperty("Path", "Val")]
     public partial Field<INotePath, string> ToPath(Note note);
 
-    [MapProperty("Path", "Val")]
+    [MapProperty("PathNote", "Val")]
     public partial Field<INotePath, string> Of(NotePath path);
 
     [MapProperty("Title", "Val")]
     public partial Field<INoteTitle, string> Of(NoteSearchRequestDto path);
-    
+
     [MapProperty("Content", "Val")]
     public partial Field<INoteContent, string> ToContent(Note note);
 

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration.UserSecrets;
 using NoteS.Attributes;
 using NoteS.exceptions;
 using NoteS.models.dto;
@@ -28,8 +27,8 @@ public class PublicCommentsController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Список комментариев к заметке")]
-    public Task<IActionResult> Comments([FromRoute] AccountName accountName,
-        [FromRoute] NotePath pathNote)
+    public Task<IActionResult> Comments([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote)
     {
         return Execute(() => um.OfCommentsSearch(commentInformationService.Comments(
                 am.Of(accountName), nm.Of(pathNote))),
@@ -42,11 +41,11 @@ public class PublicCommentsController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Создание комментария к заметке")]
-    public Task<IActionResult> CreateComment([FromRoute] AccountName accountName,
-        [FromRoute] NotePath pathNote,
+    public Task<IActionResult> CreateComment([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote,
         [FromBody] CommentCreateRequestDto createDto)
     {
-        return ExecuteA( async () =>
+        return ExecuteA(async () =>
             {
                 var r = um.OfCreateComment(
                     await commentEditService.CreateComment(am.Of(accountName), nm.Of(pathNote), createDto));
@@ -63,13 +62,14 @@ public class PublicCommentsController(
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Редактирование комментария")]
-    public Task<IActionResult> EditComment([FromRoute] AccountName accountName,
-        [FromRoute] NotePath pathNote,
-        [FromRoute] NotePath pathComment,
+    public Task<IActionResult> EditComment([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote,
+        [FromQuery] NotePath pathComment,
         [FromBody] CommentEditRequestDto createDto)
     {
         return Execute(
-            async () => um.OfEditComment(await commentEditService.EditContentComment(nm.Of(pathNote), am.Of(accountName), createDto)),
+            async () => um.OfEditComment(
+                await commentEditService.EditContentComment(nm.Of(pathNote), am.Of(accountName), createDto)),
             new EqualNameP(registerService, am.Of(accountName)));
     }
 
@@ -80,7 +80,7 @@ public class PublicCommentsController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [Route("{pathComment}")]
     [SwaggerOperation(Description = "Удаление комментария")]
-    public Task<IActionResult> DelComment([FromRoute] AccountName accountName, [FromRoute] NotePath pathComment)
+    public Task<IActionResult> DelComment([FromQuery] AccName accountName, [FromQuery] NotePath pathComment)
     {
         return ExecuteA(async () => await commentEditService.Delete(nm.Of(pathComment), am.Of(accountName))
                 ? NoContent()

@@ -14,7 +14,3 @@ alter table if exists notes
     add elastic_uuid char(128) not null unique;
 
 GO
-
-ALTER TABLE notes ADD CONSTRAINT notes_title_key UNIQUE (path);
-
-GO
