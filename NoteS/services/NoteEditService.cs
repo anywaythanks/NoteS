@@ -1,5 +1,6 @@
 ﻿using NoteS.models.dto;
 using NoteS.models.entity;
+using NoteS.models.mappers;
 using NoteS.repositories;
 
 namespace NoteS.services;
@@ -7,7 +8,8 @@ namespace NoteS.services;
 public class NoteEditService(
     NoteInformationService noteInformationService,
     INoteRepository repository,
-    AccountInformationService accountInformationService)
+    AccountInformationService accountInformationService,
+    AccountMapper am)
 {
     public Note PublishNote(Field<INotePath, string> pathNote, Field<IAccName, string> owner,
         NoteEditPublicRequestDto requestDto)
@@ -47,12 +49,12 @@ public class NoteEditService(
 
     public async Task<Note> CreateNote(Field<IAccName, string> accountName, NoteCreateRequestDto requestDto)
     {
-        var account = accountInformationService.Get(accountName);
+        var account = am.ToId(accountInformationService.Get(accountName));
         var note = await repository.CreateInElastic(requestDto, account);
         note.Title = requestDto.Title;
         note.Type = NoteTypes.Note;
         note.Path = Guid.NewGuid().ToString();
-        note.Owner = account;
+        note.Owner = account.Val;
         note.SyntaxType = requestDto.Type;
         return repository.Save(note);
     }

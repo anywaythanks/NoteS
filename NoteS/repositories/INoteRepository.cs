@@ -11,7 +11,6 @@ public interface INoteRepository
     public Note? FindByPath(Field<INotePath, string> path);
     public Task<Note> LoadContent(Note note);
     public Note LoadTags(Note note);
-
     public bool DeleteTag(Note note, Tag tag);
     public NoteTag AddTag(Note note, Tag tag);
     public Task<List<Note>> FindByTitle(Field<INoteTitle, string> title, Field<IAccId, int> ownerId);
@@ -25,5 +24,5 @@ public interface INoteRepository
     public List<Note> FindByTag(Field<ITagId, int> tag, Account owner);
     public List<Note> FindByOwner(Account owner);
     public Task<List<Note>> SemanticFind(SemanticSearchQuery find, Field<IAccId, int> ownerId);
-    public Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Account owner);
+    public Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Field<IAccId, int> owner);
 }

@@ -11,4 +11,9 @@ public class AccountInformationService(
     {
         return accountRepository.FindByName(name) ?? throw new NotFound("аккаунт");
     }
+
+    public Account Get(Field<IAccId, int> id)
+    {
+        return accountRepository.FindById(id) ?? throw new NotFound("аккаунт");
+    }
 }

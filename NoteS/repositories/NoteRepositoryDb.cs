@@ -20,13 +20,13 @@ public partial class NoteRepositoryDbAndElastic
             .HasOne(nt => nt.Tag)
             .WithMany(n => n.Notes)
             .HasForeignKey(nt => nt.TagId);
-
         modelBuilder.Entity<NoteTag>()
             .HasOne(nt => nt.Note)
             .WithMany(n => n.Tags)
             .HasForeignKey(nt => nt.NoteId)
             .OnDelete(DeleteBehavior.Cascade); // Cascade delete when a Note is deleted
-
+        modelBuilder.Entity<Note>()
+            .Ignore(e => e.Content);
         modelBuilder
             .Entity<Note>()
             .Property(e => e.Type)
@@ -137,7 +137,7 @@ public partial class NoteRepositoryDbAndElastic
     private partial List<Note> LoadCommentsInDb(Note note)
     {
         return (from n in Notes
-                where n.Owner.Id == note.Id &&
+                where n.Owner == note.Id &&
                       n.Type == NoteTypes.Comment &&
                       n.IsPublic == true
                 select n)
@@ -158,7 +158,7 @@ public partial class NoteRepositoryDbAndElastic
     public partial List<Note> FindByOwner(Account owner)
     {
         return (from n in Notes
-                where n.Owner.Id == owner.Id
+                where n.Owner == owner.Id
                 select n)
             .Select(n => Detach(n))
             .ToList();

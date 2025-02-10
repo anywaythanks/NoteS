@@ -18,4 +18,7 @@ public partial class AccountMapper
 
     [MapProperty("Uuid", "Val")]
     public partial Field<IAccUuid, string> ToUuid(Account account);
+
+    [MapProperty("Owner", "Val")]
+    public partial Field<IAccId, int> Of(Note note);
 }

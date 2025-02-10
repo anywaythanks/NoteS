@@ -69,8 +69,8 @@ public class PublicNoteController(
         return ExecuteA(async () =>
             {
                 var r = um.OfCreateNote(await editService.CreateNote(am.Of(accountName), editDto));
-                return Created(new Uri(Url.Link("GetNote", new { accountName, pathNote = r.Path }) ?? string.Empty),
-                    "PublicNoteController");
+                return Created(Url.Action("GetNote", "PublicNote",
+                    new { accountName.AccountName, pathNote = r.Path }, Request.Scheme), r);
             },
             new EqualNameP(registerService, am.Of(accountName)));
     }

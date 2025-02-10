@@ -78,18 +78,19 @@ public partial class NoteRepositoryDbAndElastic
         return response.Documents.ToList();
     }
 
-    public async partial Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Account owner)
+    public async partial Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Field<IAccId, int> owner)
     {
+        var uuid = Guid.NewGuid().ToString();
         var response = await client.CreateAsync(new
         {
             title = requestDto.Title,
             content = requestDto.Content,
             syntax_type = requestDto.Type.Name,
-            owner = owner.Id
-        });
-        return new Note(requestDto.Title, response.Id)
+            owner = owner.Val
+        }, c=> c.Id(uuid));
+        return new Note(requestDto.Title, uuid)
         {
-            Owner = owner,
+            Owner = owner.Val,
             Content = requestDto.Content,
             SyntaxType = requestDto.Type,
         };

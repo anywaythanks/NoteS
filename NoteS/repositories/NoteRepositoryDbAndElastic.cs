@@ -53,5 +53,5 @@ public partial class NoteRepositoryDbAndElastic(
 
     public partial Task<List<Note>> SemanticFind(SemanticSearchQuery find, Field<IAccId, int> ownerId);
 
-    public partial Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Account owner);
+    public partial Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Field<IAccId, int> owner);
 }

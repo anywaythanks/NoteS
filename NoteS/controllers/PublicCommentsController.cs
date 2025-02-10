@@ -49,8 +49,9 @@ public class PublicCommentsController(
             {
                 var r = um.OfCreateComment(
                     await commentEditService.CreateComment(am.Of(accountName), nm.Of(pathNote), createDto));
-                return Created(new Uri(Url.Link("GetNote",
-                    new { accountName, pathNote = r.Path }) ?? string.Empty), "PublicNoteController");
+
+                return Created(Url.Action("GetNote", "PublicNote",
+                    new { accountName, pathNote = new NotePath { PathNote = r.Path } }, Request.Scheme), r);
             },
             new EqualNameP(registerService, am.Of(accountName)));
     }

@@ -29,7 +29,8 @@ public class NoteInformationService(
     public Note Get(Field<INotePath, string> path, Field<IAccName, string> owner)
     {
         var note = repository.FindByPath(path) ?? throw new NotFound("заметка");
-        if (note.Owner.Name != owner.Val) throw new Forbidden("заметке");
+        var acc = informationService.Get(am.Of(note));
+        if (acc.Name != owner.Val) throw new Forbidden("заметке");
         return note;
     }
 

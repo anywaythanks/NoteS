@@ -14,3 +14,6 @@ alter table if exists notes
     add elastic_uuid char(128) not null unique;
 
 GO
+
+alter table if exists notes
+    drop constraint notes_title_key;

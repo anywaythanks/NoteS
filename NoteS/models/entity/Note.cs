@@ -16,13 +16,13 @@ public class Note(string title, string elasticUuid)
     public string ElasticUuid { get; set; } = elasticUuid;
 
     public string? Content { get; set; } //TODO: из эластика
-    [Column("account_id")] public required Account Owner { get; set; }
+    [Column("account_id")] public required int Owner { get; set; }
 
     public List<NoteTag> Tags { get; set; } = []; //many-to-many
 
     [Column("type")] public NoteTypes? Type { get; set; }
     [Column("is_public")] public bool IsPublic { get; set; }
-    [Column("prev")] public Note? MainNote { get; set; } //поскольку это дерево, то не следует вовсе заполнять
+    [Column("prev")] public int? MainNote { get; set; } //поскольку это дерево, то не следует вовсе заполнять
 
     [Column("syntax_type_id")] public SyntaxType? SyntaxType { get; set; }
 

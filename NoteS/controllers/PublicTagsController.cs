@@ -45,7 +45,12 @@ public class PublicTagsController(
     public Task<IActionResult> CreateTag([FromQuery] AccName accountName,
         [FromBody] CreateTagRequestDto createTagRequestDto)
     {
-        return Execute(() => um.Of(tagEditService.Create(am.Of(accountName), tm.Of(createTagRequestDto))),
+        return Execute(() =>
+            {
+                var t = um.Of(tagEditService.Create(am.Of(accountName), tm.Of(createTagRequestDto)));
+                return Created(Url.Action("Tags", "PublicTags",
+                    new { accountName.AccountName }, Request.Scheme), t);
+            },
             new EqualNameP(registerService, am.Of(accountName)));
     }
 
