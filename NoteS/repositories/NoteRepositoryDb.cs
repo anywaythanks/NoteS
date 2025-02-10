@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NoteS.models.entity;
 
 namespace NoteS.repositories;
@@ -39,6 +40,19 @@ public partial class NoteRepositoryDbAndElastic
             .HasConversion(
                 v => SyntaxType.TypeToNum(v),
                 v => SyntaxType.NumToType(v));
+
+        modelBuilder.Entity<Note>()
+            .Property(e => e.ElasticUuid)
+            .HasConversion(
+                new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd()));
+        modelBuilder.Entity<Note>()
+            .Property(e => e.Path)
+            .HasConversion(
+                new ValueConverter<string?, string>(v => v.TrimEnd(), v => v.TrimEnd()));
+        modelBuilder.Entity<Tag>()
+            .Property(e => e.Name)
+            .HasConversion(
+                new ValueConverter<string?, string>(v => v.TrimEnd(), v => v.TrimEnd()));
     }
 
     public partial Note Save(Note note)

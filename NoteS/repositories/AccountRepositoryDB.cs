@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NoteS.models.entity;
 
 namespace NoteS.repositories;
@@ -12,9 +13,14 @@ public sealed class AccountRepositoryDb(DbContextOptions<AccountRepositoryDb> op
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // modelBuilder.Entity<Account>()
-        //     .Property(e => e.Role)
-        //     .HasConversion<string>();
+        modelBuilder.Entity<Account>()
+            .Property(e => e.Name)
+            .HasConversion(
+                new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd()));
+        modelBuilder.Entity<Account>()
+            .Property(e => e.Uuid)
+            .HasConversion(
+                new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd()));
     }
 
     public Account Save(Account account)

@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NoteS.models.entity;
 
 namespace NoteS.repositories;
@@ -8,6 +9,14 @@ public sealed class TagRepositoryDb(DbContextOptions<TagRepositoryDb> options)
     : DbContext(options), ITagRepository
 {
     public DbSet<Tag> Tags { get; init; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Tag>()
+            .Property(e => e.Name)
+            .HasConversion(
+                new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd()));
+    }
 
     public Tag Save(Tag tag)
     {
