@@ -13,6 +13,7 @@ public partial class UniversalDtoMapper
 
     private List<NoteSearchResponseDto> OfSearch(List<Note> source) => source.Select(OfSearch).ToList();
     public partial PageDto<NoteSearchResponseDto> Of(PageDto<Note> source);
+    public partial PageDto<NoteSearchContentResponseDto> OfContent(PageDto<Note> source);
     public partial PageDto<NoteSearchContentResponseDto> OfPage(PageDto<Note> source);
 
     [MapperIgnoreTarget("NoteTypeName")]
@@ -39,7 +40,9 @@ public partial class UniversalDtoMapper
     [MapperIgnoreTarget("NoteTypeName")]
     [MapperIgnoreTarget("TypeName")]
     public partial CommentCreateResponseDto OfCreateComment(Note source);
-
+    
+    [MapperIgnoreTarget("TypeName")]
+    public partial NoteCreateRequestDto OfCreateContent(Note source);
     public partial TagResponseDto Of(Tag tag);
     public List<TagResponseDto> Of(List<Tag> tag) => tag.Select(Of).ToList();
     public partial PageDto<TagResponseDto> Of(PageDto<Tag> source);

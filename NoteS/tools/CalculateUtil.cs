@@ -12,25 +12,23 @@ public class CalculateUtil
         return total / limit + Math.Sign(total % limit);
     }
 
-    public static long ToOffset(long page, long limit, long total)
+    public static long ToOffset(long page, long limit)
     {
-        return Math.Clamp((page - 1) * limit, 0, Math.Max(total - limit, 0));
+        return Math.Max((page - 1) * limit, 0);
     }
 
-    public static int ToOffset(int page, int limit, int total)
+    public static int ToOffset(int page, int limit)
     {
-        return Math.Clamp((page - 1) * limit, 0, Math.Max(total - limit, 0));
+        return Math.Max((page - 1) * limit, 0);
     }
 
     public static int CurrentPage(int page, int limit, int total)
     {
-        var totalPages = TotalPages(total, limit);
-        return totalPages == 0 ? 0 : Math.Clamp(page, 1, totalPages);
+        return page;
     }
 
     public static long CurrentPage(long page, long limit, long total)
     {
-        var totalPages = TotalPages(total, limit);
-        return totalPages == 0 ? 0 : Math.Clamp(page, 1, totalPages);
+        return page;
     }
 }

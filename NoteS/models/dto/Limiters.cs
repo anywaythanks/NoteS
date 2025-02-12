@@ -17,7 +17,7 @@ public readonly struct LimitDto(int limit)
 
 public class PaginationRequestDto
 {
-    [Range(0, int.MaxValue)] public int Page { get; set; } = 0;
+    [Range(1, int.MaxValue)] public int Page { get; set; } = 1;
     [Range(5, 20)] public int Limit { get; set; } = 5;
     public static implicit operator PageSizeDto(PaginationRequestDto prd) => pm.OfPage(prd);
     public static implicit operator LimitDto(PaginationRequestDto prd) => pm.OfLimit(prd);

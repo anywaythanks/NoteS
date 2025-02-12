@@ -11,7 +11,7 @@ public class CommentEditService(
     INoteRepository repository,
     AccountInformationService accountInformationService)
 {
-    public async Task<Note> EditContentComment(NotePathDto pathComment, AccNameDto owner,
+    public Task<Note> EditContentComment(NotePathDto pathComment, AccNameDto owner,
         CommentEditRequestDto requestDto)
     {
         var comment = noteInformationService.Get(pathComment, owner);
@@ -20,31 +20,33 @@ public class CommentEditService(
         comment.SyntaxType = requestDto.SyntaxType;
         comment.Content = requestDto.Content;
         comment.Title = requestDto.Title;
-        return repository.Save(await repository.SaveContent(comment));
+        return repository.Save(comment);
     }
 
-    public async Task<Note> EditContentComment(NotePathDto pathComment, CommentEditRequestDto requestDto)
+    public Task<Note> EditContentComment(NotePathDto pathComment, CommentEditRequestDto requestDto)
     {
         var comment = noteInformationService.Get(pathComment);
         comment.SyntaxType = requestDto.SyntaxType;
         comment.Content = requestDto.Content;
         comment.Title = requestDto.Title;
-        return repository.Save(await repository.SaveContent(comment));
+        return repository.Save(comment);
     }
 
-    public async Task<Note> CreateComment(AccNameDto accountName, NotePathDto pathNote,
+    public Task<Note> CreateComment(AccNameDto accountName, NotePathDto pathNote,
         CommentCreateRequestDto requestDto)
     {
         var note = noteInformationService.Get(pathNote);
         AccIdDto account = accountInformationService.Get(accountName);
-        var comment = await repository.CreateInElastic(requestDto, account);
-        comment.Title = requestDto.Title;
-        comment.Type = NoteTypes.Comment;
-        comment.MainNote = note.Id;
-        comment.IsPublic = true;
-        comment.Path = Guid.NewGuid().ToString();
-        comment.Owner = account.Id;
-        comment.SyntaxType = requestDto.Type;
+        var comment = new Note(requestDto.Title)
+        {
+            Path =  Guid.NewGuid().ToString(),
+            MainNote = note.Id,
+            Content = requestDto.Content,
+            Owner = account.Id,
+            Type = NoteTypes.Comment,
+            IsPublic = true,
+            SyntaxType = requestDto.SyntaxType
+        };
         return repository.Save(comment);
     }
 

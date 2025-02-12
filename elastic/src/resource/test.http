@@ -65,7 +65,7 @@ PUT passages
     }
   },
   "settings": {
-    "index": {
+    "index": {_source
         "number_of_replicas": "1",
         "number_of_shards": "1",
         "default_pipeline": "pipeline"

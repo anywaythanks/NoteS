@@ -2,9 +2,16 @@
   "processors": [
     {
       "inference": {
-        "model_id":  "cointegrated__rubert-tiny2",
+        "model_id": "cointegrated__rubert-tiny2",
         "target_field": "vector",
-        "field_map": {"content": "text_field"}
+        "field_map": {
+          "content": "text_field"
+        },
+        "inference_config": {
+          "text_embedding": {
+            "results_field": "vector"
+          }
+        }
       }
     }
   ]

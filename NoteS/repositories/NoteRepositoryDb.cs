@@ -30,7 +30,8 @@ public partial class NoteRepositoryDbAndElastic
             .Ignore(e => e.Content)
             .Ignore(e => e.MainNoteObject)
             .Ignore(e => e.OwnerAccount)
-            .Ignore(n => n.Tags);
+            .Ignore(n => n.Tags)
+            .Ignore(n => n.Score);
         modelBuilder
             .Entity<Note>()
             .Property(e => e.Type)
@@ -63,7 +64,7 @@ public partial class NoteRepositoryDbAndElastic
                 new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd()));
     }
 
-    public partial Note Save(Note note)
+    public partial Note SavePartial(Note note)
     {
         bool isNew = note.Id == null;
         if (isNew)
@@ -152,7 +153,7 @@ public partial class NoteRepositoryDbAndElastic
         var page = pageSize.Page;
         return new PageDto<Note>
         {
-            items = q.Skip(CalculateUtil.ToOffset(page, limit, total))
+            items = q.Skip(CalculateUtil.ToOffset(page, limit))
                 .Take(limit)
                 .ToList()
                 .Select(o =>
@@ -177,7 +178,7 @@ public partial class NoteRepositoryDbAndElastic
         var page = pageSize.Page;
         return new PageDto<Note>
         {
-            items = q.Skip(CalculateUtil.ToOffset(page, limit, total))
+            items = q.Skip(CalculateUtil.ToOffset(page, limit))
                 .Take(limit)
                 .ToList(),
             Total = CalculateUtil.TotalPages(total, limit),
@@ -215,9 +216,39 @@ public partial class NoteRepositoryDbAndElastic
 
         return new PageDto<Note>
         {
-            items = q.Skip(CalculateUtil.ToOffset(page, limit, total))
+            items = q.Skip(CalculateUtil.ToOffset(page, limit))
                 .Take(limit)
                 .ToList(),
+            Total = CalculateUtil.TotalPages(total, limit),
+            Page = CalculateUtil.CurrentPage(page, limit, total)
+        };
+    }
+
+    private partial PageDto<Note> LoadNoteDb(PageDto<SearchResultDto> notes, PageSizeDto page1, LimitDto limit1)
+    {
+        var uuids = notes.items.Select(t => t.ElasticUuid).ToList();
+        var q = from n in Notes
+            where uuids.Contains(n.ElasticUuid)
+            select n;
+
+        long total = notes.Total;
+        var limit = limit1.Limit;
+        var page = page1.Page;
+        q = q.OrderBy(n => n.Id);
+        var list = q.Skip(CalculateUtil.ToOffset(page, limit))
+            .Take(limit)
+            .ToList();
+        foreach (var note in notes.items)
+        {
+            var noteDb = list.FirstOrDefault(n => n.ElasticUuid == note.ElasticUuid);
+            if (noteDb == null) continue;//TODO: вообще странный случай
+            noteDb.Content = note.Content;
+            noteDb.Score = note.Score;
+        }
+
+        return new PageDto<Note>
+        {
+            items = list,
             Total = CalculateUtil.TotalPages(total, limit),
             Page = CalculateUtil.CurrentPage(page, limit, total)
         };

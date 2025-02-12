@@ -8,10 +8,10 @@ public class CommentInformationService(
     INoteRepository repository,
     NoteInformationService noteInformationService)
 {
-    public PageDto<Note> Comments(AccNameDto name, NotePathDto path, PageSizeDto pageSize, LimitDto limit)
+    public async Task<PageDto<Note>> Comments(AccNameDto name, NotePathDto path, PageSizeDto pageSize, LimitDto limit)
     {
         var note = noteInformationService.GetPublic(path, name);
-        var page = repository.GetComments(note, pageSize, limit);
+        var page =await repository.GetComments(note, pageSize, limit);
         page.items.ForEach(c => c.MainNoteObject = note);
         return page;
     }

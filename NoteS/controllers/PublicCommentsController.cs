@@ -24,12 +24,12 @@ public class PublicCommentsController(
     [KeycloakAuthorize(Policies.READ_COMMENTS)]
     [SwaggerOperation(Description = "Список комментариев к заметке")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public PageDto<NoteSearchContentResponseDto> Comments([FromQuery] AccName accountName,
+    public async Task<PageDto<NoteSearchContentResponseDto>> Comments([FromQuery] AccName accountName,
         [FromQuery] NotePath pathNote,
         [FromQuery] PaginationRequestDto pagination)
     {
         Check(accountName);
-        var comments = commentInformationService.Comments(accountName, pathNote, pagination, pagination);
+        var comments = await commentInformationService.Comments(accountName, pathNote, pagination, pagination);
         return um.OfPage(comments);
     }
 

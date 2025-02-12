@@ -21,5 +21,7 @@ public partial class NoteMapper
     public partial NotePathDto ToPathDto(NotePath path);
     public partial NoteIsPublicDto ToIsPublicDto(Note note);
     public partial NoteContentDto ToContentDto(Note note);
+  
+    public partial NoteContentDto ToContentDto(ElasticResponseDto elastic);
     public partial NoteTitleDto Of(NoteSearchRequestDto note);
 }

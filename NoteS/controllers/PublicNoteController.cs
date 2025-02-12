@@ -62,19 +62,19 @@ public class PublicNoteController(
     [HttpGet("search/title")]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.SEARCH_OWN_NOTES)]
     [SwaggerOperation(Description = "Поиск по заголовку")]
-    public async Task<PageDto<NoteSearchResponseDto>> SearchByTitleNotes([FromQuery] AccName accountName,
+    public async Task<PageDto<NoteSearchContentResponseDto>> SearchByTitleNotes([FromQuery] AccName accountName,
         [FromQuery] NoteSearchRequestDto noteSearch,
         [FromQuery] PaginationRequestDto pagination)
     {
         Check(accountName);
         var notes = await noteInformationService.Find(noteSearch, accountName, pagination, pagination);
-        return um.Of(notes);
+        return um.OfContent(notes);
     }
 
     [HttpGet("search/tag")]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.SEARCH_OWN_NOTES)]
     [SwaggerOperation(Description = "Поиск по тегам")]
-    public PageDto<NoteSearchResponseDto> SearchByTagNotes([FromQuery] AccName accountName,
+    public PageDto<NoteSearchContentResponseDto> SearchByTagNotes([FromQuery] AccName accountName,
         [FromQuery(Name = "tag")] List<string> tags,
         [FromQuery(Name = "filter")] List<string> filterTags,
         [FromQuery] PaginationRequestDto pagination,
@@ -85,7 +85,7 @@ public class PublicNoteController(
         var notes = tagInformationService.FindTags(
             tm.Of(tags), tm.Of(filterTags),
             accountName, isAnd, pagination, pagination);
-        return um.Of(notes);
+        return um.OfContent(notes);
     }
 
     [HttpDelete("{pathNote}")]
@@ -101,24 +101,24 @@ public class PublicNoteController(
     [HttpGet("search/semantic")]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.SEARCH_OWN_NOTES)]
     [SwaggerOperation(Description = "Семантический поиск")]
-    public async Task<PageDto<NoteSearchResponseDto>> SemanticSearchNotes([FromQuery] AccName accountName,
+    public async Task<PageDto<NoteSearchContentResponseDto>> SemanticSearchNotes([FromQuery] AccName accountName,
         [FromQuery] NoteSemanticSearchRequestDto noteSearch,
         [FromQuery] PaginationRequestDto pagination)
     {
         Check(accountName);
         var notes = await noteInformationService.FindSemantic(accountName, noteSearch, pagination, pagination);
-        return um.Of(notes);
+        return um.OfContent(notes);
     }
 
     [HttpGet]
     [KeycloakAuthorize(Policies.READ_NOTES)]
     [SwaggerOperation(Description = "Список заметок пользователя")]
-    public PageDto<NoteSearchResponseDto> Notes([FromQuery] AccName accountName,
+    public PageDto<NoteSearchContentResponseDto> Notes([FromQuery] AccName accountName,
         [FromQuery] PaginationRequestDto pagination)
     {
         Check(accountName);
         var notes = noteInformationService.Find(accountName, pagination, pagination);
-        return um.Of(notes);
+        return um.OfContent(notes);
     }
 
     [HttpGet("{pathNote}")]

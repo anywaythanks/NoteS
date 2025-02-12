@@ -5,9 +5,15 @@ namespace NoteS.repositories;
 
 public interface INoteRepository
 {
-    public Note Save(Note note);
+    /**
+     * Сохраняет данные. Аналогично PUT. 
+     */
+    public Task<Note> Save(Note note);
+    /**
+     * Сохраняет какую-то часть данных. Наверное не рекомендуется к использованию. 
+     */
+    public Note SavePartial(Note note);
     public Task<bool> Delete(Note note);
-    public Task<Note> SaveContent(Note note);
     public Note? FindByPath(NotePathDto path);
     public Task<NoteContentDto?> GetContent(NoteElasticDto note);
     public List<Tag> GetTags(NoteIdDto note);
@@ -18,11 +24,8 @@ public interface INoteRepository
         LimitDto limit);
 
     public bool IsTagExists(TagIdDto tag, NoteIdDto note);
-
-    /**
-     * todo: Должно быть с контентом, по идее целой пачкой надо отправлять в elastic
-     */
-    public PageDto<Note> GetComments(NoteIdDto note, PageSizeDto pageSize, LimitDto limit);
+    
+    public Task<PageDto<Note>> GetComments(NoteIdDto note, PageSizeDto pageSize, LimitDto limit);
 
     public PageDto<Note> FindNotesByTags(List<TagIdDto> tags, List<TagIdDto> filterTags, bool op,
         AccIdDto owner,  LimitDto limit, PageSizeDto page);
@@ -31,6 +34,4 @@ public interface INoteRepository
 
     public Task<PageDto<Note>> SemanticFind(SemanticSearchQuery find, AccIdDto ownerId, PageSizeDto page,
         LimitDto limit);
-
-    public Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, AccIdDto owner);
 }

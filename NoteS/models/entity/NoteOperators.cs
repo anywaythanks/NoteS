@@ -1,4 +1,5 @@
-﻿using NoteS.models.dto;
+﻿using System.Text.Json.Serialization;
+using NoteS.models.dto;
 using NoteS.models.mappers;
 
 namespace NoteS.models.entity;
@@ -20,6 +21,7 @@ public partial class Note
     public static implicit operator NoteIsPublicDto(Note note) => nm.ToIsPublicDto(note);
     public static implicit operator CommentCreateResponseDto(Note note) => um.OfCreateComment(note);
     public static implicit operator CommentEditResponseDto(Note note) => um.OfEditComment(note);
+    public static implicit operator NoteCreateRequestDto(Note note) => um.OfCreateContent(note);
 }
 
 public readonly struct NoteIdDto(int id)
@@ -42,9 +44,30 @@ public readonly struct NoteElasticDto(string elasticUuid)
     public string ElasticUuid { get; init; } = elasticUuid;
 }
 
+public readonly struct SearchResultDto(string elasticUuid)
+{
+    public string ElasticUuid { get; init; } = elasticUuid;
+    public decimal Score { get; init; }
+    public string Content { get; init; }
+}
+
 public readonly struct NoteContentDto(string content)
 {
-    public string Content { get; init; } = content;
+    [JsonPropertyName("content")] public string Content { get; init; } = content;
+}
+
+public class ElasticResponseDto
+{
+    public string _id { get; set; }
+    public string Id { get; set; }
+    public string Title { get; set; }
+    public int Owner { get; set; }
+    public string Content { get; set; }
+
+    public static implicit operator NoteContentDto?(ElasticResponseDto? note) =>
+        note == null ? null : nm.ToContentDto(note);
+
+    public static implicit operator NoteContentDto(ElasticResponseDto note) => nm.ToContentDto(note);
 }
 
 public readonly struct NoteIsPublicDto(bool isPublic)

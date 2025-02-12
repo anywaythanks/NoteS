@@ -1,5 +1,6 @@
 using Elastic.Clients.Elasticsearch;
 using Microsoft.EntityFrameworkCore;
+using NoteS.configs;
 using NoteS.models.dto;
 using NoteS.models.entity;
 using NoteS.models.mappers;
@@ -9,9 +10,14 @@ namespace NoteS.repositories;
 public partial class NoteRepositoryDbAndElastic(
     ElasticsearchClient client,
     DbContextOptions<NoteRepositoryDbAndElastic> options,
-    NoteMapper nm) : DbContext(options), INoteRepository
+    ElasticData elasticData) : DbContext(options), INoteRepository
 {
-    public partial Note Save(Note note);
+    public async Task<Note> Save(Note note)
+    {
+        return SavePartial(await SaveInElastic(note));
+    }
+
+    public partial Note SavePartial(Note note);
 
     public async Task<bool> Delete(Note note)
     {
@@ -24,28 +30,35 @@ public partial class NoteRepositoryDbAndElastic(
     private partial Task<bool> DeleteInElastic(Note note);
     private partial bool DeleteInDb(Note note);
 
-    public partial Task<Note> SaveContent(Note note);
+    private partial Task<Note> SaveInElastic(Note note);
 
     public partial Note? FindByPath(NotePathDto path);
 
     public partial Task<NoteContentDto?> GetContent(NoteElasticDto note);
 
-    private partial PageDto<Note> LoadContent(PageDto<Note> notes);
-
+    private partial Task<PageDto<Note>> LoadContentElastic(PageDto<Note> notes);
+    private partial PageDto<Note> LoadNoteDb(PageDto<SearchResultDto> notes, PageSizeDto page, LimitDto limit);
     public partial List<Tag> GetTags(NoteIdDto note);
 
-    public partial  bool DeleteTag(NoteIdDto note, TagIdDto tag);
+    public partial bool DeleteTag(NoteIdDto note, TagIdDto tag);
 
     public partial bool AddTag(NoteIdDto note, TagIdDto tag);
 
-    public partial Task<PageDto<Note>> FindByTitle(NoteTitleDto title, AccIdDto ownerId, PageSizeDto page,
+    public async Task<PageDto<Note>> FindByTitle(NoteTitleDto title, AccIdDto ownerId, PageSizeDto page,
+        LimitDto limit)
+    {
+        return LoadNoteDb(await FindByTitleElastic(title, ownerId, page, limit), page, limit);
+    }
+
+    public partial Task<PageDto<SearchResultDto>> FindByTitleElastic(NoteTitleDto title, AccIdDto ownerId,
+        PageSizeDto page,
         LimitDto limit);
 
     public partial bool IsTagExists(TagIdDto tag, NoteIdDto note);
 
-    public PageDto<Note> GetComments(NoteIdDto note, PageSizeDto pageSize, LimitDto limit)
+    public Task<PageDto<Note>> GetComments(NoteIdDto note, PageSizeDto pageSize, LimitDto limit)
     {
-        return LoadContent(GetCommentsInDb(note, pageSize, limit));
+        return LoadContentElastic(GetCommentsInDb(note, pageSize, limit));
     }
 
     private partial PageDto<Note> GetCommentsInDb(NoteIdDto note, PageSizeDto pageSize, LimitDto limit);
@@ -55,8 +68,15 @@ public partial class NoteRepositoryDbAndElastic(
 
     public partial PageDto<Note> FindNotesByOwner(AccIdDto owner, PageSizeDto pageSize, LimitDto limit);
 
-    public partial Task<PageDto<Note>> SemanticFind(SemanticSearchQuery find, AccIdDto ownerId, PageSizeDto page,
+    public async Task<PageDto<Note>> SemanticFind(SemanticSearchQuery find, AccIdDto ownerId, PageSizeDto page,
+        LimitDto limit)
+    {
+        return LoadNoteDb(await SemanticFindInElastic(find, ownerId, page, limit), page, limit);
+    }
+
+    private partial Task<PageDto<SearchResultDto>> SemanticFindInElastic(SemanticSearchQuery find, AccIdDto ownerId,
+        PageSizeDto page,
         LimitDto limit);
 
-    public partial Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, AccIdDto owner);
+    private partial Task<NoteElasticDto> CreateInElastic(Note note, AccIdDto owner);
 }

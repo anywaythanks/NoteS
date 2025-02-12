@@ -15,6 +15,7 @@ public class NoteSearchResponseDto
     public string Title { get; set; }
     public string Path { get; set; }
     [JsonIgnore] public NoteTypes Type { get; set; }
+    public decimal Score { get; set; }
 
     [JsonPropertyName("note_type")]
     [Required]
@@ -43,7 +44,7 @@ public class NoteSearchContentResponseDto
 
     [JsonPropertyName("main_note_path")] public string? MainPath { get; set; }
     public string Content { get; set; }
-
+    public decimal Score { get; set; }
     [JsonIgnore] public NoteTypes Type { get; set; }
 
     [JsonPropertyName("note_type")]
@@ -93,4 +94,10 @@ public class AccName
     public string AccountName { get; set; }
 
     public static implicit operator AccNameDto(AccName name) => am.ToNameDto(name);
+}
+class ElasticRequestDto
+{
+    public string title { get; init; }
+    public string content { get; init; }
+    public string syntax_type { get; init; }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace NoteS.models.entity;
 
 [Table("notes")]
-public partial class Note(string title, string elasticUuid)
+public partial class Note(string title)
 {
     [Column("id")] public int? Id { get; set; }
 
@@ -13,7 +13,7 @@ public partial class Note(string title, string elasticUuid)
 
     [Column("elastic_uuid")]
     [MaxLength(128)]
-    public string ElasticUuid { get; set; } = elasticUuid;
+    public string? ElasticUuid { get; set; }
 
     public Account? OwnerAccount { get; set; }
     public string? Content { get; set; } //TODO: из эластика
@@ -30,6 +30,8 @@ public partial class Note(string title, string elasticUuid)
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column("created_on")]
     public DateTime? CreatedOn { get; set; }
+
+    public decimal Score { get; set; } = 1; //оценка от ии. Иногда имеет смысл..
 
     public bool IsEditable()
     {

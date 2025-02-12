@@ -1,6 +1,7 @@
 ﻿{
   "settings": {
     "number_of_shards": 1,
+    "default_pipeline": "rubert-embeddings",
     "analysis": {
       "analyzer": {
         "russian_search": {
@@ -25,14 +26,21 @@
         "type": "text",
         "analyzer": "russian_search"
       },
-      "syntax_type": { "type": "text" },
+      "language": {"type": "text"},
+      "syntax_type": { "type": "keyword" },
+      "entry_type": { "type": "keyword" },
       "owner": { "type": "long" },
-      "vector": {
+      "vector.predicted_value": {
         "type": "dense_vector",
-        "dims": 384,
+        "dims": 312,
         "index": true,
         "similarity": "cosine"
       }
+    },
+    "_source": {
+      "excludes": [
+        "vector.vector"
+      ]
     }
   }
 }

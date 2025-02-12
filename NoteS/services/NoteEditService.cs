@@ -16,7 +16,7 @@ public class NoteEditService(
     {
         var note = noteInformationService.Get(pathNote, owner);
         note.IsPublic = requestDto.IsPublic;
-        return repository.Save(note);
+        return repository.SavePartial(note);
     }
 
     public async Task Delete(NotePathDto pathNote, AccNameDto owner)
@@ -29,7 +29,7 @@ public class NoteEditService(
     {
         var note = noteInformationService.Get(pathNote);
         note.IsPublic = requestDto.IsPublic;
-        return repository.Save(note);
+        return repository.SavePartial(note);
     }
 
     public Task<Note> EditNote(NotePathDto pathNote, AccNameDto owner,
@@ -38,8 +38,9 @@ public class NoteEditService(
         var note = noteInformationService.Get(pathNote, owner);
         if (note.Type != NoteTypes.Note) throw new NoteTypeException("заметка");
         note.Content = requestDto.Content;
+        note.Title = requestDto.Title;
         note.SyntaxType = requestDto.Type;
-        return repository.SaveContent(note);
+        return repository.Save(note);
     }
 
     public Task<Note> EditNote(NotePathDto pathNote, NoteEditContentRequestDto requestDto)
@@ -47,19 +48,23 @@ public class NoteEditService(
         var note = noteInformationService.Get(pathNote);
         if (note.Type != NoteTypes.Note) throw new NoteTypeException("заметка");
         note.Content = requestDto.Content;
+        note.Title = requestDto.Title;
         note.SyntaxType = requestDto.Type;
-        return repository.SaveContent(note);
+        return repository.Save(note);
     }
 
-    public async Task<Note> CreateNote(AccNameDto accountName, NoteCreateRequestDto requestDto)
+    public Task<Note> CreateNote(AccNameDto accountName, NoteCreateRequestDto requestDto)
     {
         AccIdDto account = accountInformationService.Get(accountName);
-        var note = await repository.CreateInElastic(requestDto, account);
-        note.Title = requestDto.Title;
-        note.Type = NoteTypes.Note;
-        note.Path = Guid.NewGuid().ToString();
-        note.Owner = account.Id;
-        note.SyntaxType = requestDto.Type;
+        var note = new Note(requestDto.Title)
+        {
+            Path =  Guid.NewGuid().ToString(),
+            Content = requestDto.Content,
+            Owner = account.Id,
+            Type = NoteTypes.Note,
+            IsPublic = false,
+            SyntaxType = requestDto.SyntaxType
+        };
         return repository.Save(note);
     }
 }

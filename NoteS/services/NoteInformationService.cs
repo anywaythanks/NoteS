@@ -10,20 +10,29 @@ public class NoteInformationService(
     INoteRepository repository,
     AccountInformationService informationService)
 {
-    public Task<PageDto<Note>> Find(NoteTitleDto title, AccNameDto owner, PageSizeDto pageSize, LimitDto limit)
+    public async Task<PageDto<Note>> Find(NoteTitleDto title, AccNameDto owner, PageSizeDto pageSize, LimitDto limit)
     {
-        return repository.FindByTitle(title, informationService.Get(owner), pageSize, limit);
+        var acc = informationService.Get(owner);
+        var notes = await repository.FindByTitle(title, acc, pageSize, limit);
+        notes.items.ForEach(note => note.OwnerAccount = acc);
+        return notes;
     }
 
     public PageDto<Note> Find(AccNameDto owner, PageSizeDto pageSize, LimitDto limit)
     {
-        return repository.FindNotesByOwner(informationService.Get(owner), pageSize, limit);
+        var acc = informationService.Get(owner);
+        var notes = repository.FindNotesByOwner(acc, pageSize, limit);
+        notes.items.ForEach(note => note.OwnerAccount = acc);
+        return notes;
     }
 
-    public Task<PageDto<Note>> FindSemantic(AccNameDto owner, SemanticSearchQuery query, PageSizeDto page,
+    public async Task<PageDto<Note>> FindSemantic(AccNameDto owner, SemanticSearchQuery query, PageSizeDto page,
         LimitDto limit)
     {
-        return repository.SemanticFind(query, informationService.Get(owner), page, limit);
+        var acc = informationService.Get(owner);
+        var notes = await repository.SemanticFind(query, acc, page, limit);
+        notes.items.ForEach(note => note.OwnerAccount = acc);
+        return notes;
     }
 
     public Note Get(NotePathDto path, AccNameDto owner)
@@ -34,6 +43,7 @@ public class NoteInformationService(
         note.OwnerAccount = acc;
         return note;
     }
+
     public Note GetPublic(NotePathDto path, AccNameDto owner)
     {
         var note = repository.FindByPath(path) ?? throw new NotFound("заметка");
@@ -42,6 +52,7 @@ public class NoteInformationService(
         note.OwnerAccount = acc;
         return note;
     }
+
     public Note Get(NotePathDto path)
     {
         var note = repository.FindByPath(path) ?? throw new NotFound("заметка");
