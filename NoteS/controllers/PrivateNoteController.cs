@@ -2,65 +2,55 @@
 using NoteS.Attributes;
 using NoteS.models.dto;
 using NoteS.models.entity;
-using NoteS.models.mappers;
 using NoteS.services;
-using NoteS.tools.preconditions;
+using NoteS.tools;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace NoteS.controllers;
 
 [ApiController]
 [Route("api/private/{accountName}/notes")]
+[ProducesResponseType(StatusCodes.Status200OK)]
+[ProducesResponseType(StatusCodes.Status403Forbidden)]
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 public class PrivateNoteController(
-    AccountRegisterService registerService,
+    AccountRegisterService register,
     NoteInformationService noteInformationService,
-    NoteEditService editService,
-    UniversalDtoMapper um,
-    AccountMapper am,
-    NoteMapper nm)
-    : GeneralPreconditionController
+    NoteEditService editService)
+    : GeneralPreconditionController(register)
 {
-    [HttpPatch]
+    [HttpPatch("{pathNote}/publish")]
     [KeycloakAuthorize(Policies.READ_ALL_NOTES, Policies.SET_ALL_PUBLIC_STATUS_NOTES)]
-    [Route("{pathNote}/publish")]
-    [ProducesResponseType<Account>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Редактирование свойства публичности любой заметки или комментария")]
-    public Task<IActionResult> EditPublicAllNote([FromQuery] AccName accountName,
+    public NoteEditPublicResponseDto EditPublicAllNote([FromQuery] AccName accountName,
         [FromQuery] NotePath pathNote,
         [FromBody] NoteEditPublicRequestDto editDto)
     {
-        return Execute(() => um.OfEdit(editService.PublishNote(nm.Of(pathNote), editDto)),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+
+        return editService.PublishNote(pathNote, editDto);
     }
 
-    [HttpPatch]
+    [HttpPatch("{pathNote}/content")]
     [KeycloakAuthorize(Policies.READ_ALL_NOTES, Policies.EDIT_ALL_NOTES)]
-    [Route("{pathNote}")]
-    [ProducesResponseType<NoteEditContentResponseDto>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Редактирование контента любой заметки или комментария")]
-    public Task<IActionResult> EditNoteAll([FromQuery] AccName accountName,
+    public async Task<NoteEditContentResponseDto> EditNoteAll([FromQuery] AccName accountName,
         [FromQuery] NotePath pathNote,
         [FromBody] NoteEditContentRequestDto editDto)
     {
-        return Execute(async () => um.OfEditContent(await editService.EditContentNote(nm.Of(pathNote), editDto)),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+
+        return await editService.EditNote(pathNote, editDto);
     }
 
-    [HttpGet]
+    [HttpGet("{pathNote}")]
     [KeycloakAuthorize(Policies.READ_ALL_NOTES)]
-    [Route("{pathNote}")]
-    [ProducesResponseType<NoteCreateResponseDto>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Получение данных любой заметки или комментария")]
-    public Task<IActionResult> GetNoteAll([FromQuery] AccName accountName,
+    public async Task<NoteCreateResponseDto> GetNoteAll([FromQuery] AccName accountName,
         [FromQuery] NotePath pathNote)
     {
-        return Execute(() => um.OfCreateNote(noteInformationService.GetFull(nm.Of(pathNote))),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+
+        return await noteInformationService.GetFull(pathNote);
     }
 }

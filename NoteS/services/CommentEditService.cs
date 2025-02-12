@@ -9,13 +9,13 @@ namespace NoteS.services;
 public class CommentEditService(
     NoteInformationService noteInformationService,
     INoteRepository repository,
-    AccountInformationService accountInformationService,
-    AccountMapper am)
+    AccountInformationService accountInformationService)
 {
-    public async Task<Note> EditContentComment(Field<INotePath, string> pathComment, Field<IAccName, string> owner,
+    public async Task<Note> EditContentComment(NotePathDto pathComment, AccNameDto owner,
         CommentEditRequestDto requestDto)
     {
         var comment = noteInformationService.Get(pathComment, owner);
+        if (comment.Type != NoteTypes.Comment) throw new NoteTypeException("комментарий");
         if (!comment.IsEditable()) throw new TimeMissed("редактирования комментариев");
         comment.SyntaxType = requestDto.SyntaxType;
         comment.Content = requestDto.Content;
@@ -23,7 +23,7 @@ public class CommentEditService(
         return repository.Save(await repository.SaveContent(comment));
     }
 
-    public async Task<Note> EditContentComment(Field<INotePath, string> pathComment, CommentEditRequestDto requestDto)
+    public async Task<Note> EditContentComment(NotePathDto pathComment, CommentEditRequestDto requestDto)
     {
         var comment = noteInformationService.Get(pathComment);
         comment.SyntaxType = requestDto.SyntaxType;
@@ -32,25 +32,26 @@ public class CommentEditService(
         return repository.Save(await repository.SaveContent(comment));
     }
 
-    public async Task<Note> CreateComment(Field<IAccName, string> accountName, Field<INotePath, string> pathNote,
+    public async Task<Note> CreateComment(AccNameDto accountName, NotePathDto pathNote,
         CommentCreateRequestDto requestDto)
     {
         var note = noteInformationService.Get(pathNote);
-        var account = am.ToId(accountInformationService.Get(accountName));
+        AccIdDto account = accountInformationService.Get(accountName);
         var comment = await repository.CreateInElastic(requestDto, account);
         comment.Title = requestDto.Title;
         comment.Type = NoteTypes.Comment;
         comment.MainNote = note.Id;
+        comment.IsPublic = true;
         comment.Path = Guid.NewGuid().ToString();
-        comment.Owner = account.Val;
+        comment.Owner = account.Id;
         comment.SyntaxType = requestDto.Type;
         return repository.Save(comment);
     }
 
-    public Task<bool> Delete(Field<INotePath, string> pathComment, Field<IAccName, string> owner)
+    public async Task Delete(NotePathDto pathComment, AccNameDto owner)
     {
         var note = noteInformationService.Get(pathComment, owner);
         if (!note.IsEditable()) throw new TimeMissed("удаления комментариев");
-        return repository.Delete(note);
+        if (!await repository.Delete(note)) throw new DontDel("Комментарий");
     }
 }

@@ -4,21 +4,18 @@ using Riok.Mapperly.Abstractions;
 
 namespace NoteS.models.mappers;
 
-[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target,
+    EnabledConversions = MappingConversionType.Constructor)]
 public partial class TagMapper
 {
-    [MapProperty("Id", "Val")]
-    public partial Field<ITagId, int> ToId(Tag tag);
+    public partial TagNameDto OfCreate(CreateTagRequestDto path);
 
-    [MapProperty("Name", "Val")]
-    public partial Field<ITagName, string> ToName(Tag tag);
+    public partial TagNameDto OfDelete(DeleteTagRequestDto path);
 
-    [MapProperty("Tag", "Val")]
-    public partial Field<ITagName, string> Of(NoteSearchTagsRequestDto path);
-
-    [MapProperty("Name", "Val")]
-    public partial Field<ITagName, string> Of(CreateTagRequestDto path);
-
-    [MapProperty("Name", "Val")]
-    public partial Field<ITagName, string> Of(DeleteTagRequestDto path);
+    public partial TagIdDto ToIdDto(Tag tag);
+    public partial TagNameDto ToNameDto(Tag tag);
+    
+    public partial TagIdDto OfIdDto(int? id);
+    
+    public partial List<TagNameDto> Of(List<string> tags);
 }

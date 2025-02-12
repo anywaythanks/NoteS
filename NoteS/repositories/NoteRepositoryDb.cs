@@ -1,7 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NoteS.models.dto;
 using NoteS.models.entity;
+using NoteS.tools;
 
 namespace NoteS.repositories;
 
@@ -10,23 +12,25 @@ public partial class NoteRepositoryDbAndElastic
     public DbSet<Note> Notes { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<NoteTag> NoteTags { get; set; }
+    public DbSet<Account> Accounts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // modelBuilder.Entity<NoteTag>()
-        //     .HasKey(nt => new { nt.NoteId, nt.TagId });
-
-        modelBuilder.Entity<NoteTag>()
-            .HasOne(nt => nt.Tag)
-            .WithMany(n => n.Notes)
-            .HasForeignKey(nt => nt.TagId);
-        modelBuilder.Entity<NoteTag>()
-            .HasOne(nt => nt.Note)
-            .WithMany(n => n.Tags)
+        modelBuilder.Entity<Tag>()
+            .HasMany<NoteTag>(nt => nt.Notes)
+            .WithOne()
+            .HasForeignKey(nt => nt.TagId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Note>()
+            .HasMany<NoteTag>(nt => nt.TagsRel)
+            .WithOne()
             .HasForeignKey(nt => nt.NoteId)
             .OnDelete(DeleteBehavior.Cascade); // Cascade delete when a Note is deleted
         modelBuilder.Entity<Note>()
-            .Ignore(e => e.Content);
+            .Ignore(e => e.Content)
+            .Ignore(e => e.MainNoteObject)
+            .Ignore(e => e.OwnerAccount)
+            .Ignore(n => n.Tags);
         modelBuilder
             .Entity<Note>()
             .Property(e => e.Type)
@@ -52,13 +56,16 @@ public partial class NoteRepositoryDbAndElastic
         modelBuilder.Entity<Tag>()
             .Property(e => e.Name)
             .HasConversion(
-                new ValueConverter<string?, string>(v => v.TrimEnd(), v => v.TrimEnd()));
+                new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd()));
+        modelBuilder.Entity<Note>()
+            .Property(e => e.Title)
+            .HasConversion(
+                new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd()));
     }
 
     public partial Note Save(Note note)
     {
         bool isNew = note.Id == null;
-        note.CreatedOn = null; //делаем null,
         if (isNew)
         {
             Notes.Add(note);
@@ -78,24 +85,31 @@ public partial class NoteRepositoryDbAndElastic
         return SaveChanges() >= 1;
     }
 
-    public partial Note? FindByPath(Field<INotePath, string> path)
+    public partial Note? FindByPath(NotePathDto path)
     {
         return Detach((from n in Notes
-            where n.Path == path.Val
+            where n.Path == path.Path
             select n).FirstOrDefault());
     }
 
-    public partial Note LoadTags(Note note)
+    public partial List<Tag> GetTags(NoteIdDto note)
     {
-        note.Tags = (Detach((from n in Notes.Include(n => n.Tags)
+        var tags = (Detach((from n in Notes.Include(n => n.TagsRel)
                 where n.Id == note.Id
-                select n).FirstOrDefault())?.Tags ?? [])
+                select n).FirstOrDefault())?.TagsRel ?? [])
+            .ToList()
             .Select(n => Detach(n))
+            .Select(n => n.TagId)
             .ToList();
-        return note;
+        return (from t in Tags
+                where tags.Contains((int)t.Id)
+                select t)
+            .ToList()
+            .Select(t => Detach(t))
+            .ToList();
     }
 
-    public partial bool DeleteTag(Note note, Tag tag)
+    public partial bool DeleteTag(NoteIdDto note, TagIdDto tag)
     {
         var noteTag = NoteTags
             .FirstOrDefault(nt => nt.NoteId == note.Id && nt.TagId == tag.Id);
@@ -106,62 +120,107 @@ public partial class NoteRepositoryDbAndElastic
         return SaveChanges() >= 1;
     }
 
-    public partial NoteTag AddTag(Note note, Tag tag)
+    public partial bool AddTag(NoteIdDto note, TagIdDto tag)
     {
-        var nt = new NoteTag
+        var nt = NoteTags.Add(new NoteTag
         {
-            Note = note,
-            Tag = tag
-        };
-        if (note.Id != null)
-        {
-            NoteTags.Add(nt);
-            NoteTags.Update(nt);
-        }
-        else
-        {
-            nt = NoteTags.Add(nt).Entity;
-        }
-
-        SaveChanges();
-        return Detach(nt);
+            TagId = tag.Id,
+            NoteId = note.Id
+        }).Entity;
+        bool res = SaveChanges() >= 1;
+        Detach(nt);
+        return res;
     }
 
-    public partial bool IsTagExists(Field<ITagId, int> tag, Note note)
+    public partial bool IsTagExists(TagIdDto tag, NoteIdDto note)
     {
         var noteTag = NoteTags
-            .FirstOrDefault(nt => nt.NoteId == note.Id && nt.TagId == tag.Val);
+            .FirstOrDefault(nt => nt.NoteId == note.Id && nt.TagId == tag.Id);
         return noteTag != null;
     }
 
-    private partial List<Note> LoadCommentsInDb(Note note)
+    private partial PageDto<Note> GetCommentsInDb(NoteIdDto note, PageSizeDto pageSize, LimitDto limit1)
     {
-        return (from n in Notes
-                where n.Owner == note.Id &&
-                      n.Type == NoteTypes.Comment &&
-                      n.IsPublic == true
-                select n)
-            .Select(n => Detach(n))
-            .ToList();
+        var q = from n in Notes
+            where n.MainNote == note.Id &&
+                  n.Type == NoteTypes.Comment &&
+                  n.IsPublic == true //TODO: Условие потенциально может вызвать кучу проблем. 
+            join a in Accounts on n.Owner equals a.Id
+            select new { a, n };
+        int total = q.Count();
+        var limit = limit1.Limit;
+        var page = pageSize.Page;
+        return new PageDto<Note>
+        {
+            items = q.Skip(CalculateUtil.ToOffset(page, limit, total))
+                .Take(limit)
+                .ToList()
+                .Select(o =>
+                {
+                    o.n.OwnerAccount = o.a;
+                    return o.n;
+                })
+                .ToList(),
+            Total = CalculateUtil.TotalPages(total, limit),
+            Page = CalculateUtil.CurrentPage(page, limit, total)
+        };
     }
 
-    public partial List<Note> FindByTag(Field<ITagId, int> tag, Account owner)
+    public partial PageDto<Note> FindNotesByOwner(AccIdDto owner, PageSizeDto pageSize, LimitDto limit1)
     {
-        return (Detach((from t in Tags.Include(n => n.Notes)
-                where t.Id == tag.Val && t.Owner.Id == owner.Id
-                select t).FirstOrDefault())?.Notes ?? [])
-            .Select(nt => Detach(nt))
-            .Select(nt => nt.Note)
-            .ToList();
+        var q = from n in Notes
+            where n.Owner == owner.Id &&
+                  n.Type == NoteTypes.Note
+            select n;
+        int total = q.Count();
+        var limit = limit1.Limit;
+        var page = pageSize.Page;
+        return new PageDto<Note>
+        {
+            items = q.Skip(CalculateUtil.ToOffset(page, limit, total))
+                .Take(limit)
+                .ToList(),
+            Total = CalculateUtil.TotalPages(total, limit),
+            Page = CalculateUtil.CurrentPage(page, limit, total)
+        };
     }
 
-    public partial List<Note> FindByOwner(Account owner)
+    public partial PageDto<Note> FindNotesByTags(List<TagIdDto> tags, List<TagIdDto> filterTags, bool op,
+        AccIdDto owner, LimitDto limit1, PageSizeDto page1)
     {
-        return (from n in Notes
-                where n.Owner == owner.Id
-                select n)
-            .Select(n => Detach(n))
-            .ToList();
+        var tagsI = tags.Select(t => t.Id).ToList();
+        var filterI = filterTags.Select(t => t.Id).ToList();
+        IQueryable<Note> q;
+        if (op)
+        {
+            q = from n in Notes
+                where n.Owner == owner.Id && n.Type == NoteTypes.Note &&
+                      tagsI.All(requiredTag => n.TagsRel.Any(nTag => nTag.TagId == requiredTag)) &&
+                      !filterI.Any(filterTag => n.TagsRel.Any(nTag => nTag.TagId == filterTag))
+                select n;
+        }
+        else
+        {
+            q = from n in Notes
+                where n.Owner == owner.Id && n.Type == NoteTypes.Note &&
+                      tagsI.Any(requiredTag => n.TagsRel.Any(nTag => nTag.TagId == requiredTag)) &&
+                      !filterI.Any(filterTag => n.TagsRel.Any(nTag => nTag.TagId == filterTag))
+                select n;
+        }
+
+        int total = q.Count();
+        var limit = limit1.Limit;
+        var page = page1.Page;
+        q = q.OrderBy(n => n.Id);
+
+        return new PageDto<Note>
+        {
+            items = q.Skip(CalculateUtil.ToOffset(page, limit, total))
+                .Take(limit)
+                .ToList(),
+            Total = CalculateUtil.TotalPages(total, limit),
+            Page = CalculateUtil.CurrentPage(page, limit, total)
+        };
     }
 
     [return: NotNullIfNotNull(nameof(tag))]

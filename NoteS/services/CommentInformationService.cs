@@ -1,4 +1,5 @@
-﻿using NoteS.models.entity;
+﻿using NoteS.models.dto;
+using NoteS.models.entity;
 using NoteS.repositories;
 
 namespace NoteS.services;
@@ -7,9 +8,11 @@ public class CommentInformationService(
     INoteRepository repository,
     NoteInformationService noteInformationService)
 {
-    public List<Note> Comments(Field<IAccName, string> name, Field<INotePath, string> path)
+    public PageDto<Note> Comments(AccNameDto name, NotePathDto path, PageSizeDto pageSize, LimitDto limit)
     {
-        var note = noteInformationService.Get(path, name);
-        return repository.LoadComments(note);
+        var note = noteInformationService.GetPublic(path, name);
+        var page = repository.GetComments(note, pageSize, limit);
+        page.items.ForEach(c => c.MainNoteObject = note);
+        return page;
     }
 }

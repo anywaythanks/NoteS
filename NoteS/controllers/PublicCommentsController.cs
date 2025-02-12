@@ -5,87 +5,74 @@ using NoteS.models.dto;
 using NoteS.models.entity;
 using NoteS.models.mappers;
 using NoteS.services;
-using NoteS.tools.preconditions;
+using NoteS.tools;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace NoteS.controllers;
 
 [ApiController]
-[Route("api/public/{accountName}/notes/{pathNote}/comments")]
+[Route("api/public/{accountName}")]
+[ProducesResponseType(StatusCodes.Status403Forbidden)]
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 public class PublicCommentsController(
-    AccountRegisterService registerService,
+    AccountRegisterService register,
     CommentInformationService commentInformationService,
     CommentEditService commentEditService,
-    UniversalDtoMapper um,
-    AccountMapper am,
-    NoteMapper nm)
-    : GeneralPreconditionController
+    UniversalDtoMapper um) : GeneralPreconditionController(register)
 {
-    [HttpGet]
+    [HttpGet("notes/{pathNote}/comments")]
     [KeycloakAuthorize(Policies.READ_COMMENTS)]
-    [ProducesResponseType<List<NoteSearchContentResponseDto>>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Список комментариев к заметке")]
-    public Task<IActionResult> Comments([FromQuery] AccName accountName,
-        [FromQuery] NotePath pathNote)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public PageDto<NoteSearchContentResponseDto> Comments([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote,
+        [FromQuery] PaginationRequestDto pagination)
     {
-        return Execute(() => um.OfCommentsSearch(commentInformationService.Comments(
-                am.Of(accountName), nm.Of(pathNote))),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+        var comments = commentInformationService.Comments(accountName, pathNote, pagination, pagination);
+        return um.OfPage(comments);
     }
 
-    [HttpPost]
+    [HttpPost("notes/{pathNote}/comments")]
     [KeycloakAuthorize(Policies.READ_COMMENTS, Policies.READ_NOTES, Policies.CREATE_COMMENTS)]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Создание комментария к заметке")]
-    public Task<IActionResult> CreateComment([FromQuery] AccName accountName,
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<ActionResult<CommentCreateResponseDto>> CreateComment([FromQuery] AccName accountName,
         [FromQuery] NotePath pathNote,
         [FromBody] CommentCreateRequestDto createDto)
     {
-        return ExecuteA(async () =>
-            {
-                var r = um.OfCreateComment(
-                    await commentEditService.CreateComment(am.Of(accountName), nm.Of(pathNote), createDto));
+        Check(accountName);
+        CommentCreateResponseDto note = await commentEditService.CreateComment(accountName, pathNote, createDto);
 
-                return Created(Url.Action("GetNote", "PublicNote",
-                    new { accountName, pathNote = new NotePath { PathNote = r.Path } }, Request.Scheme), r);
-            },
-            new EqualNameP(registerService, am.Of(accountName)));
+        return Created(Url.Action("GetNote", "PublicNote",
+            new { accountName.AccountName, pathNote = note.Path }, Request.Scheme), note);
     }
 
     [HttpPost]
     [KeycloakAuthorize(Policies.READ_COMMENTS, Policies.READ_NOTES, Policies.EDIT_OWN_COMMENTS)]
-    [Route("{pathComment}")]
-    [ProducesResponseType<CommentEditResponseDto>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [Route("comments/{pathNote}")]
     [SwaggerOperation(Description = "Редактирование комментария")]
-    public Task<IActionResult> EditComment([FromQuery] AccName accountName,
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<CommentEditResponseDto> EditComment([FromQuery] AccName accountName,
         [FromQuery] NotePath pathNote,
-        [FromQuery] NotePath pathComment,
         [FromBody] CommentEditRequestDto createDto)
     {
-        return Execute(
-            async () => um.OfEditComment(
-                await commentEditService.EditContentComment(nm.Of(pathNote), am.Of(accountName), createDto)),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+
+        return await commentEditService.EditContentComment(pathNote, accountName, createDto);
     }
 
     [HttpDelete]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.DELETE_COMMENTS)]
-    [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [Route("{pathComment}")]
+    [Route("comments/{pathNote}")]
     [SwaggerOperation(Description = "Удаление комментария")]
-    public Task<IActionResult> DelComment([FromQuery] AccName accountName, [FromQuery] NotePath pathComment)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult> DelComment([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote)
     {
-        return ExecuteA(async () => await commentEditService.Delete(nm.Of(pathComment), am.Of(accountName))
-                ? NoContent()
-                : throw new DontDel("Комментарий"),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+
+        await commentEditService.Delete(pathNote, accountName);
+        return NoContent();
     }
 }

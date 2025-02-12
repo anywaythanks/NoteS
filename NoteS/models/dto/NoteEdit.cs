@@ -18,12 +18,32 @@ public class NoteEditPublicResponseDto
 public class NoteEditContentRequestDto
 {
     public string Content { get; set; }
+    [JsonIgnore] public SyntaxType Type { get; set; }
+
+    [JsonPropertyName("syntax_name")]
+    [Required]
+    [EnumDataType(typeof(SyntaxType.SyntaxTypeName))]
+    public SyntaxType.SyntaxTypeName TypeName
+    {
+        get => Type.Name;
+        set => Type = SyntaxType.NameToType(value);
+    }
 }
 
 public class NoteEditContentResponseDto
 {
     public string Title { get; set; }
     public string Content { get; set; }
+    [JsonIgnore] public SyntaxType SyntaxType { get; set; }
+
+    [JsonPropertyName("syntax_name")]
+    [Required]
+    [EnumDataType(typeof(SyntaxType.SyntaxTypeName))]
+    public SyntaxType.SyntaxTypeName TypeName
+    {
+        get => SyntaxType.Name;
+        set => SyntaxType = SyntaxType.NameToType(value);
+    }
 }
 
 public class NoteCreateRequestDto

@@ -5,6 +5,8 @@ namespace NoteS.repositories;
 public interface ITagRepository
 {
     public Tag Save(Tag tag);
-    public List<Tag> FindByOwner(Account owner);
-    public Tag? FindByName(Field<ITagName, string> name, Account owner);
+    public List<Tag> FindByOwner(AccIdDto owner);
+    public Tag? FindByName(TagNameDto name, AccIdDto owner);
+
+    public List<TagIdDto> Tags(List<TagNameDto> tags, AccIdDto owner);
 }

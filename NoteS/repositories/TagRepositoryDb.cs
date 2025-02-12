@@ -2,10 +2,11 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NoteS.models.entity;
+using NoteS.models.mappers;
 
 namespace NoteS.repositories;
 
-public sealed class TagRepositoryDb(DbContextOptions<TagRepositoryDb> options)
+public sealed class TagRepositoryDb(DbContextOptions<TagRepositoryDb> options, TagMapper tm)
     : DbContext(options), ITagRepository
 {
     public DbSet<Tag> Tags { get; init; }
@@ -35,23 +36,35 @@ public sealed class TagRepositoryDb(DbContextOptions<TagRepositoryDb> options)
         return Detach(t);
     }
 
-    public List<Tag> FindByOwner(Account owner)
+    public List<Tag> FindByOwner(AccIdDto owner)
     {
         return (from t in Tags
-                where t.Owner == owner
+                where t.Owner == owner.Id
                 select t)
+            .ToList()
             .Select(t => Detach(t))
             .ToList();
     }
 
-    public Tag? FindByName(Field<ITagName, string> name, Account owner)
+    public Tag? FindByName(TagNameDto name, AccIdDto owner)
     {
         var tag = Detach((from t in Tags
-            where t.Name == name.Val && t.Owner.Id == owner.Id
+            where t.Name == name.Name && t.Owner == owner.Id
             select t).FirstOrDefault());
         if (tag == null) return null;
-        tag.Owner = owner;
+        tag.Owner = owner.Id;
         return tag;
+    }
+
+    List<TagIdDto> ITagRepository.Tags(List<TagNameDto> tags, AccIdDto owner)
+    {
+        var names = tags.Select(t => t.Name).ToList();
+        return (from t in Tags
+                where t.Owner == owner.Id && names.Contains(t.Name)
+                select t.Id)
+            .ToList()
+            .Select(t => tm.OfIdDto(t))
+            .ToList();
     }
 
     [return: NotNullIfNotNull(nameof(tag))]

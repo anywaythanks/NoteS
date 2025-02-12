@@ -10,7 +10,7 @@ GO
 alter table if exists tags_notes_map
     add constraint FK_TagsNoteMap_Note
         foreign key (id_note)
-            references notes
+            references notes on delete cascade;
 
 GO
 

@@ -7,12 +7,12 @@ namespace NoteS.services;
 public class AccountInformationService(
     IAccountRepository accountRepository)
 {
-    public Account Get(Field<IAccName, string> name)
+    public Account Get(AccNameDto name)
     {
         return accountRepository.FindByName(name) ?? throw new NotFound("аккаунт");
     }
 
-    public Account Get(Field<IAccId, int> id)
+    public Account Get(AccIdDto id)
     {
         return accountRepository.FindById(id) ?? throw new NotFound("аккаунт");
     }

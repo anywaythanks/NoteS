@@ -1,4 +1,5 @@
 ﻿using NoteS.exceptions;
+using NoteS.models.dto;
 using NoteS.models.entity;
 using NoteS.models.mappers;
 using NoteS.repositories;
@@ -10,29 +11,29 @@ public class TagEditService(
     TagInformationService tagInformationService,
     NoteInformationService noteInformationService,
     ITagRepository tagRepository,
-    INoteRepository noteRepository,
-    TagMapper tm)
+    INoteRepository noteRepository)
 {
-    public bool Delete(Field<INotePath, string> pathNote, Field<IAccName, string> accountName,
-        Field<ITagName, string> tag)
+    public void Delete(NotePathDto pathNote, AccNameDto accountName,
+        TagNameDto tag)
     {
         var note = noteInformationService.Get(pathNote, accountName);
-        return noteRepository.DeleteTag(note, tagInformationService.Get(accountName, tag));
+        var tagI = tagInformationService.Get(accountName, tag);
+        if (!noteRepository.DeleteTag(note, tagI)) throw new DontDel("Тег заметки");
     }
 
-    public Tag Add(Field<INotePath, string> pathNote, Field<IAccName, string> accountName, Field<ITagName, string> tag)
+    public bool Add(NotePathDto pathNote, AccNameDto accountName, TagNameDto tag)
     {
         var note = noteInformationService.Get(pathNote, accountName);
-        var tagI = tm.ToId(tagInformationService.Get(accountName, tag));
+        var tagI = tagInformationService.Get(accountName, tag);
         if (noteRepository.IsTagExists(tagI, note)) throw new AlreadyExists("Тег у заметки");
-        return noteRepository.AddTag(note, tagInformationService.Get(accountName, tag)).Tag;
+        return noteRepository.AddTag(note, tagI);
     }
 
-    public Tag Create(Field<IAccName, string> accountName, Field<ITagName, string> tag)
+    public Tag Create(AccName accountName, TagNameDto tag)
     {
         var acc = accountInformationService.Get(accountName);
         if (tagRepository.FindByName(tag, acc) != null) throw new AlreadyExists("Тег");
-        var tagNew = new Tag(tag.Val) { Owner = acc };
+        var tagNew = new Tag(tag.Name) { Owner = acc.Id };
         return tagRepository.Save(tagNew);
     }
 }

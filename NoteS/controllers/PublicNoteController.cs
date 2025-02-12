@@ -5,160 +5,130 @@ using NoteS.models.dto;
 using NoteS.models.entity;
 using NoteS.models.mappers;
 using NoteS.services;
-using NoteS.tools.preconditions;
+using NoteS.tools;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace NoteS.controllers;
 
 [ApiController]
 [Route("api/public/{accountName}/notes")]
+[ProducesResponseType(StatusCodes.Status403Forbidden)]
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 public class PublicNoteController(
-    AccountRegisterService registerService,
+    AccountRegisterService register,
     NoteInformationService noteInformationService,
     TagInformationService tagInformationService,
     NoteEditService editService,
     UniversalDtoMapper um,
-    AccountMapper am,
-    NoteMapper nm,
     TagMapper tm)
-    : GeneralPreconditionController
+    : GeneralPreconditionController(register)
 {
-    [HttpPatch]
+    [HttpPatch("{pathNote}/publish")]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.SET_OWN_PUBLIC_STATUS_NOTES)]
-    [Route("{pathNote}/publish")]
-    [ProducesResponseType<NoteEditPublicResponseDto>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [SwaggerOperation(Description = "Редактирование публичности заметки")]
-    public Task<IActionResult> EditPublicNote([FromQuery] AccName accountName,
+    [SwaggerOperation(Description = "Редактирование публичности заметки/комменатрия")]
+    public NoteEditPublicResponseDto EditPublicNote([FromQuery] AccName accountName,
         [FromQuery] NotePath pathNote,
         [FromBody] NoteEditPublicRequestDto editDto)
     {
-        return Execute(() => um.OfEdit(editService.PublishNote(nm.Of(pathNote), am.Of(accountName), editDto)),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+
+        return editService.PublishNote(pathNote, accountName, editDto);
     }
 
-    [HttpPatch]
+    [HttpPost("{pathNote}")]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.EDIT_OWN_NOTES)]
-    [Route("{pathNote}")]
-    [ProducesResponseType<NoteEditContentResponseDto>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [SwaggerOperation(Description = "Редактирование контента заметки")]
-    public Task<IActionResult> EditNote([FromQuery] AccName accountName,
+    [SwaggerOperation(Description = "Редактирование заметки (комментария в другом месте)")]
+    public async Task<NoteEditContentResponseDto> EditNote([FromQuery] AccName accountName,
         [FromQuery] NotePath pathNote,
         [FromBody] NoteEditContentRequestDto editDto)
     {
-        return Execute(
-            async () => um.OfEditContent(
-                await editService.EditContentNote(nm.Of(pathNote), am.Of(accountName), editDto)),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+
+        return await editService.EditNote(pathNote, accountName, editDto);
     }
 
     [HttpPost]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.EDIT_OWN_NOTES)]
-    [Route("{pathNote}/create")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Создание заметки")]
-    public Task<IActionResult> CreateNote([FromQuery] AccName accountName,
-        [FromQuery] NotePath pathNote,
+    public async Task<CreatedResult> CreateNote([FromQuery] AccName accountName,
         [FromBody] NoteCreateRequestDto editDto)
     {
-        return ExecuteA(async () =>
-            {
-                var r = um.OfCreateNote(await editService.CreateNote(am.Of(accountName), editDto));
-                return Created(Url.Action("GetNote", "PublicNote",
-                    new { accountName.AccountName, pathNote = r.Path }, Request.Scheme), r);
-            },
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+        NoteCreateResponseDto r = await editService.CreateNote(accountName, editDto);
+        return Created(Url.Action("GetNote", "PublicNote",
+            new { accountName.AccountName, pathNote = r.Path }, Request.Scheme), r);
     }
 
-    [HttpGet]
+    [HttpGet("search/title")]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.SEARCH_OWN_NOTES)]
-    [Route("search/title")]
-    [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Поиск по заголовку")]
-    public Task<IActionResult> SearchByTitleNotes([FromQuery] AccName accountName,
-        [FromBody] NoteSearchRequestDto noteSearch)
+    public async Task<PageDto<NoteSearchResponseDto>> SearchByTitleNotes([FromQuery] AccName accountName,
+        [FromQuery] NoteSearchRequestDto noteSearch,
+        [FromQuery] PaginationRequestDto pagination)
     {
-        return Execute(
-            async () => um.OfSearch(await noteInformationService.Find(nm.Of(noteSearch), am.Of(accountName))),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+        var notes = await noteInformationService.Find(noteSearch, accountName, pagination, pagination);
+        return um.Of(notes);
     }
 
-    [HttpGet]
+    [HttpGet("search/tag")]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.SEARCH_OWN_NOTES)]
-    [Route("search/tag")]
-    [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [SwaggerOperation(Description = "Поиск по тегу")]
-    public Task<IActionResult> SearchByTagNotes([FromQuery] AccName accountName,
-        [FromBody] NoteSearchTagsRequestDto noteSearch)
+    [SwaggerOperation(Description = "Поиск по тегам")]
+    public PageDto<NoteSearchResponseDto> SearchByTagNotes([FromQuery] AccName accountName,
+        [FromQuery(Name = "tag")] List<string> tags,
+        [FromQuery(Name = "filter")] List<string> filterTags,
+        [FromQuery] PaginationRequestDto pagination,
+        [FromQuery(Name = "and")] bool isAnd = true
+    )
     {
-        return Execute(() => um.OfSearch(tagInformationService.FindTag(tm.Of(noteSearch), am.Of(accountName))),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+        var notes = tagInformationService.FindTags(
+            tm.Of(tags), tm.Of(filterTags),
+            accountName, isAnd, pagination, pagination);
+        return um.Of(notes);
     }
 
-    [HttpDelete]
+    [HttpDelete("{pathNote}")]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.DELETE_NOTES)]
-    [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [Route("{pathNote}")]
     [SwaggerOperation(Description = "Удаление заметки")]
-    public Task<IActionResult> DelNote([FromQuery] AccName accountName, [FromQuery] NotePath pathNote)
+    public async Task<NoContentResult> DelNote([FromQuery] AccName accountName, [FromQuery] NotePath pathNote)
     {
-        return ExecuteA(
-            async () => await editService.Delete(nm.Of(pathNote),
-                am.Of(accountName))
-                ? NoContent()
-                : throw new DontDel("Заметка"),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+        await editService.Delete(pathNote, accountName);
+        return NoContent();
     }
 
-    [HttpGet]
+    [HttpGet("search/semantic")]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.SEARCH_OWN_NOTES)]
-    [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [Route("search/semantic")]
     [SwaggerOperation(Description = "Семантический поиск")]
-    public Task<IActionResult> SemanticSearchNotes([FromQuery] AccName accountName,
-        [FromBody] NoteSemanticSearchRequestDto noteSearch)
+    public async Task<PageDto<NoteSearchResponseDto>> SemanticSearchNotes([FromQuery] AccName accountName,
+        [FromQuery] NoteSemanticSearchRequestDto noteSearch,
+        [FromQuery] PaginationRequestDto pagination)
     {
-        return Execute(async () => um.OfSearch(
-                await noteInformationService.FindSemantic(am.Of(accountName), um.Of(noteSearch))),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+        var notes = await noteInformationService.FindSemantic(accountName, noteSearch, pagination, pagination);
+        return um.Of(notes);
     }
 
     [HttpGet]
     [KeycloakAuthorize(Policies.READ_NOTES)]
-    [ProducesResponseType<List<NoteSearchResponseDto>>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Список заметок пользователя")]
-    public Task<IActionResult> Notes([FromQuery] AccName accountName)
+    public PageDto<NoteSearchResponseDto> Notes([FromQuery] AccName accountName,
+        [FromQuery] PaginationRequestDto pagination)
     {
-        return Execute(() => um.OfSearch(noteInformationService.Find(am.Of(accountName))),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+        var notes = noteInformationService.Find(accountName, pagination, pagination);
+        return um.Of(notes);
     }
 
-    [HttpGet]
+    [HttpGet("{pathNote}")]
     [KeycloakAuthorize(Policies.READ_NOTES)]
-    [Route("{pathNote}")]
-    [ProducesResponseType<NoteSearchContentResponseDto>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [SwaggerOperation(Description = "Данные заметки или комментария")]
-    public Task<IActionResult> GetNote([FromQuery] AccName accountName,
+    public async Task<NoteSearchContentResponseDto> GetNote([FromQuery] AccName accountName,
         [FromQuery] NotePath pathNote)
     {
-        return Execute(() => um.OfContentSearch(noteInformationService.GetFull(nm.Of(pathNote), am.Of(accountName))),
-            new EqualNameP(registerService, am.Of(accountName)));
+        Check(accountName);
+        var notes = await noteInformationService.GetFullPublic(pathNote, accountName);
+        return um.OfContentSearch(notes);
     }
 }

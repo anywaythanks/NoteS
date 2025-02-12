@@ -8,51 +8,63 @@ namespace NoteS.services;
 
 public class NoteInformationService(
     INoteRepository repository,
-    AccountInformationService informationService,
-    AccountMapper am)
+    AccountInformationService informationService)
 {
-    public Task<List<Note>> Find(Field<INoteTitle, string> title, Field<IAccName, string> owner)
+    public Task<PageDto<Note>> Find(NoteTitleDto title, AccNameDto owner, PageSizeDto pageSize, LimitDto limit)
     {
-        return repository.FindByTitle(title, am.ToId(informationService.Get(owner)));
+        return repository.FindByTitle(title, informationService.Get(owner), pageSize, limit);
     }
 
-    public List<Note> Find(Field<IAccName, string> owner)
+    public PageDto<Note> Find(AccNameDto owner, PageSizeDto pageSize, LimitDto limit)
     {
-        return repository.FindByOwner(informationService.Get(owner));
+        return repository.FindNotesByOwner(informationService.Get(owner), pageSize, limit);
     }
 
-    public Task<List<Note>> FindSemantic(Field<IAccName, string> owner, SemanticSearchQuery query)
+    public Task<PageDto<Note>> FindSemantic(AccNameDto owner, SemanticSearchQuery query, PageSizeDto page,
+        LimitDto limit)
     {
-        return repository.SemanticFind(query, am.ToId(informationService.Get(owner)));
+        return repository.SemanticFind(query, informationService.Get(owner), page, limit);
     }
 
-    public Note Get(Field<INotePath, string> path, Field<IAccName, string> owner)
-    {
-        var note = repository.FindByPath(path) ?? throw new NotFound("заметка");
-        var acc = informationService.Get(am.Of(note));
-        if (acc.Name != owner.Val) throw new Forbidden("заметке");
-        return note;
-    }
-
-    public Note Get(Field<INotePath, string> path)
+    public Note Get(NotePathDto path, AccNameDto owner)
     {
         var note = repository.FindByPath(path) ?? throw new NotFound("заметка");
+        var acc = informationService.Get(note);
+        if (acc.Name != owner.Name) throw new Forbidden("заметке");
+        note.OwnerAccount = acc;
         return note;
     }
-
-    public Note GetFull(Field<INotePath, string> path, Field<IAccName, string> owner)
+    public Note GetPublic(NotePathDto path, AccNameDto owner)
     {
-        var note = Get(path, owner);
-        repository.LoadContent(note);
-        repository.LoadTags(note);
+        var note = repository.FindByPath(path) ?? throw new NotFound("заметка");
+        var acc = informationService.Get(note);
+        if (!note.IsPublic && acc.Name != owner.Name) throw new Forbidden("заметке");
+        note.OwnerAccount = acc;
+        return note;
+    }
+    public Note Get(NotePathDto path)
+    {
+        var note = repository.FindByPath(path) ?? throw new NotFound("заметка");
         return note;
     }
 
-    public Note GetFull(Field<INotePath, string> path)
+    public async Task<Note> GetFullPublic(NotePathDto path, AccNameDto owner)
+    {
+        var note = GetPublic(path, owner);
+        var content = await repository.GetContent(note)
+                      ?? throw new NotFound("Контент");
+        note.Content = content.Content;
+        note.Tags = repository.GetTags(note);
+        return note;
+    }
+
+    public async Task<Note> GetFull(NotePathDto path)
     {
         var note = Get(path);
-        repository.LoadContent(note);
-        repository.LoadTags(note);
+        var content = await repository.GetContent(note)
+                      ?? throw new NotFound("Контент");
+        note.Content = content.Content;
+        repository.GetTags(note);
         return note;
     }
 }

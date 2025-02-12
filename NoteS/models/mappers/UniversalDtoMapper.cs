@@ -4,35 +4,44 @@ using Riok.Mapperly.Abstractions;
 
 namespace NoteS.models.mappers;
 
-[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target,
+    EnabledConversions = MappingConversionType.Constructor)]
 public partial class UniversalDtoMapper
 {
+    [MapperIgnoreTarget("NoteTypeName")]
     private partial NoteSearchResponseDto OfSearch(Note source);
-    public partial List<NoteSearchResponseDto> OfSearch(List<Note> source);
+
+    private List<NoteSearchResponseDto> OfSearch(List<Note> source) => source.Select(OfSearch).ToList();
+    public partial PageDto<NoteSearchResponseDto> Of(PageDto<Note> source);
+    public partial PageDto<NoteSearchContentResponseDto> OfPage(PageDto<Note> source);
 
     [MapperIgnoreTarget("NoteTypeName")]
+    [MapProperty("MainNoteObject.Path", "MainPath")]
+    [MapProperty("OwnerAccount.Name", "OwnerName")]
     public partial NoteSearchContentResponseDto OfContentSearch(Note source);
 
-    private TagResponseDto Of(NoteTag nt)
-    {
-        return Of(nt.Tag);
-    }
+    private List<NoteSearchContentResponseDto> OfCommentsSearch(List<Note> source) =>
+        source.Select(OfContentSearch).ToList();
 
-    private partial List<TagResponseDto> Of(List<NoteTag> nt);
-    public partial List<NoteSearchContentResponseDto> OfCommentsSearch(List<Note> source);
     public partial NoteEditPublicResponseDto OfEdit(Note source);
+
+    [MapperIgnoreTarget("TypeName")]
     public partial NoteEditContentResponseDto OfEditContent(Note source);
 
     [MapperIgnoreTarget("NoteTypeName")]
+    [MapperIgnoreTarget("TypeName")]
     public partial CommentEditResponseDto OfEditComment(Note source);
 
     [MapperIgnoreTarget("NoteTypeName")]
+    [MapperIgnoreTarget("TypeName")]
     public partial NoteCreateResponseDto OfCreateNote(Note source);
 
     [MapperIgnoreTarget("NoteTypeName")]
+    [MapperIgnoreTarget("TypeName")]
     public partial CommentCreateResponseDto OfCreateComment(Note source);
 
     public partial TagResponseDto Of(Tag tag);
-    public partial List<TagResponseDto> Of(List<Tag> tag);
+    public List<TagResponseDto> Of(List<Tag> tag) => tag.Select(Of).ToList();
+    public partial PageDto<TagResponseDto> Of(PageDto<Tag> source);
     public partial SemanticSearchQuery Of(NoteSemanticSearchRequestDto tag);
 }

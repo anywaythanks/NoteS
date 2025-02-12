@@ -11,10 +11,13 @@ AuthConfig.Configuration(builder);
 RepositoriesConfig.Configuration(builder);
 SwaggerConfig.Configuration(builder);
 ElasticConfig.Configuration(builder);
+HandlerConfig.Configuration(builder);
 
 var app = builder.Build();
 AuthConfig.AfterConfiguration(app);
 RepositoriesConfig.AfterConfiguration(app);
 SwaggerConfig.AfterConfiguration(app);
+MapperConfig.AfterConfiguration(app);
+HandlerConfig.AfterConfiguration(app);
 
 app.Run();

@@ -5,7 +5,7 @@ namespace NoteS.repositories;
 public interface IAccountRepository
 {
     public Account Save(Account account);
-    public Account? FindByName(Field<IAccName, string> name);
-    public Account? FindById(Field<IAccId, int> id);
-    public Account? FindByUuid(Field<IAccUuid, string> uuid);
+    public Account? FindByName(AccNameDto name);
+    public Account? FindById(AccIdDto id);
+    public Account? FindByUuid(AccUuidDto uuid);
 }

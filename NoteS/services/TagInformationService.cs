@@ -1,4 +1,5 @@
 ﻿using NoteS.exceptions;
+using NoteS.models.dto;
 using NoteS.models.entity;
 using NoteS.models.mappers;
 using NoteS.repositories;
@@ -9,30 +10,33 @@ public class TagInformationService(
     AccountInformationService accountInformationService,
     NoteInformationService noteInformationService,
     INoteRepository noteRepository,
-    ITagRepository tagRepository,
-    TagMapper tm)
+    ITagRepository tagRepository)
 {
-    public List<Tag> Tags(Field<IAccName, string> accountName)
+    public List<Tag> Tags(AccNameDto accountName)
     {
-        return tagRepository.FindByOwner(accountInformationService.Get(accountName));
+        var account = accountInformationService.Get(accountName);
+        return tagRepository.FindByOwner(account);
     }
 
-    public List<Tag> Tags(Field<INotePath, string> pathNote, Field<IAccName, string> accountName)
+    public List<Tag> Tags(NotePathDto pathNote, AccNameDto accountName)
     {
         var note = noteInformationService.Get(pathNote, accountName);
-        noteRepository.LoadTags(note);
-        return note.Tags.Select(n => n.Tag).ToList();
+        return noteRepository.GetTags(note);
     }
 
-    public Tag Get(Field<IAccName, string> accountName, Field<ITagName, string> tag)
+    public Tag Get(AccNameDto accountName, TagNameDto tag)
     {
-        return tagRepository.FindByName(tag, accountInformationService.Get(accountName)) ?? throw new NotFound("тег");
+        var account = accountInformationService.Get(accountName);
+        return tagRepository.FindByName(tag, account) ?? throw new NotFound("тег");
     }
 
-    public List<Note> FindTag(Field<ITagName, string> tag, Field<IAccName, string> owner)
+    public PageDto<Note> FindTags(List<TagNameDto> names, List<TagNameDto> filters,
+        AccNameDto owner, bool op, LimitDto limit, PageSizeDto page)
     {
         var acc = accountInformationService.Get(owner);
-        var tagI = Get(owner, tag);
-        return noteRepository.FindByTag(tm.ToId(tagI), acc);
+        var ids = tagRepository.Tags(names, acc);
+        var fids = tagRepository.Tags(filters, acc);
+        if (ids.Count != names.Count || fids.Count != filters.Count) throw new NotFound("теги");
+        return noteRepository.FindNotesByTags(ids, fids, op, acc, limit, page);
     }
 }

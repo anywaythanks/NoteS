@@ -1,3 +1,4 @@
+using Elastic.Clients.Elasticsearch;
 using NoteS.exceptions;
 using NoteS.models.dto;
 using NoteS.models.entity;
@@ -20,7 +21,7 @@ public partial class NoteRepositoryDbAndElastic
         return note;
     }
 
-    public async partial Task<Note?> LoadContent(Note note)
+    public async partial Task<NoteContentDto?> GetContent(NoteElasticDto note)
     {
         var response = await client.SearchAsync<Note>(r => r
             .Query(q =>
@@ -31,18 +32,19 @@ public partial class NoteRepositoryDbAndElastic
                         )))));
         if (!response.IsValidResponse)
         {
-            throw new NotFound("Записка"); //TODO: Еластик ошибку надо
+            return null; //TODO: Еластик ошибку надо
         }
 
         return response.Documents.FirstOrDefault();
     }
 
-    private partial List<Note> LoadContent(List<Note> notes)
+    private partial PageDto<Note> LoadContent(PageDto<Note> notes)
     {
-        return [];
+        return notes;
     }
 
-    public async partial Task<List<Note>> FindByTitle(Field<INoteTitle, string> title, Field<IAccId, int> ownerId)
+    public async partial Task<PageDto<Note>> FindByTitle(NoteTitleDto title, AccIdDto ownerId, PageSizeDto page,
+        LimitDto limit)
     {
         var response = await client.SearchAsync<Note>(r => r
             .Query(q =>
@@ -57,10 +59,18 @@ public partial class NoteRepositoryDbAndElastic
             throw new NotFound("Записка");
         }
 
-        return response.Documents.ToList();
+        var l = response.Documents.ToList();
+
+        return new PageDto<Note>
+        {
+            items = l,
+            Total = 1,
+            Page = 1
+        };
     }
 
-    public async partial Task<List<Note>> SemanticFind(SemanticSearchQuery find, Field<IAccId, int> ownerId)
+    public async partial Task<PageDto<Note>> SemanticFind(SemanticSearchQuery find, AccIdDto ownerId, PageSizeDto page,
+        LimitDto limit)
     {
         var response = await client.SearchAsync<Note>(r => r
             .Query(q =>
@@ -75,10 +85,16 @@ public partial class NoteRepositoryDbAndElastic
             throw new NotFound("Записка");
         }
 
-        return response.Documents.ToList();
+        var l = response.Documents.ToList();
+        return new PageDto<Note>
+        {
+            items = l,
+            Total = 1,
+            Page = 1
+        };
     }
 
-    public async partial Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Field<IAccId, int> owner)
+    public async partial Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, AccIdDto owner)
     {
         var uuid = Guid.NewGuid().ToString();
         var response = await client.CreateAsync(new
@@ -86,11 +102,11 @@ public partial class NoteRepositoryDbAndElastic
             title = requestDto.Title,
             content = requestDto.Content,
             syntax_type = requestDto.Type.Name,
-            owner = owner.Val
-        }, c=> c.Id(uuid));
+            owner = owner.Id
+        }, c => c.Id(uuid));
         return new Note(requestDto.Title, uuid)
         {
-            Owner = owner.Val,
+            Owner = owner.Id,
             Content = requestDto.Content,
             SyntaxType = requestDto.Type,
         };

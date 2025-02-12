@@ -4,21 +4,14 @@ using Riok.Mapperly.Abstractions;
 
 namespace NoteS.models.mappers;
 
-[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target,
+    EnabledConversions = MappingConversionType.Constructor)]
 public partial class AccountMapper
 {
-    [MapProperty("Id", "Val")]
-    public partial Field<IAccId, int> ToId(Account account);
+    public partial AccIdDto ToIdDto(Account account);
+    public partial AccUuidDto ToUuidDto(Account account);
+    public partial AccNameDto ToNameDto(Account account);
 
-    [MapProperty("Name", "Val")]
-    public partial Field<IAccName, string> ToName(Account account);
-
-    [MapProperty("AccountName", "Val")]
-    public partial Field<IAccName, string> Of(AccName account);
-
-    [MapProperty("Uuid", "Val")]
-    public partial Field<IAccUuid, string> ToUuid(Account account);
-
-    [MapProperty("Owner", "Val")]
-    public partial Field<IAccId, int> Of(Note note);
+    [MapProperty("AccountName", "Name")]
+    public partial AccNameDto ToNameDto(AccName account);
 }

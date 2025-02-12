@@ -40,19 +40,19 @@ public sealed class AccountRepositoryDb(DbContextOptions<AccountRepositoryDb> op
         return Detach(a);
     }
 
-    public Account? FindByName(Field<IAccName, string> name)
+    public Account? FindByName(AccNameDto name)
     {
-        return Detach(Accounts.FirstOrDefault(a => a.Name == name.Val));
+        return Detach(Accounts.FirstOrDefault(a => a.Name == name.Name));
     }
 
-    public Account? FindById(Field<IAccId, int> id)
+    public Account? FindById(AccIdDto id)
     {
-        return Detach(Accounts.FirstOrDefault(a => a.Id == id.Val));
+        return Detach(Accounts.FirstOrDefault(a => a.Id == id.Id));
     }
 
-    public Account? FindByUuid(Field<IAccUuid, string> uuid)
+    public Account? FindByUuid(AccUuidDto uuid)
     {
-        return Detach(Accounts.FirstOrDefault(a => a.Uuid == uuid.Val));
+        return Detach(Accounts.FirstOrDefault(a => a.Uuid == uuid.Uuid));
     }
 
     [return: NotNullIfNotNull(nameof(account))]

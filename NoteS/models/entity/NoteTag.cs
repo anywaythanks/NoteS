@@ -10,7 +10,4 @@ public class NoteTag
     [Column("id_note")] public int NoteId { get; init; }
 
     [Column("id_tag")] public int TagId { get; init; }
-
-    public Note Note { get; init; }
-    public Tag Tag { get; init; }
 }

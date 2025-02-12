@@ -8,21 +8,29 @@ public interface INoteRepository
     public Note Save(Note note);
     public Task<bool> Delete(Note note);
     public Task<Note> SaveContent(Note note);
-    public Note? FindByPath(Field<INotePath, string> path);
-    public Task<Note> LoadContent(Note note);
-    public Note LoadTags(Note note);
-    public bool DeleteTag(Note note, Tag tag);
-    public NoteTag AddTag(Note note, Tag tag);
-    public Task<List<Note>> FindByTitle(Field<INoteTitle, string> title, Field<IAccId, int> ownerId);
-    public bool IsTagExists(Field<ITagId, int> tag, Note note);
+    public Note? FindByPath(NotePathDto path);
+    public Task<NoteContentDto?> GetContent(NoteElasticDto note);
+    public List<Tag> GetTags(NoteIdDto note);
+    public bool DeleteTag(NoteIdDto note, TagIdDto tag);
+    public bool AddTag(NoteIdDto note, TagIdDto tag);
+
+    public Task<PageDto<Note>> FindByTitle(NoteTitleDto title, AccIdDto ownerId, PageSizeDto page,
+        LimitDto limit);
+
+    public bool IsTagExists(TagIdDto tag, NoteIdDto note);
 
     /**
      * todo: Должно быть с контентом, по идее целой пачкой надо отправлять в elastic
      */
-    public List<Note> LoadComments(Note note);
+    public PageDto<Note> GetComments(NoteIdDto note, PageSizeDto pageSize, LimitDto limit);
 
-    public List<Note> FindByTag(Field<ITagId, int> tag, Account owner);
-    public List<Note> FindByOwner(Account owner);
-    public Task<List<Note>> SemanticFind(SemanticSearchQuery find, Field<IAccId, int> ownerId);
-    public Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, Field<IAccId, int> owner);
+    public PageDto<Note> FindNotesByTags(List<TagIdDto> tags, List<TagIdDto> filterTags, bool op,
+        AccIdDto owner,  LimitDto limit, PageSizeDto page);
+
+    public PageDto<Note> FindNotesByOwner(AccIdDto owner, PageSizeDto pageSize, LimitDto limit);
+
+    public Task<PageDto<Note>> SemanticFind(SemanticSearchQuery find, AccIdDto ownerId, PageSizeDto page,
+        LimitDto limit);
+
+    public Task<Note> CreateInElastic(NoteCreateRequestDto requestDto, AccIdDto owner);
 }
