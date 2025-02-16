@@ -39,7 +39,7 @@ public class NoteSearchContentResponseDto
     public string Title { get; set; }
     public string Path { get; set; }
 
-    [JsonPropertyName("onwer_account_name")]
+    [JsonPropertyName("owner_account_name")]
     public string OwnerName { get; set; }
 
     [JsonPropertyName("main_note_path")] public string? MainPath { get; set; }

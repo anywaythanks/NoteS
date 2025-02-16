@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace NoteS.configs;
 
-public class AuthConfig
+public class SecurityConfig
 {
     //TODO: По хорошему ssl нужен, но пофиг
     public static void Configuration(IHostApplicationBuilder builder)
@@ -74,15 +74,15 @@ public class AuthConfig
         {
             o.DefaultPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                // .RequireClaim("email_verified", "true")
                 .Build();
         });
+        services.AddCors();
     }
 
     public static void AfterConfiguration(WebApplication app)
     {
         app.UseAuthentication();
         app.UseAuthorization();
-        app.UseCors("MyAllowSpecificOrigins");
+        app.UseCors(builder => builder.AllowAnyHeader().AllowAnyOrigin().WithMethods("GET", "POST", "PUT", "DELETE"));
     }
 }

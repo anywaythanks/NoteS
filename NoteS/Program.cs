@@ -7,14 +7,14 @@ ControllersConfig.Configuration(builder);
 LoggerConfig.Configuration(builder);
 MapperConfig.Configuration(builder);
 ServicesConfig.Configuration(builder);
-AuthConfig.Configuration(builder);
+SecurityConfig.Configuration(builder);
 RepositoriesConfig.Configuration(builder);
 SwaggerConfig.Configuration(builder);
 ElasticConfig.Configuration(builder);
 HandlerConfig.Configuration(builder);
 
 var app = builder.Build();
-AuthConfig.AfterConfiguration(app);
+SecurityConfig.AfterConfiguration(app);
 RepositoriesConfig.AfterConfiguration(app);
 SwaggerConfig.AfterConfiguration(app);
 MapperConfig.AfterConfiguration(app);

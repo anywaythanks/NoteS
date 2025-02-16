@@ -33,3 +33,4 @@ Thumbs.db
 
 #lock
 package-lock.json
+/other/
