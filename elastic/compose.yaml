@@ -28,12 +28,12 @@
   es-init:
     build: ./src/es-init
     container_name: es-initializer
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
+#    depends_on:
+#      elasticsearch:
+#        condition: service_healthy
     volumes:
       - ./src/resource:/resource
-    command: [ "sh", "/resource/scripts/init.sh" ]
+    command: [ "sh", "/resource/scripts/init-remote.sh" ]
     restart: 'no'
     networks:
       - esnet

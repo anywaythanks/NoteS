@@ -16,6 +16,7 @@ public partial class Note
     public static implicit operator NoteContentDto(Note note) => nm.ToContentDto(note);
     public static implicit operator NoteContentDto?(Note? note) => note == null ? null : nm.ToContentDto(note);
     public static implicit operator NoteEditPublicResponseDto(Note note) => um.OfEdit(note);
+    public static implicit operator NoteEditOtherResponseDto(Note note) => um.OfEditOther(note);
     public static implicit operator NoteEditContentResponseDto(Note note) => um.OfEditContent(note);
     public static implicit operator NoteCreateResponseDto(Note note) => um.OfCreateNote(note);
     public static implicit operator NoteIsPublicDto(Note note) => nm.ToIsPublicDto(note);

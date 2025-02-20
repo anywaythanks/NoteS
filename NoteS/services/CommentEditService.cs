@@ -15,10 +15,11 @@ public class CommentEditService(
         CommentEditRequestDto requestDto)
     {
         var comment = noteInformationService.Get(pathComment, owner);
-        if (comment.Type != NoteTypes.Comment) throw new NoteTypeException("комментарий");
+        if (!NoteTypes.IsComment(comment.Type)) throw new NoteTypeException("комментарий");
         if (!comment.IsEditable()) throw new TimeMissed("редактирования комментариев");
         comment.SyntaxType = requestDto.SyntaxType;
         comment.Content = requestDto.Content;
+        comment.Type = NoteTypes.CommentRedacted;
         comment.Title = requestDto.Title;
         return repository.Save(comment);
     }
@@ -28,6 +29,7 @@ public class CommentEditService(
         var comment = noteInformationService.Get(pathComment);
         comment.SyntaxType = requestDto.SyntaxType;
         comment.Content = requestDto.Content;
+        comment.Type = NoteTypes.CommentRedacted;
         comment.Title = requestDto.Title;
         return repository.Save(comment);
     }

@@ -1,0 +1,8 @@
+﻿<div class="copy-link-wrapper">
+  <button (click)="copyToClipboard()" class="icon-button">
+    <fa-icon [icon]="icon" class="link-icon"></fa-icon>
+  </button>
+  <div *ngIf="showCopiedAlert" class="copied-alert">
+    Link copied!
+  </div>
+</div>

@@ -62,6 +62,10 @@ public partial class NoteRepositoryDbAndElastic
             .Property(e => e.Title)
             .HasConversion(
                 new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd()));
+        modelBuilder.Entity<Note>()
+            .Property(e => e.Description)
+            .HasConversion(
+                new ValueConverter<string, string>(v => v.TrimEnd(), v => v.TrimEnd()));
     }
 
     public partial Note SavePartial(Note note)
@@ -133,6 +137,13 @@ public partial class NoteRepositoryDbAndElastic
         return res;
     }
 
+    public partial Note? FindById(NoteIdDto note)
+    {
+        return Detach((from n in Notes
+            where n.Id == note.Id
+            select n).FirstOrDefault());
+    }
+
     public partial bool IsTagExists(TagIdDto tag, NoteIdDto note)
     {
         var noteTag = NoteTags
@@ -144,10 +155,11 @@ public partial class NoteRepositoryDbAndElastic
     {
         var q = from n in Notes
             where n.MainNote == note.Id &&
-                  n.Type == NoteTypes.Comment &&
+                  (n.Type == NoteTypes.Comment || n.Type == NoteTypes.CommentRedacted) &&
                   n.IsPublic == true //TODO: Условие потенциально может вызвать кучу проблем. 
             join a in Accounts on n.Owner equals a.Id
             select new { a, n };
+        q = q.OrderBy(e => e.n.Id);
         int total = q.Count();
         var limit = limit1.Limit;
         var page = pageSize.Page;
@@ -162,7 +174,8 @@ public partial class NoteRepositoryDbAndElastic
                     return o.n;
                 })
                 .ToList(),
-            Total = CalculateUtil.TotalPages(total, limit),
+            TotalPages = CalculateUtil.TotalPages(total, limit),
+            Total = total,
             Page = CalculateUtil.CurrentPage(page, limit, total)
         };
     }
@@ -173,6 +186,7 @@ public partial class NoteRepositoryDbAndElastic
             where n.Owner == owner.Id &&
                   n.Type == NoteTypes.Note
             select n;
+        q = q.OrderBy(e => e.Id);
         int total = q.Count();
         var limit = limit1.Limit;
         var page = pageSize.Page;
@@ -181,7 +195,8 @@ public partial class NoteRepositoryDbAndElastic
             items = q.Skip(CalculateUtil.ToOffset(page, limit))
                 .Take(limit)
                 .ToList(),
-            Total = CalculateUtil.TotalPages(total, limit),
+            TotalPages = CalculateUtil.TotalPages(total, limit),
+            Total = total,
             Page = CalculateUtil.CurrentPage(page, limit, total)
         };
     }
@@ -209,6 +224,7 @@ public partial class NoteRepositoryDbAndElastic
                 select n;
         }
 
+        q = q.OrderBy(e => e.Id);
         int total = q.Count();
         var limit = limit1.Limit;
         var page = page1.Page;
@@ -219,7 +235,8 @@ public partial class NoteRepositoryDbAndElastic
             items = q.Skip(CalculateUtil.ToOffset(page, limit))
                 .Take(limit)
                 .ToList(),
-            Total = CalculateUtil.TotalPages(total, limit),
+            TotalPages = CalculateUtil.TotalPages(total, limit),
+            Total = total,
             Page = CalculateUtil.CurrentPage(page, limit, total)
         };
     }
@@ -231,7 +248,7 @@ public partial class NoteRepositoryDbAndElastic
             where uuids.Contains(n.ElasticUuid)
             select n;
 
-        long total = notes.Total;
+        long total = notes.TotalPages;
         var limit = limit1.Limit;
         var page = page1.Page;
         q = q.OrderBy(n => n.Id);
@@ -241,7 +258,7 @@ public partial class NoteRepositoryDbAndElastic
         foreach (var note in notes.items)
         {
             var noteDb = list.FirstOrDefault(n => n.ElasticUuid == note.ElasticUuid);
-            if (noteDb == null) continue;//TODO: вообще странный случай
+            if (noteDb == null) continue; //TODO: вообще странный случай
             noteDb.Content = note.Content;
             noteDb.Score = note.Score;
         }
@@ -249,9 +266,34 @@ public partial class NoteRepositoryDbAndElastic
         return new PageDto<Note>
         {
             items = list,
-            Total = CalculateUtil.TotalPages(total, limit),
+            TotalPages = CalculateUtil.TotalPages(total, limit),
+            Total = total,
             Page = CalculateUtil.CurrentPage(page, limit, total)
         };
+    }
+
+    public partial PageDto<Note> LoadTags(PageDto<Note> notes)
+    {
+        var notesId = notes.items
+            .Where(i => i.Id != null)
+            .Select(t => (int)t.Id!)
+            .ToList();
+
+        var q = from nt in NoteTags
+            where notesId.Contains(nt.NoteId)
+            join t in Tags on nt.TagId equals t.Id
+            select new { nt, t };
+        var list = q.ToList();
+        foreach (var l in list)
+        {
+            var note = notes.items.Find(n => n.Id == l.nt.NoteId);
+            if (note != null)
+            {
+                note.Tags.Add(l.t);
+            }
+        }
+
+        return notes;
     }
 
     [return: NotNullIfNotNull(nameof(tag))]

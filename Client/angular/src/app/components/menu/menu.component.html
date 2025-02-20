@@ -1,15 +1,110 @@
 <nav class="menu">
-  <div class="developer-status"><strong>Keycloak Events:</strong> {{ keycloakStatus }}</div>
+  <ul>
+    <li>
+      <a routerLink="/" class="action-item">NoteS</a>
+    </li>
+    @if (isSearch) {
+      <li>
+        @let state = state$ | async;
+        @if (state != null) {
+          <div class="search-container">
+            <input id="semantic-toggle" type="checkbox"
+                   [(ngModel)]="isSemantic"
+                   (change)="toggleSemantic()"
+                   class="hidden-radio">
+            <input id="tags-toggle" type="checkbox"
+                   [(ngModel)]="isTags"
+                   (change)="toggleTags()"
+                   class="hidden-radio">
+            @if (state.searchType == 'by-tags') {
+              <div class="tags-section">
+                <mat-form-field appearance="outline">
+                  <span matPrefix class="search-wrap"><fa-icon [icon]="faMagnifyingGlass" class="search-icon"></fa-icon></span>
+                  <input matInput
+                         placeholder="Select tags..."
+                         [formControl]="tagFilterControl"
+                         [matAutocomplete]="auto">
+                  <label matIconSuffix for="semantic-toggle" class="semantic-toggle">
+                    <fa-icon [icon]="faWandMagicSparkles" class="not-semantic-icon"></fa-icon>
+                  </label>
+                  <label matIconSuffix for="tags-toggle" class="tags-toggle">
+                    <fa-icon [icon]="faTags" class="tags-icon"></fa-icon>
+                  </label>
+                  <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option (onSelectionChange)="clearVal()" *ngFor="let tag of filteredTags$ | async"
+                                [value]="tag.name">
+                      <div class="tag-option">
+                        <button mat-icon-button (click)="addTag(tag, 'included')">
+                          <fa-icon [icon]="faCirclePlus"></fa-icon>
+                        </button>
+                        <button mat-icon-button (click)="addTag(tag, 'excluded')">
+                          <fa-icon [icon]="faCircleMinus"></fa-icon>
+                        </button>
+                        {{ tag.name }}
+                      </div>
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
 
-  <div class="actions">
-    <a routerLink="/" class="action-item">Home</a>
-    <a routerLink="/notes" class="action-item">My Books</a>
-    <a routerLink="/profile" class="action-item">My Profile</a>
-    <div> {{ user?.username }}</div>
-    @if (!authenticated) {
-      <button class="action-item" (click)="login()">Login</button>
-    } @else {
-      <button class="action-item" (click)="logout()">Logout</button>
+                <div class="selected-tags">
+                  <div class="included-tags">
+                    <mat-chip-listbox>
+                      <mat-chip-row *ngFor="let tag of (state$ | async)?.includedTags"
+                                    (removed)="removeTag(tag, 'included')">
+                        {{ tag.name }}
+                        <fa-icon matChipRemove [icon]="faCircleXmark"></fa-icon>
+                      </mat-chip-row>
+                    </mat-chip-listbox>
+                  </div>
+
+                  <div class="excluded-tags">
+                    <mat-chip-listbox>
+                      <mat-chip-row *ngFor="let tag of (state$ | async)?.excludedTags"
+                                    class="excluded-chip"
+                                    (removed)="removeTag(tag, 'excluded')">
+                        {{ tag.name }}
+                        <fa-icon matChipRemove [icon]="faCircleXmark"></fa-icon>
+                      </mat-chip-row>
+                    </mat-chip-listbox>
+                  </div>
+                </div>
+              </div>
+            } @else {
+              <mat-form-field appearance="outline">
+                <span matPrefix class="search-wrap"><fa-icon matPrefix [icon]="faMagnifyingGlass"
+                                                             class="search-icon"></fa-icon></span>
+                <form (ngSubmit)="search($event)">
+                  <div class="input-group no-border">
+                    <input matInput type="text" [formControl]="searchControl" class="form-control"
+                           placeholder="Search...">
+                  </div>
+                </form>
+                <label matIconSuffix for="semantic-toggle" class="semantic-toggle">
+                  <fa-icon [icon]="faWandMagicSparkles"
+                           [class]="state.searchType == 'semantic'?'semantic-icon':'not-semantic-icon'"></fa-icon>
+                </label>
+                <label matIconSuffix for="tags-toggle" class="tags-toggle">
+                  <fa-icon [icon]="faTags" class="not-tags-icon"></fa-icon>
+                </label>
+              </mat-form-field>
+            }
+          </div>
+
+        }
+      </li>
     }
-  </div>
+    @let userL = user();
+    @if (userL !== undefined && userL.type === 'user') {
+      <li>
+        <a routerLink="/profile" class="action-item">{{ userL.username }}</a>
+      </li>
+    }
+    <li>
+      @if (!authenticated) {
+        <button class="action-item" (click)="login()">Login</button>
+      } @else {
+        <button class="action-item" (click)="logout()">Logout</button>
+      }
+    </li>
+  </ul>
 </nav>

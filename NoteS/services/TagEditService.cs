@@ -29,11 +29,11 @@ public class TagEditService(
         return noteRepository.AddTag(note, tagI);
     }
 
-    public Tag Create(AccName accountName, TagNameDto tag)
+    public Tag Create(AccName accountName, CreateTagRequestDto tag)
     {
         var acc = accountInformationService.Get(accountName);
         if (tagRepository.FindByName(tag, acc) != null) throw new AlreadyExists("Тег");
-        var tagNew = new Tag(tag.Name) { Owner = acc.Id };
+        var tagNew = new Tag(tag.Name) { Owner = acc.Id, Color = tag.Color };
         return tagRepository.Save(tagNew);
     }
 }

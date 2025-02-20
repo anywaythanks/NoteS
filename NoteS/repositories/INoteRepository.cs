@@ -19,6 +19,7 @@ public interface INoteRepository
     public List<Tag> GetTags(NoteIdDto note);
     public bool DeleteTag(NoteIdDto note, TagIdDto tag);
     public bool AddTag(NoteIdDto note, TagIdDto tag);
+    public Note? FindById(NoteIdDto note);
 
     public Task<PageDto<Note>> FindByTitle(NoteTitleDto title, AccIdDto ownerId, PageSizeDto page,
         LimitDto limit);
@@ -31,6 +32,7 @@ public interface INoteRepository
         AccIdDto owner,  LimitDto limit, PageSizeDto page);
 
     public PageDto<Note> FindNotesByOwner(AccIdDto owner, PageSizeDto pageSize, LimitDto limit);
+    public PageDto<Note> LoadTags(PageDto<Note> notes);
 
     public Task<PageDto<Note>> SemanticFind(SemanticSearchQuery find, AccIdDto ownerId, PageSizeDto page,
         LimitDto limit);

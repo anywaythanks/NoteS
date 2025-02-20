@@ -1,0 +1,144 @@
+﻿@use '@angular/material' as mat;
+
+html {
+  color-scheme: light dark;
+  @include mat.theme((
+    color: mat.$violet-palette,
+    typography: Roboto,
+    density: 0
+  ));
+}
+
+//
+//
+//// Darcula color palette
+//$darcula-primary: mat.m2-define-palette(mat.$m2-grey-palette, 900, 800, 900);
+//$darcula-accent: mat.m2-define-palette(mat.$m2-blue-palette, 600);
+//$darcula-warn: mat.m2-define-palette(mat.$red-palette, 600);
+//$darcula-background: map-get(mat.$m2-dark-theme-background-palette, background);
+//$darcula-foreground: map-get(mat.$m2-dark-theme-foreground-palette, foreground);
+//
+//// Create dark theme
+//$darcula-theme: mat.m2-define-dark-theme((
+//  color: (
+//    primary: $darcula-primary,
+//    accent: $darcula-accent,
+//    warn: $darcula-warn,
+//  )
+//));
+//
+//// Include theme styles
+//@include mat.all-component-themes($darcula-theme);
+//
+//// Custom dark theme overrides
+//.dark-theme {
+//  background-color: #2b2b2b;
+//  color: #a9b7c6;
+//
+//  // Card styling
+//  .mat-card {
+//    background-color: #3c3f41;
+//    border-radius: 4px;
+//    padding: 16px;
+//    margin: 8px 0;
+//    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+//
+//    &-header {
+//      color: #a9b7c6;
+//      padding-bottom: 12px;
+//    }
+//  }
+//
+//  // Search container
+//  .search-container {
+//    display: flex;
+//    gap: 16px;
+//    transition: all 0.3s ease;
+//
+//    &.semantic-search {
+//      .text-search {
+//        display: none;
+//      }
+//    }
+//
+//    &.text-search {
+//      .semantic-search {
+//        display: none;
+//      }
+//    }
+//  }
+//
+//  // Form field overrides
+//  .mat-form-field {
+//    width: 100%;
+//
+//    .mat-input-element {
+//      color: #a9b7c6;
+//    }
+//
+//    .mat-form-field-label {
+//      color: #808080;
+//    }
+//
+//    .mat-form-field-underline {
+//      background-color: #4d4d4d;
+//    }
+//
+//    .mat-form-field-ripple {
+//      background-color: mat.m2-get-color-from-palette($darcula-accent, 600);
+//    }
+//  }
+//
+//  // Chip styling
+//  .mat-chip {
+//    background-color: #4d4d4d !important;
+//    color: #a9b7c6 !important;
+//    border-radius: 16px;
+//    padding: 4px 12px;
+//    margin: 4px;
+//    transition: all 0.2s ease;
+//
+//    &.excluded-chip {
+//      background-color: #663333 !important;
+//      text-decoration: line-through;
+//    }
+//
+//    .mat-chip-remove {
+//      color: #ff6666;
+//      opacity: 0.7;
+//      transition: opacity 0.2s ease;
+//
+//      &:hover {
+//        opacity: 1;
+//      }
+//    }
+//  }
+//
+//  // Button styling
+//  .mat-icon-button {
+//    color: #a9b7c6;
+//    transition: color 0.2s ease;
+//
+//    &.active {
+//      color: mat.m2-get-color-from-palette($darcula-accent, 600);
+//    }
+//
+//    &:hover {
+//      color: mat.m2-get-color-from-palette($darcula-accent, 400);
+//    }
+//  }
+//
+//  // Tags section
+//  .tags-section {
+//    margin-top: 16px;
+//    border-top: 1px solid #4d4d4d;
+//    padding-top: 16px;
+//
+//    .selected-tags {
+//      margin-top: 12px;
+//      display: flex;
+//      flex-direction: column;
+//      gap: 8px;
+//    }
+//  }
+//}

@@ -9,6 +9,11 @@ public partial class Note(string title)
     [Column("id")] public int? Id { get; set; }
 
     [Column("path")] [MaxLength(128)] public string? Path { get; set; }
+
+    [Column("description")]
+    [MaxLength(2048)]
+    public string Description { get; set; } = "";
+
     [Column("title")] [MaxLength(128)] public string Title { get; set; } = title;
 
     [Column("elastic_uuid")]

@@ -1,0 +1,39 @@
+﻿<div class="pagination" *ngIf="pageData.total_pages > 0">
+  <button
+    (click)="previousPage()"
+    [disabled]="pageData.page === 1"
+    aria-label="Previous page"
+  >
+    &lt;
+  </button>
+
+  <button
+    *ngFor="let page of pagesRange"
+    (click)="goToPage(page)"
+    [class.active]="page === pageData.page"
+    [disabled]="page === pageData.page"
+  >
+    {{ page }}
+  </button>
+  <input
+    type="number"
+    min="1"
+    [max]="pageData.total_pages"
+    placeholder="Page"
+    (input)="pageInput$.next(getValue($event))"
+    style="width: 60px;"
+  >
+
+  <button
+    (click)="nextPage()"
+    [disabled]="pageData.page === pageData.total_pages"
+    aria-label="Next page"
+  >
+    &gt;
+  </button>
+
+  <span class="page-status">
+    Page {{ pageData.page }} of {{ pageData.total_pages }}
+  </span>
+</div>
+

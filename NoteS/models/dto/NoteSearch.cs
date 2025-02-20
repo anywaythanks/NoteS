@@ -14,6 +14,7 @@ public class NoteSearchResponseDto
 {
     public string Title { get; set; }
     public string Path { get; set; }
+    public string Description { get; set; }
     [JsonIgnore] public NoteTypes Type { get; set; }
     public decimal Score { get; set; }
 
@@ -27,8 +28,7 @@ public class NoteSearchResponseDto
     }
 
     [JsonPropertyName("is_public")] public bool IsPublic { get; set; }
-
-    public DateTime? CreatedOn { get; set; }
+    [JsonPropertyName("created_at")] public DateTime? CreatedOn { get; set; }
 }
 
 /**
@@ -38,6 +38,7 @@ public class NoteSearchContentResponseDto
 {
     public string Title { get; set; }
     public string Path { get; set; }
+    public string Description { get; set; }
 
     [JsonPropertyName("owner_account_name")]
     public string OwnerName { get; set; }
@@ -58,7 +59,7 @@ public class NoteSearchContentResponseDto
 
     public List<TagResponseDto> Tags { get; set; }
     [JsonPropertyName("is_public")] public bool IsPublic { get; set; }
-    public DateTime? CreatedOn { get; set; }
+    [JsonPropertyName("created_at")] public DateTime? CreatedOn { get; set; }
 }
 
 public class NoteSearchRequestDto
@@ -87,6 +88,7 @@ public class NotePath
 
     public static implicit operator NotePathDto(NotePath path) => nm.ToPathDto(path);
 }
+
 public class AccName
 {
     [FromRoute(Name = "accountName")]
@@ -95,6 +97,7 @@ public class AccName
 
     public static implicit operator AccNameDto(AccName name) => am.ToNameDto(name);
 }
+
 class ElasticRequestDto
 {
     public string title { get; init; }

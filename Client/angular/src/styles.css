@@ -7,6 +7,7 @@
 body {
   font-family: 'Be Vietnam Pro', sans-serif;
 }
+
 :root {
   --primary-color: #605DC8;
   --secondary-color: #8B89E6;
@@ -21,3 +22,98 @@ button.primary {
   color: white;
   border-radius: 8px;
 }
+
+blockquote {
+  border-left: 3px solid rgba(0, 0, 0, 0.21);
+  padding-left: 12px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.hidden-checkbox {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.mdc-text-field--outlined {
+  --mdc-outlined-text-field-container-shape: 28px !important;
+}
+
+.hidden-radio {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.mat-mdc-form-field-bottom-align {
+  display: none;
+}
+
+/*!* dark-theme.css *!*/
+/*body {*/
+/*  !* Base colors *!*/
+/*  --background: #2b2b2b;*/
+/*  --surface: #3c3f41;*/
+/*  --text: #a9b7c6;*/
+/*  --primary: #6897bb;*/
+/*  --accent: #9876aa;*/
+/*  --error: #ff6b6b;*/
+
+/*  !* Card styling *!*/
+/*  --card-bg: var(--surface);*/
+/*  --card-border: #4d4d4d;*/
+
+/*  !* Input fields *!*/
+/*  --input-border: #4d4d4d;*/
+/*  --input-bg: #323232;*/
+
+/*  !* Chips *!*/
+/*  --chip-bg: #4d4d4d;*/
+/*  --chip-excluded: #663333;*/
+/*}*/
+
+/*!* Apply to material components *!*/
+/*.dark-theme .mat-card {*/
+/*  background: var(--card-bg);*/
+/*  border: 1px solid var(--card-border);*/
+/*  color: var(--text);*/
+/*}*/
+
+/*.dark-theme .mat-form-field {*/
+/*  background: var(--input-bg);*/
+/*  border-radius: 4px;*/
+/*  padding: 8px;*/
+/*}*/
+
+/*.dark-theme .mat-input-element {*/
+/*  color: var(--text) !important;*/
+/*}*/
+
+/*.dark-theme .mat-chip {*/
+/*  background: var(--chip-bg) !important;*/
+/*  color: var(--text) !important;*/
+/*}*/
+
+/*.dark-theme .excluded-chip {*/
+/*  background: var(--chip-excluded) !important;*/
+/*  text-decoration: line-through;*/
+/*}*/
+
+/*!* Basic layout *!*/
+/*.search-container {*/
+/*  display: flex;*/
+/*  gap: 1rem;*/
+/*  padding: 1rem;*/
+/*}*/
+
+/*.tags-section {*/
+/*  margin-top: 1rem;*/
+/*  border-top: 1px solid var(--input-border);*/
+/*  padding-top: 1rem;*/
+/*}*/

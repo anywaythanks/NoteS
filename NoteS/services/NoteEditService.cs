@@ -14,7 +14,23 @@ public class NoteEditService(
     public Note PublishNote(NotePathDto pathNote, AccNameDto owner,
         NoteEditPublicRequestDto requestDto)
     {
-        var note = noteInformationService.Get(pathNote, owner);
+        var note = noteInformationService.Get(pathNote);
+        Note? result = null;
+        if (NoteTypes.IsComment(note.Type))
+        {
+            if (note.MainNote != null)
+            {
+                result = repository.FindById(new NoteIdDto((int)note.MainNote));
+                if (result != null && result.Type == NoteTypes.Note)
+                {
+                    var acc = accountInformationService.Get(result);
+                    if (note.OwnerAccount?.Name != owner.Name &&
+                        acc.Name != owner.Name) throw new Forbidden("заметке");
+                }
+            }
+        }
+
+        if (result == null && note.OwnerAccount?.Name != owner.Name) throw new Forbidden("заметке");
         note.IsPublic = requestDto.IsPublic;
         return repository.SavePartial(note);
     }
@@ -32,24 +48,39 @@ public class NoteEditService(
         return repository.SavePartial(note);
     }
 
+    public Note EditNote(NotePathDto pathNote, AccNameDto owner,
+        NoteEditOtherRequestDto requestDto)
+    {
+        var note = noteInformationService.Get(pathNote, owner);
+        if (note.Type != NoteTypes.Note) throw new NoteTypeException("заметка");
+        note.Description = requestDto.Description;
+        note.Title = requestDto.Title;
+        return repository.SavePartial(note);
+    }
+
+    public Note EditNote(NotePathDto pathNote, NoteEditOtherRequestDto requestDto)
+    {
+        var note = noteInformationService.Get(pathNote);
+        if (note.Type != NoteTypes.Note) throw new NoteTypeException("заметка");
+        note.Description = requestDto.Description;
+        note.Title = requestDto.Title;
+        return repository.SavePartial(note);
+    }
+
     public Task<Note> EditNote(NotePathDto pathNote, AccNameDto owner,
-        NoteEditContentRequestDto requestDto)
+        NoteEditOnlyContentRequestDto requestDto)
     {
         var note = noteInformationService.Get(pathNote, owner);
         if (note.Type != NoteTypes.Note) throw new NoteTypeException("заметка");
         note.Content = requestDto.Content;
-        note.Title = requestDto.Title;
-        note.SyntaxType = requestDto.Type;
         return repository.Save(note);
     }
 
-    public Task<Note> EditNote(NotePathDto pathNote, NoteEditContentRequestDto requestDto)
+    public Task<Note> EditNote(NotePathDto pathNote, NoteEditOnlyContentRequestDto requestDto)
     {
         var note = noteInformationService.Get(pathNote);
         if (note.Type != NoteTypes.Note) throw new NoteTypeException("заметка");
         note.Content = requestDto.Content;
-        note.Title = requestDto.Title;
-        note.SyntaxType = requestDto.Type;
         return repository.Save(note);
     }
 
@@ -58,8 +89,9 @@ public class NoteEditService(
         AccIdDto account = accountInformationService.Get(accountName);
         var note = new Note(requestDto.Title)
         {
-            Path =  Guid.NewGuid().ToString(),
+            Path = Guid.NewGuid().ToString(),
             Content = requestDto.Content,
+            Description = requestDto.Description,
             Owner = account.Id,
             Type = NoteTypes.Note,
             IsPublic = false,

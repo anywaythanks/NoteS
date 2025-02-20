@@ -14,6 +14,7 @@ public class NoteInformationService(
     {
         var acc = informationService.Get(owner);
         var notes = await repository.FindByTitle(title, acc, pageSize, limit);
+        repository.LoadTags(notes);
         notes.items.ForEach(note => note.OwnerAccount = acc);
         return notes;
     }
@@ -23,6 +24,7 @@ public class NoteInformationService(
         var acc = informationService.Get(owner);
         var notes = repository.FindNotesByOwner(acc, pageSize, limit);
         notes.items.ForEach(note => note.OwnerAccount = acc);
+        repository.LoadTags(notes);
         return notes;
     }
 
@@ -56,6 +58,7 @@ public class NoteInformationService(
     public Note Get(NotePathDto path)
     {
         var note = repository.FindByPath(path) ?? throw new NotFound("заметка");
+        note.OwnerAccount = informationService.Get(note);
         return note;
     }
 

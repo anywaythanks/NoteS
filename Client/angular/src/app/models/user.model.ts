@@ -1,9 +1,23 @@
-export interface User {
+export class User {
+  readonly type = 'user';
   name: string;
-  email?: string;
-  username?: string;
+  email: string;
+  username: string;
+
+  constructor(name: string, email: string, username: string) {
+    this.name = name;
+    this.email = email;
+    this.username = username;
+  }
 }
 
-export interface UserOnlyName extends Omit<Omit<User, "name">, "email"> {//Если обычно у нас ковариантность, то тут контравариантность.. Наверное
+/** Если обычно у нас ковариантность,
+ то тут контравариантность.. Наверное**/
+export interface UserOnlyName extends Omit<Omit<User, "name">, "email"> {
 
+}
+
+
+export class Anonymous {
+  readonly type = "anonymous";
 }

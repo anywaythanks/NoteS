@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace NoteS.models.dto;
 
@@ -26,6 +27,8 @@ public class PaginationRequestDto
 public class PageDto<T>
 {
     public required List<T> items { get; init; }
+    [JsonPropertyName("total_pages")]
+    public required long TotalPages { get; init; }
     public required long Total { get; init; }
     public long Page { get; init; }
 }

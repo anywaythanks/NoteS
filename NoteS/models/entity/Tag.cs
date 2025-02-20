@@ -10,5 +10,6 @@ public partial class Tag(string name)
 
     [Column("name")] [MaxLength(64)] public string Name { get; init; } = name;
 
-    [Column("account_id")] [MaxLength(64)] public int? Owner { get; set; }
+    [Column("account_id")] public int? Owner { get; set; }
+    [Column("color")] [Range(0, 0xFFFFFF)] public int Color { get; set; } = 0;
 }

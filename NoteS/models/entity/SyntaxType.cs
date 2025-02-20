@@ -24,9 +24,10 @@ public class SyntaxType
     {
         return syntaxType?.Num;
     }
-
-    public static SyntaxType NameToType(SyntaxTypeName syntaxType)
+    [return: NotNullIfNotNull(nameof(syntaxType))]
+    public static SyntaxType? NameToType(SyntaxTypeName? syntaxType)
     {
+        if (syntaxType == null) return null;
         switch (syntaxType)
         {
             case SyntaxTypeName.PLAINTEXT: return Plain;

@@ -1,6 +1,6 @@
-import { Component, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { BehaviorSubject, timer } from 'rxjs';
+import {Component, OnDestroy} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {BehaviorSubject, timer} from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +20,7 @@ export class HomeComponent implements OnDestroy {
         this.copyMessageSubject.next(`"${text}" copied to clipboard!`);
         timer(3000).subscribe(() => this.copyMessageSubject.next(null));
       })
-      .catch((err) => {
+      .catch(_ => {
         this.copyMessageSubject.next('Failed to copy text. Please try again.');
       });
   }

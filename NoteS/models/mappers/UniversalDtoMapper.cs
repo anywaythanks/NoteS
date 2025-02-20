@@ -27,6 +27,9 @@ public partial class UniversalDtoMapper
     public partial NoteEditPublicResponseDto OfEdit(Note source);
 
     [MapperIgnoreTarget("TypeName")]
+    public partial NoteEditOtherResponseDto OfEditOther(Note source);
+
+    [MapperIgnoreTarget("TypeName")]
     public partial NoteEditContentResponseDto OfEditContent(Note source);
 
     [MapperIgnoreTarget("NoteTypeName")]
@@ -40,9 +43,10 @@ public partial class UniversalDtoMapper
     [MapperIgnoreTarget("NoteTypeName")]
     [MapperIgnoreTarget("TypeName")]
     public partial CommentCreateResponseDto OfCreateComment(Note source);
-    
+
     [MapperIgnoreTarget("TypeName")]
     public partial NoteCreateRequestDto OfCreateContent(Note source);
+
     public partial TagResponseDto Of(Tag tag);
     public List<TagResponseDto> Of(List<Tag> tag) => tag.Select(Of).ToList();
     public partial PageDto<TagResponseDto> Of(PageDto<Tag> source);

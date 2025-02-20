@@ -16,3 +16,7 @@
 .book-item:last-child {
   border-bottom: none;
 }
+
+.note-tag-item {
+  color: white;
+}

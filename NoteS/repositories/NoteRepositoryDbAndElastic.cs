@@ -38,16 +38,18 @@ public partial class NoteRepositoryDbAndElastic(
 
     private partial Task<PageDto<Note>> LoadContentElastic(PageDto<Note> notes);
     private partial PageDto<Note> LoadNoteDb(PageDto<SearchResultDto> notes, PageSizeDto page, LimitDto limit);
+    public partial PageDto<Note> LoadTags(PageDto<Note> notes);
     public partial List<Tag> GetTags(NoteIdDto note);
 
     public partial bool DeleteTag(NoteIdDto note, TagIdDto tag);
 
     public partial bool AddTag(NoteIdDto note, TagIdDto tag);
+    public partial Note? FindById(NoteIdDto note);
 
     public async Task<PageDto<Note>> FindByTitle(NoteTitleDto title, AccIdDto ownerId, PageSizeDto page,
         LimitDto limit)
     {
-        return LoadNoteDb(await FindByTitleElastic(title, ownerId, page, limit), page, limit);
+        return LoadTags(LoadNoteDb(await FindByTitleElastic(title, ownerId, page, limit), page, limit));
     }
 
     public partial Task<PageDto<SearchResultDto>> FindByTitleElastic(NoteTitleDto title, AccIdDto ownerId,
@@ -71,7 +73,7 @@ public partial class NoteRepositoryDbAndElastic(
     public async Task<PageDto<Note>> SemanticFind(SemanticSearchQuery find, AccIdDto ownerId, PageSizeDto page,
         LimitDto limit)
     {
-        return LoadNoteDb(await SemanticFindInElastic(find, ownerId, page, limit), page, limit);
+        return LoadTags(LoadNoteDb(await SemanticFindInElastic(find, ownerId, page, limit), page, limit));
     }
 
     private partial Task<PageDto<SearchResultDto>> SemanticFindInElastic(SemanticSearchQuery find, AccIdDto ownerId,

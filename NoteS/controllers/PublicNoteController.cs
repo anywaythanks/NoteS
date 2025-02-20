@@ -23,7 +23,7 @@ public class PublicNoteController(
     TagMapper tm)
     : GeneralPreconditionController(register)
 {
-    [HttpPatch("{pathNote}/publish")]
+    [HttpPost("{pathNote}/publish")]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.SET_OWN_PUBLIC_STATUS_NOTES)]
     [SwaggerOperation(Description = "Редактирование публичности заметки/комменатрия")]
     public NoteEditPublicResponseDto EditPublicNote([FromQuery] AccName accountName,
@@ -37,10 +37,22 @@ public class PublicNoteController(
 
     [HttpPost("{pathNote}")]
     [KeycloakAuthorize(Policies.READ_NOTES, Policies.EDIT_OWN_NOTES)]
-    [SwaggerOperation(Description = "Редактирование заметки (комментария в другом месте)")]
-    public async Task<NoteEditContentResponseDto> EditNote([FromQuery] AccName accountName,
+    [SwaggerOperation(Description = "Редактирование остальных полей заметки (комментария в другом месте)")]
+    public NoteEditOtherResponseDto EditNote([FromQuery] AccName accountName,
         [FromQuery] NotePath pathNote,
-        [FromBody] NoteEditContentRequestDto editDto)
+        [FromBody] NoteEditOtherRequestDto editDto)
+    {
+        Check(accountName);
+
+        return editService.EditNote(pathNote, accountName, editDto);
+    }
+
+    [HttpPost("{pathNote}/content")]
+    [KeycloakAuthorize(Policies.READ_NOTES, Policies.EDIT_OWN_NOTES)]
+    [SwaggerOperation(Description = "Редактирование контента заметки (комментария в другом месте)")]
+    public async Task<NoteEditContentResponseDto> EditContentNote([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote,
+        [FromBody] NoteEditOnlyContentRequestDto editDto)
     {
         Check(accountName);
 

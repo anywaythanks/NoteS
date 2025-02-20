@@ -36,3 +36,8 @@ alter table if exists tags_notes_map
             references tags (id)
 
 GO
+
+alter table if exists tags
+    add color int not null check ( color >= 0 and color <= 16777215 ) default 0;
+
+GO

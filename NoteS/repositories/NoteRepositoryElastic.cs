@@ -16,8 +16,14 @@ public partial class NoteRepositoryDbAndElastic
 
     private async partial Task<bool> DeleteInElastic(Note note)
     {
-        if (note.Id == null) return false;
-        var response = await client.DeleteAsync<Note>(note.Id);
+        if (note.ElasticUuid == null) return false;
+        var response = await client.DeleteByQueryAsync<ElasticResponseDto>(IndexName, r => r
+            .Query(q => q
+                .Term(t => t
+                    .Field(e => e._id)
+                    .Value(note.ElasticUuid)
+                )
+            ));
         return response.IsValidResponse;
     }
 
@@ -86,7 +92,7 @@ public partial class NoteRepositoryDbAndElastic
         foreach (var note in notes.items)
         {
             note.Content = response.Hits
-                .First(hit => hit.Id == note.ElasticUuid).Source?.Content;
+                .FirstOrDefault(hit => hit.Id == note.ElasticUuid)?.Source?.Content;
         }
 
         return notes;
@@ -108,7 +114,9 @@ public partial class NoteRepositoryDbAndElastic
                         mu => mu.Term(t => t
                             .Field("owner")
                             .Value(ownerId.Id)
-                        )
+                        ), mn => mn.Term(t => t
+                            .Field("entry_type")
+                            .Value(NoteTypes.Note.Name.GetDisplayName()))
                     )
                 )
             )
@@ -126,10 +134,11 @@ public partial class NoteRepositoryDbAndElastic
             Content = d.Source?.Content ?? "",
             Score = (decimal)(d.Score ?? 1)
         }).ToList();
-        
+
         return new PageDto<SearchResultDto>
         {
             items = l,
+            TotalPages = CalculateUtil.TotalPages(response.Total, limit.Limit),
             Total = response.Total,
             Page = CalculateUtil.CurrentPage(page.Page, limit.Limit, response.Total)
         };
@@ -180,6 +189,7 @@ public partial class NoteRepositoryDbAndElastic
         return new PageDto<SearchResultDto>
         {
             items = l,
+            TotalPages = CalculateUtil.TotalPages(response.Total, limit.Limit),
             Total = response.Total,
             Page = CalculateUtil.CurrentPage(page.Page, limit.Limit, response.Total)
         };

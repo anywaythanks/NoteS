@@ -33,14 +33,26 @@ public class PrivateNoteController(
 
     [HttpPatch("{pathNote}/content")]
     [KeycloakAuthorize(Policies.READ_ALL_NOTES, Policies.EDIT_ALL_NOTES)]
-    [SwaggerOperation(Description = "Редактирование контента любой заметки или комментария")]
-    public async Task<NoteEditContentResponseDto> EditNoteAll([FromQuery] AccName accountName,
+    [SwaggerOperation(Description = "Редактирование любой заметки или комментария")]
+    public NoteEditOtherResponseDto EditNoteAll([FromQuery] AccName accountName,
         [FromQuery] NotePath pathNote,
-        [FromBody] NoteEditContentRequestDto editDto)
+        [FromBody] NoteEditOtherRequestDto editDto)
     {
         Check(accountName);
 
-        return await editService.EditNote(pathNote, editDto);
+        return editService.EditNote(pathNote, editDto);
+    }
+
+    [HttpPost("{pathNote}/content")]
+    [KeycloakAuthorize(Policies.READ_NOTES, Policies.EDIT_OWN_NOTES)]
+    [SwaggerOperation(Description = "Редактирование контента заметки (комментария в другом месте)")]
+    public async Task<NoteEditContentResponseDto> EditContentNote([FromQuery] AccName accountName,
+        [FromQuery] NotePath pathNote,
+        [FromBody] NoteEditOnlyContentRequestDto editDto)
+    {
+        Check(accountName);
+
+        return await editService.EditNote(pathNote, accountName, editDto);
     }
 
     [HttpGet("{pathNote}")]

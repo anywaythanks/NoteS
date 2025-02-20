@@ -17,3 +17,10 @@ GO
 
 alter table if exists notes
     drop constraint notes_title_key;
+
+GO
+
+alter table if exists notes
+    add description char(2048) not null default '';
+
+GO

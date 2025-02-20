@@ -1,24 +1,12 @@
-import {Component, Injectable} from '@angular/core';
-import {RouterModule} from '@angular/router';
-
-import {MenuComponent} from './components/menu/menu.component';
-import {UserService} from "./services/keycloak-profile.service";
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [MenuComponent, RouterModule],
+  standalone: false,
   template: `
-    <app-menu></app-menu>
-    <main>
-      <router-outlet></router-outlet>
-    </main>
-  `,
+    <router-outlet></router-outlet>`,
   styles: [``]
 })
-@Injectable({providedIn: 'root'})
+
 export class AppComponent {
-  constructor(userService: UserService) {
-    userService.loadProfile();
-  }
 }

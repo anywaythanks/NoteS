@@ -38,6 +38,7 @@ public class TagInformationService(
         var fids = tagRepository.Tags(filters, acc);
         if (ids.Count != names.Count || fids.Count != filters.Count) throw new NotFound("теги");
         var notes = noteRepository.FindNotesByTags(ids, fids, op, acc, limit, page);
+        noteRepository.LoadTags(notes);
         notes.items.ForEach(note => note.OwnerAccount = acc);
         return notes;
     }

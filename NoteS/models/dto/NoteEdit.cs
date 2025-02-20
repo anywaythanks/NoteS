@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using NoteS.models.entity;
 
@@ -15,14 +16,11 @@ public class NoteEditPublicResponseDto
     [JsonPropertyName("is_public")] public bool IsPublic { get; set; }
 }
 
-public class NoteEditContentRequestDto
+public class NoteEditOnlyContentRequestDto
 {
-    public string Title { get; set; }
     public string Content { get; set; }
     [JsonIgnore] public SyntaxType Type { get; set; }
-
     [JsonPropertyName("syntax_name")]
-    [Required]
     [EnumDataType(typeof(SyntaxType.SyntaxTypeName))]
     public SyntaxType.SyntaxTypeName TypeName
     {
@@ -31,10 +29,32 @@ public class NoteEditContentRequestDto
     }
 }
 
+public class NoteEditOtherRequestDto
+{
+    public string Title { get; set; }
+  
+    public string Description { get; set; }
+}
 public class NoteEditContentResponseDto
 {
     public string Title { get; set; }
     public string Content { get; set; }
+    public string Description { get; set; }
+    [JsonIgnore] public SyntaxType SyntaxType { get; set; }
+
+    [JsonPropertyName("syntax_name")]
+    [Required]
+    [EnumDataType(typeof(SyntaxType.SyntaxTypeName))]
+    public SyntaxType.SyntaxTypeName TypeName
+    {
+        get => SyntaxType.Name;
+        set => SyntaxType = SyntaxType.NameToType(value);
+    }
+}
+public class NoteEditOtherResponseDto
+{
+    public string Title { get; set; }
+    public string Description { get; set; }
     [JsonIgnore] public SyntaxType SyntaxType { get; set; }
 
     [JsonPropertyName("syntax_name")]
@@ -51,6 +71,7 @@ public class NoteCreateRequestDto
 {
     public string Title { get; set; }
     [JsonIgnore] public SyntaxType SyntaxType { get; set; }
+    public string Description { get; set; }
 
     [JsonPropertyName("syntax_name")]
     [Required]

@@ -9,13 +9,16 @@ namespace NoteS.models.mappers;
 public partial class TagMapper
 {
     public partial TagNameDto OfCreate(CreateTagRequestDto path);
-
-    public partial TagNameDto OfDelete(DeleteTagRequestDto path);
+    public partial TagNameDto OfAdd(AddTagRequestDto path);
+    public partial TagNameDto OfDelete(TagNameRequestDto path);
 
     public partial TagIdDto ToIdDto(Tag tag);
     public partial TagNameDto ToNameDto(Tag tag);
-    
+
     public partial TagIdDto OfIdDto(int? id);
-    
-    public partial List<TagNameDto> Of(List<string> tags);
+
+    public List<TagNameDto> Of(List<string> tags)
+    {
+        return tags.Select(name => new TagNameDto(name)).ToList();
+    }
 }
