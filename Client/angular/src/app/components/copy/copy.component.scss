@@ -1,0 +1,17 @@
+@use "colors" as c;
+
+.icon-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.link-icon {
+  transition: color 0.3s ease;
+  color: c.$text2;
+}
+
+.link-icon:hover {
+  color: c.$text2_1;
+}

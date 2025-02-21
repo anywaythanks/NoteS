@@ -1,0 +1,48 @@
+services:
+  keycloak_web:
+    image: quay.io/keycloak/keycloak:23.0.7
+    container_name: keycloak_web
+    build:
+      context: services/keycloak/src
+    volumes:
+      - ./src/imports:/opt/jboss/keycloak/imports
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak_db:5433/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+
+      KC_LOG_LEVEL: info
+      KC_METRICS_ENABLED: true
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      
+      KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/realm-export.json
+    command: start-dev
+    depends_on:
+      - keycloak_db
+    ports:
+      - "8080:8080"
+
+  keycloak_db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    expose:
+      - "5433"
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_PGPORT: 5433
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5433"
+    command: -p 5433
+volumes:
+  postgres_data:

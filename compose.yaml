@@ -1,0 +1,40 @@
+services:
+  postgres:
+    extends:
+      file: db/compose.yaml
+      service: postgres
+  Liquibase:
+    extends:
+      file: db/compose.yaml
+      service: Liquibase
+  keycloak_web:
+    extends:
+      file: keycloak/compose.yaml
+      service: keycloak_web
+  keycloak_db:
+    extends:
+      file: keycloak/compose.yaml
+      service: keycloak_db
+  elasticsearch:
+    extends:
+      file: elastic/compose.yaml
+      service: elasticsearch
+  kibana:
+    extends:
+      file: elastic/compose.yaml
+      service: kibana
+  headPlugin:
+    extends:
+      file: elastic/compose.yaml
+      service: headPlugin
+  angular:
+    extends:
+      file: Client/angular/compose.yaml
+      service: app
+volumes:
+  postgres_data:
+  esdata1:
+    driver: local
+  node_modules:
+networks:
+  esnet:

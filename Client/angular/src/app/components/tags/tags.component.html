@@ -1,0 +1,36 @@
+﻿@if (noteTags.length != 0) {
+  <div class="note-tag-list">
+    <span class="icon-wrapper"><fa-icon matPrefix [icon]="faTag"></fa-icon></span>
+    <mat-chip-listbox>
+      <mat-chip-row *ngFor="let tag of noteTags"
+                    class="excluded-chip"
+                    (removed)="deleteTag(tag.name)">
+        #{{ tag.name }}
+        @if (isEditMode) {
+          <fa-icon matChipRemove [icon]="faCircleXmark"></fa-icon>
+        }
+      </mat-chip-row>
+    </mat-chip-listbox>
+  </div>
+}
+@if (isEditMode) {
+  <div class="tag-selector">
+    <mat-form-field appearance="fill">
+      <span matPrefix class="search-wrap"><fa-icon [icon]="faMagnifyingGlass" class="search-icon"></fa-icon></span>
+      <input matInput
+             placeholder="Select tags..."
+             [formControl]="searchControl"
+             [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option (onSelectionChange)="handleTagSelect(tag)" *ngFor="let tag of filteredTags" [value]="tag.name">
+          @let isExist = filter(tag);
+          <div class="tag-option">
+            <span [class]="isExist ? 'existing-tag' : 'new-tag'">
+              {{ isExist ? tag.name : "Create " + tag.name }}
+            </span>
+          </div>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+}

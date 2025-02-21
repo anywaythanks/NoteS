@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <include file="accounts/table.xml" relativeToChangelogFile="true"/>
+    <include file="tags/table.xml" relativeToChangelogFile="true"/>
+    <include file="notes/table.xml" relativeToChangelogFile="true"/>
+    <include file="tags_notes_map/table.xml" relativeToChangelogFile="true"/>
+    <include file="note_blocks/table.xml" relativeToChangelogFile="true"/>
+    <include file="type_links/table.xml" relativeToChangelogFile="true"/>
+    <include file="type_subblocks/table.xml" relativeToChangelogFile="true"/>
+    <include file="custom_types_syntax/table.xml" relativeToChangelogFile="true"/>
+    <include file="type_custom/table.xml" relativeToChangelogFile="true"/>
+    <!--4 Procedure           -->
+    <include file="types_workers/procedures.xml" relativeToChangelogFile="true"/>
+    <!--1 Function | 1 Trigger-->
+    <include file="note_block_order_uniques/function.xml" relativeToChangelogFile="true"/>
+    <!--1 View                -->
+    <include file="knows/view.xml" relativeToChangelogFile="true"/>
+    <!--2 Function | 2 Trigger-->
+    <include file="updater_knows/function.xml" relativeToChangelogFile="true"/>
+    <!--3 Function | 1 Cursor -->
+    <include file="concat_note/function.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

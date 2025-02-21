@@ -1,0 +1,146 @@
+@use "colors" as c;
+
+.card-tag-item {
+  color: c.$text1;
+}
+
+.notes {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.mat-mdc-card {
+  margin: 1em;
+  min-width: 30vw;
+  min-height: 60vh;
+  max-width: 30vw;
+  max-height: 60vh;
+}
+
+h1 {
+  text-align: center;
+}
+
+.card-inside-item {
+  color: c.$text1;
+  display: flex;
+  justify-content: center;
+}
+
+.card-eye-item {
+  justify-content: flex-end;
+}
+
+:host ::ng-deep .card-plus-item svg {
+  width: 20vw;
+  height: 50vh;
+}
+
+.card-plus {
+  justify-content: center;
+  align-items: center;
+}
+
+.card-wrapper {
+  display: flex;
+  margin: 1em;
+  flex-direction: column;
+  flex: 1;
+}
+
+.card-line {
+  color: c.$text1;
+}
+
+.title-head a {
+  color: c.$text1;
+  text-decoration: none;
+}
+
+.card-footer {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-description {
+  flex: 1;
+  display: flex;
+}
+
+.card-account-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-tag-list {
+  justify-content: flex-start;
+  margin-bottom: 1em;
+}
+
+.username {
+  color: #AD7D52;
+  font-size: 1.5em;
+  font-family: sans-serif;
+  margin-left: 1em;
+}
+
+.created-at {
+  margin-left: 1em;
+}
+
+.note-tag-item {
+  color: c.$tag-text1;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  background: c.$tag1;
+  border-radius: 10em;
+}
+
+.icon {
+  color: c.$text2;
+}
+
+.card-plus-item {
+  color: c.$text1;
+}
+
+.icon-eye {
+  color: c.$text3;
+}
+
+:host ::ng-deep .mat-mdc-card {
+  box-shadow: 2px 3px 8px 0 rgb(247 247 247 / 20%), 14px 6px 30px 0 rgb(76 76 76 / 19%);
+  transition: all .4s cubic-bezier(0.175, 0.885, 0, 1);
+  background-color: c.$background1;
+}
+
+:host ::ng-deep .mat-mdc-card:hover {
+  box-shadow: 2px 3px 8px 0 rgb(247 247 247 / 20%), 14px 6px 30px 0 rgb(76 76 76 / 19%);
+  transform: scale(1.10, 1.10);
+}
+
+.card-account-info {
+  display: flex;
+  align-items: center;
+}
+
+.note-tag-more {
+  background-color: c.$text2;
+  border-radius: 0.5em;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.card-account-info span {
+  display: flex;
+  align-items: center;
+}
+
+.hidden-button {
+  border: none;
+  background: none;
+}

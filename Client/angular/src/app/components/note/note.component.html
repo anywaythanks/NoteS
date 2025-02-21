@@ -1,0 +1,110 @@
+﻿<header>
+  <app-menu></app-menu>
+</header>
+<main>
+
+  @if (note != undefined) {
+    <div class="wrapper">
+      <div class="wrap-top">
+        <div class="user-info">
+          <span><fa-icon [icon]="faUser"></fa-icon>
+            <span class="username">{{ note.owner_account_name }}</span>
+          </span>
+          <span>·</span>
+          <span><fa-icon [icon]="faClock"></fa-icon>
+            {{ note.createdAtText }}</span>
+        </div>
+        <div class="wrap-toggles">
+          <div>
+            <app-copy [data]="pageUrl()" [icon]="faLink"></app-copy>
+          </div>
+          @if (isOwner) {
+            <div class="icon-toggle">
+              <label class="eye-toggle">
+                <input type="checkbox"
+                       [(ngModel)]="isPublic"
+                       (click)="togglePublic()"
+                       [disabled]="!isEditMode"
+                       class="hidden-checkbox">
+                <fa-icon [icon]="isPublic?faEye:faEyeSlash"
+                         class="eye-icon icon-button"></fa-icon>
+              </label>
+            </div>
+            <div class="icon-toggle">
+              <label class="edit-toggle">
+                <input type="checkbox"
+                       [(ngModel)]="isEditMode"
+                       (click)="toggleEdit()"
+                       class="hidden-checkbox">
+                <fa-icon [icon]="isEditMode?faBookOpen:faPen"
+                         [class]="isEditMode?'edit-icon icon-button':'not-edit-icon icon-button'"></fa-icon>
+              </label>
+            </div>
+          }
+          @if (isEditMode) {
+            <div>
+              <button (click)="deleteNote()" class="icon-button">
+                <fa-icon [icon]="faTrash" class="delete-icon"></fa-icon>
+              </button>
+            </div>
+            <div>
+              <button (click)="saveChanges()"
+                      [class]="hasUnsavedChangesProp ? 'save-wrap icon-button' : 'disable-save-wrap icon-button'"
+                      [disabled]="!hasUnsavedChangesProp">
+                <fa-icon [icon]="faFloppyDisk" class="save-icon"></fa-icon>
+              </button>
+            </div>
+            <div class="icon-toggle">
+              <label class="preview-toggle">
+                <input type="checkbox"
+                       [(ngModel)]="isShowPreview"
+                       (click)="togglePreview()"
+                       class="hidden-checkbox">
+                <fa-icon [icon]="faGlasses"
+                         [class]="isShowPreview?'preview-icon icon-button':'not-preview-icon icon-button'"></fa-icon>
+              </label>
+            </div>
+          }
+        </div>
+      </div>
+      @if (isEditMode) {
+        <div class="card-title-edit">
+          <mat-form-field>
+            <input matInput type="text" (ngModelChange)="changeVals()" [(ngModel)]="title">
+          </mat-form-field>
+        </div>
+        <div class="card-description-edit">
+          <mat-form-field appearance="outline">
+            <textarea matInput (ngModelChange)="changeVals()" [(ngModel)]="description"></textarea>
+          </mat-form-field>
+        </div>
+        <form novalidate>
+          <div class="editor">
+            <angular-markdown-editor textareaId="editorNote" [options]="editorOptions"
+                                     [rows]=12 name="markdownText" [(ngModel)]="markdownText"
+                                     (onFullscreenExit)="hidePreview()">
+            </angular-markdown-editor>
+          </div>
+        </form>
+        <hr/>
+
+        @if (isShowPreview) {
+          <div class="result-preview outline">
+            <markdown katex mermaid [data]="markdownText"></markdown>
+          </div>
+        }
+      } @else {
+        <h1 class="note-title">{{ title }}</h1>
+        <div class="note-description"><span>{{ description }}</span></div>
+        <markdown katex mermaid [data]="markdownText"></markdown>
+      }
+
+      <app-tags [isEditMode]="isEditMode" [noteTags]="note.tags" [path]="uuid"></app-tags>
+    </div>
+    <app-comments [uuid]="uuid" [isOwner]="isOwner"></app-comments>
+  }
+
+</main>
+<footer>
+  <app-footer></app-footer>
+</footer>

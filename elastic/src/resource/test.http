@@ -1,0 +1,110 @@
+﻿# Welcome to the Dev Tools Console!
+#
+# You can use Console to explore the Elasticsearch API. See the Elasticsearch API reference to learn more:
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/rest-apis.html
+#
+# Here are a few examples to get you started.
+
+
+# Create an index
+PUT /my-index
+
+
+# Add a document to my-index
+
+DELETE /my-index/_doc/FMZmapMB0Xxk5altGg-x
+POST /_license/start_trial?acknowledge=true
+# Perform a search in my-index
+GET /my-index/_search?
+
+PUT pipeline
+{
+  "service": "elser", 
+  "service_settings": {
+    "adaptive_allocations": { 
+      "enabled": true,
+      "min_number_of_allocations": 3,
+      "max_number_of_allocations": 10
+    },
+    "num_threads": 1
+  }
+}
+PUT _ingest/pipeline/pipeline
+{
+  "processors": [
+      {
+        "inference": {
+          "model_id":  ".multilingual-e5-small",
+          "field_map": {"passage": "text_field"},
+          "target_field": "passage_embedding"
+        }
+      }
+]
+}
+
+DELETE _ingest/pipeline/pipeline 
+DELETE passages
+PUT passages
+{
+  "mappings": {
+    "properties": {
+      "id": { "type": "keyword" },
+        "language": { "type": "keyword" },
+        "passage": { "type": "text" },
+        "passage_embedding.predicted_value": {
+            "type": "dense_vector",
+            "dims": 384,
+            "index": "true",
+            "similarity": "cosine"
+      }
+    },
+    "_source": {
+        "excludes": [
+            "passage_embedding.predicted_value"
+        ]
+    }
+  },
+  "settings": {
+    "index": {_source
+        "number_of_replicas": "1",
+        "number_of_shards": "1",
+        "default_pipeline": "pipeline"
+    }
+  }
+}
+
+POST passages/_doc
+{
+    "id": "jmm-base",
+    "title": "Основы Модели Памяти Java (JMM)",
+    "language": "ru",
+    "passage": """Некоторые программисты, во время разработки, думают будто бы программа делает ровно то, что они ей говорят. Однако, такое мнение ошибочно, более того - опасно: разработчик недооценивает сложность того, как все устроено на самом деле и думает, что он-то все понимает, а затем из-за этого совершает ошибки. Возможно в однопоточной парадигме такое понимание никак не мешало, но сталкиваясь с многопточной однозначно важно развенчать этот миф. Поддережание даже ослабленной версии подобной модели (1.4) являет собою потерю многих процентов производительности."""
+}
+POST passages/_doc
+{
+    "id": "ch1",
+    "title": "Какая-то чушь",
+    "language": "ru",
+    "passage": """С другой стороны консультация с широким активом влечет за собой процесс внедрения и модернизации новых предложений. Повседневная практика показывает, что постоянное информационно-пропагандистское обеспечение нашей деятельности требуют определения и уточнения системы обучения кадров, соответствует насущным потребностям. Значимость этих проблем настолько очевидна, что сложившаяся структура организации способствует подготовки и реализации дальнейших направлений развития. С другой стороны укрепление и развитие структуры требуют от нас анализа позиций, занимаемых участниками в отношении поставленных задач."""
+}
+POST passages/_doc
+{
+    "id": "ch2",
+    "title": "Какая-то чушь",
+    "language": "ru",
+    "passage": """Какой жи брееед, ну чушь."""
+}
+GET passages/_search
+{
+  "knn": {
+    "field": "passage_embedding.predicted_value",
+    "query_vector_builder": {
+        "text_embedding": {
+            "model_id": ".multilingual-e5-small",
+            "model_text": "Машины"
+        }
+    },
+    "k": 2,
+    "num_candidates": 5
+}
+}
