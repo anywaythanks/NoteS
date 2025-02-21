@@ -3,15 +3,18 @@ import {Subject} from 'rxjs';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {Page} from "../../models/page.model";
 import {NgForOf, NgIf} from "@angular/common";
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {faPlay} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-pagination',
   templateUrl: './pagination.component.html',
   imports: [
     NgIf,
-    NgForOf
+    NgForOf,
+    FaIconComponent
   ],
-  styleUrls: ['./pagination.component.css']
+  styleUrls: ['./pagination.component.scss']
 })
 export class PaginationComponent implements OnChanges {
   @Input() pageData!: Page<any>;
@@ -70,4 +73,5 @@ export class PaginationComponent implements OnChanges {
   }
 
   protected readonly console = console;
+  protected readonly faPlay = faPlay;
 }

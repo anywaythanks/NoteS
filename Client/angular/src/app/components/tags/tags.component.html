@@ -1,8 +1,7 @@
 ﻿@if (noteTags.length != 0) {
   <div class="note-tag-list">
-
+    <span class="icon-wrapper"><fa-icon matPrefix [icon]="faTag"></fa-icon></span>
     <mat-chip-listbox>
-      <span class="icon-wrapper"><fa-icon matPrefix [icon]="faTag"></fa-icon></span>
       <mat-chip-row *ngFor="let tag of noteTags"
                     class="excluded-chip"
                     (removed)="deleteTag(tag.name)">
@@ -16,7 +15,7 @@
 }
 @if (isEditMode) {
   <div class="tag-selector">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <span matPrefix class="search-wrap"><fa-icon [icon]="faMagnifyingGlass" class="search-icon"></fa-icon></span>
       <input matInput
              placeholder="Select tags..."

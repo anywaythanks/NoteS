@@ -1,0 +1,55 @@
+﻿@use "colors" as c;
+
+.pagination {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 1rem 0;
+  flex: 1;
+}
+
+button {
+  display: flex;
+  padding: 0.5em 0.5em;
+  border: 1px solid c.$background1;
+  background: c.$background1;
+  cursor: pointer;
+}
+
+button.active {
+  background: c.$text4;
+  color: c.$text1;
+  border-color: c.$text4;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+input {
+  padding: 0.25rem;
+  text-align: center;
+}
+
+.page-status {
+  margin-left: 1rem;
+  opacity: 0.8;
+}
+
+:host ::ng-deep .prev-icon svg {
+  rotate: 180deg;
+}
+
+.icon-button {
+}
+
+.buttons {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+}
+
+.buttons button, .buttons input {
+  margin-left: 1em;
+}

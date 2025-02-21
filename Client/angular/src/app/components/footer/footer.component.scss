@@ -1,0 +1,8 @@
+@use "colors" as c;
+
+.footer {
+  display: flex;
+  flex: 1;
+  margin: 1em;
+  color: c.$text2;
+}

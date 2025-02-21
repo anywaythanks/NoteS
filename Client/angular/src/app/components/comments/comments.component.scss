@@ -1,0 +1,48 @@
+@use "colors" as c;
+
+.wrapper {
+  margin: 0.5em;
+}
+
+:host ::ng-deep .wrapper .md-editor, :host ::ng-deep .md-editor #comment-create, :host ::ng-deep .md-editor .md-preview {
+  background-color: c.$background1 !important;
+  border-color: c.$text2;
+  color: c.$text1;
+}
+
+.count-comment {
+  color: c.$text4_1;
+}
+
+.comments {
+  padding: 1em;
+  background-color: c.$background1;
+  margin-top: 1em;
+  border-radius: 1em;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .mat-mdc-menu-trigger {
+  font-size: 1em;
+}
+
+.del-icon {
+  margin-right: 0.5em;
+}
+
+.user-info span {
+  display: flex;
+  margin-right: 0.5em;
+  margin-left: 0.5em;
+}
+
+.comment {
+  padding: 0 1em 1em;
+  margin-top: 0.5em;
+  background-color: c.$background1_1;
+
+}

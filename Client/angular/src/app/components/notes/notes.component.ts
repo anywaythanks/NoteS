@@ -4,8 +4,7 @@ import {NoteService} from '../../services/note.service';
 import {BehaviorSubject, Observable, switchMap} from "rxjs";
 import {AsyncPipe} from "@angular/common";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
-import {faClock, faEye, faEyeSlash, faPlus, faTag, faUser} from "@fortawesome/free-solid-svg-icons";
-import {SomeComponent} from "../some/some.component";
+import {faClock, faEye, faEyeSlash, faPlus, faTag, faTrash, faUser} from "@fortawesome/free-solid-svg-icons";
 import {PaginationComponent} from "../pagination/pagination.component";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MenuComponent} from "../menu/menu.component";
@@ -13,15 +12,18 @@ import {MatCard, MatCardContent, MatCardFooter, MatCardHeader, MatCardTitle} fro
 import {Note, SearchState} from "../../models/note.model";
 import {Tag} from "../../models/tag.model";
 import {Page} from "../../models/page.model";
+import {MatTooltip} from "@angular/material/tooltip";
+import {debounceTime} from "rxjs/operators";
+import {FooterComponent} from "../footer/footer.component";
 
 @Component({
   selector: 'app-notes',
   templateUrl: './notes.component.html',
   standalone: true,
   imports: [
-    AsyncPipe, FontAwesomeModule, SomeComponent, PaginationComponent, MenuComponent, MatCard, MatCardContent, MatCardTitle, MatCardFooter, MatCardHeader
+    AsyncPipe, FontAwesomeModule, PaginationComponent, MenuComponent, MatCard, MatCardContent, MatCardTitle, MatCardFooter, MatCardHeader, MatTooltip, FooterComponent
   ],
-  styleUrls: ['./notes.component.css']
+  styleUrls: ['./notes.component.scss']
 })
 export class NotesComponent implements AfterViewInit {
   readonly TagQuantity = 3;
@@ -103,10 +105,29 @@ export class NotesComponent implements AfterViewInit {
     }
   }
 
+  createNote() {
+    this.noteService.createNote({
+      content: "",
+      title: "New note",
+      syntax_name: "MARKDOWN",
+      description: "Default description"
+    }).pipe(debounceTime(500))
+      .subscribe(n => this.router.navigate([`/note/${n.path}`]));
+  }
+
   protected readonly faUser = faUser;
   protected readonly faClock = faClock;
   protected readonly faEye = faEye;
   protected readonly faEyeSlash = faEyeSlash;
   protected readonly faTag = faTag;
   protected readonly faPlus = faPlus;
+  protected readonly faTrash = faTrash;
+
+  toTags(tagsOther: Tag[]): string {
+    let s = "";
+    for (const tag of tagsOther) {
+      s += `#${tag.name} `;
+    }
+    return s;
+  }
 }

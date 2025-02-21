@@ -4,15 +4,44 @@
   padding: 0;
 }
 
+@font-face {
+  font-family: Itim;
+  src: url(assets/fonts/Itim-Regular.ttf) format("truetype");
+}
+
 body {
   font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+app-menu, app-pagination, header {
+  display: flex;
+  flex: 1;
+}
+
+footer, app-footer {
+  display: flex;
+  flex: 1;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  min-height: 90vh;
+  flex: 1;
+  background: #000;
 }
 
 :root {
   --primary-color: #605DC8;
   --secondary-color: #8B89E6;
+  --mat-option-label-text-color: #F2F2F2;
+  --mat-expansion-container-background-color: #1E1E1E;
+  --mdc-snackbar-container-color: #292929;
+  --mdc-snackbar-supporting-text-color: #F2F2F2;
+  --mat-snack-bar-button-color: #d5baff;
   --accent-color: #e8e7fa;
   --shadow-color: #E8E8E8;
+  --bs-code-color: #c3bebe !important;
 }
 
 button.primary {
@@ -21,12 +50,6 @@ button.primary {
   background: var(--primary-color);
   color: white;
   border-radius: 8px;
-}
-
-blockquote {
-  border-left: 3px solid rgba(0, 0, 0, 0.21);
-  padding-left: 12px;
-  color: rgba(0, 0, 0, 0.54);
 }
 
 .hidden-checkbox {

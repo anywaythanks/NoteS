@@ -1,33 +1,53 @@
-﻿@if (isOwner) {
-  <!--  TODO: По идее, надо бы сделать так, чтобы для владельца была открыта возможность редактировать публичность комментариев = удалять их -->
-}
-<details>
-  <summary>Написать комментарий</summary>
-  <form novalidate>
-    <div class="editor">
-      <angular-markdown-editor #commentEditor textareaId="commentCreate1" [options]="editorOptions"
-                               [rows]=12 name="commentText" [(ngModel)]="commentText"
-                               (onFullscreenExit)="hidePreview()">
-      </angular-markdown-editor>
-    </div>
-  </form>
-</details>
+﻿<div class="wrapper">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Написать комментарий</mat-panel-title>
+    </mat-expansion-panel-header>
+    <form novalidate>
+      <div class="editor">
+        <angular-markdown-editor textareaId="comment-create" [options]="editorOptions"
+                                 [rows]=12 name="commentText" [(ngModel)]="commentText"
+                                 (onFullscreenExit)="hidePreview()">
+        </angular-markdown-editor>
+      </div>
+    </form>
+  </mat-expansion-panel>
+  <div class="comments">
+    @let commentaries = comments | async;
+    <div class="pre-comment">Комментарии (<span class="count-comment">{{ commentaries?.total ?? 0 }}</span>)</div>
 
-<hr/>
-@let commentaries = comments | async;
-<div class="comment">Комментарии (<span class="count-comment">{{ commentaries?.total ?? 0 }}</span>)</div>
-@if (commentaries !== null) {
-  @for (comment of commentaries.items; track comment.path) {
-    <div class="user-info"><span><fa-icon [icon]="faUser"></fa-icon>
-      <button (click)="hideComment(comment.path)" class="icon-button">
-        <fa-icon [icon]="faTrash" class="link-icon"></fa-icon>
-      </button>
-      {{ comment.owner_account_name }}</span>·<span></span><span><fa-icon [icon]="faClock"></fa-icon>
-      {{ comment.createdAtText }}</span></div>
-    <markdown katex mermaid [data]="comment.content"></markdown>
-  }
-  <app-pagination
-    [pageData]="commentaries"
-    (pageChanged)="updatePage($event)"
-  ></app-pagination>
-}
+    @if (commentaries !== null) {
+      @for (comment of commentaries.items; track comment.path) {
+        <div class="comment">
+          <div class="user-info">
+            <fa-icon [icon]="faUser"></fa-icon>
+            <span>{{ comment.owner_account_name }}</span>
+            <span>{{ comment.createdAtText }}</span>
+            <span>{{comment.note_type == "COMMENT_REDACTED" ? "(изменённый)" : ""}}</span>
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <fa-icon [icon]="faEllipsisVertical" class="select-icon"></fa-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="copyLink(comment.path)" class="del-button">
+                <fa-icon [icon]="faLink" class="del-icon"></fa-icon>
+                <span>Поделится</span>
+              </button>
+              @if (isOwner) {
+                <button mat-menu-item (click)="hideComment(comment.path)" class="del-button">
+                  <fa-icon [icon]="faTrash" class="del-icon"></fa-icon>
+                  <span>Удалить</span>
+                </button>
+              }
+            </mat-menu>
+          </div>
+          <markdown katex mermaid [data]="comment.content"></markdown>
+        </div>
+      }
+      <app-pagination
+        [pageData]="commentaries"
+        (pageChanged)="updatePage($event)"
+      ></app-pagination>
+    }
+  </div>
+</div>
+

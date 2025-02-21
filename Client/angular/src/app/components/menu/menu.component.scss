@@ -1,0 +1,182 @@
+@use "colors" as c;
+
+.menu {
+  display: flex;
+  flex:1;
+  justify-content: space-between;
+  padding: 10px;
+  color: #3c3c3c;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  justify-content: end;
+  /*padding: 10px 20px;*/
+}
+
+.action-item {
+  /*padding: 5px 15px;*/
+  /*margin-left: 25px;*/
+}
+
+a.action-item {
+  color: #3c3c3c;
+  text-decoration: none;
+}
+
+.semantic-icon {
+  color: c.$text4;
+}
+
+.tags-icon {
+  color: c.$text4;
+}
+
+.menu {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: c.$background1;
+  display: flex;
+}
+
+.menu ul {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  margin: 0;
+}
+
+.menu ul li ul li {
+  margin: 0.25em 0;
+}
+
+.menu li {
+  list-style-type: none;
+  display: flex;
+}
+
+.title-link {
+  display: flex;
+  align-items: center;
+  color: c.$text1;
+  font-weight: bold;
+  font-family: Itim, sans-serif;
+  text-align: center;
+  text-decoration: none;
+}
+
+.title-word {
+  font-size: 3em;
+}
+
+.title-words {
+  font-size: 2em;
+}
+
+.title-span {
+  display: flex;
+  align-items: center;
+  color: c.$text1;
+}
+
+.title-link span {
+  display: flex;
+}
+
+.menu li a.active {
+  float: right;
+}
+
+.active {
+  background-color: #4CAF50;
+}
+
+.search-icon, .not-semantic-icon, .not-tags-icon {
+  color: white;
+}
+
+.tags-toggle, .semantic-toggle {
+  margin-right: 1em;
+}
+
+.search-wrap {
+  margin-left: 1em;
+}
+
+.no-border {
+  border: none;
+}
+
+.form-control {
+  box-shadow: none;
+}
+
+.menu-left {
+  margin-left: 2em;
+  display: flex;
+}
+
+.menu-center {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+}
+
+.menu-right {
+  display: flex;
+  justify-content: center;
+}
+
+.menu-right ul li {
+  display: flex;
+  align-items: center;
+}
+
+.search-container {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  margin-right: 3em !important;
+  flex-direction: column;
+  padding-left: 10em;
+}
+
+.user-circle {
+  background: c.$text3;
+  width: 4.6em;
+  height: 4.6em;
+  border-radius: 100%;
+  margin-right: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-circle a {
+  display: flex;
+}
+
+.searcher {
+  display: flex;
+}
+
+.selected-tags {
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep .excluded-tags .mdc-evolution-chip__action--primary::before {
+  border-color: #ff98c5 !important;
+}
+
+:host ::ng-deep .included-tags .mdc-evolution-chip__action--primary::before {
+  border-color: #baff98 !important;
+}
+
+.selected-tags div {
+  display: flex;
+}

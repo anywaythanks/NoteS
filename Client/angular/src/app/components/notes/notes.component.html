@@ -1,68 +1,75 @@
-<app-menu [isSearch]="true"
-          (searchChange)="searchChange($event)"
-          (typeChange)="typeChange($event)"
-          (tagsChange)="tagsChange($event)">
-</app-menu>
+<header>
+  <app-menu [isSearch]="true"
+            (searchChange)="searchChange($event)"
+            (typeChange)="typeChange($event)"
+            (tagsChange)="tagsChange($event)">
+  </app-menu>
+</header>
 <main>
-  <div class="notes">
-    @let loadNote = notes | async;
-    @if (loadNote !== null) {
+  @let loadNote = notes | async;
+  @if (loadNote !== null) {
+    <div class="notes">
       <mat-card>
-        <mat-card-content>
-          <fa-icon [icon]="faPlus"></fa-icon>
+        <mat-card-content class="card-inside-item card-plus">
+          <button (click)="createNote()" class="icon-button hidden-button">
+            <fa-icon class="icon card-plus-item" [icon]="faPlus"></fa-icon>
+          </button>
         </mat-card-content>
       </mat-card>
+
       @for (note of loadNote.items; track note.path) {
         <mat-card>
-          <mat-card-header>
-            <div class="note-eye">
-              @if (note.is_public) {
-                <fa-icon [icon]="faEye"></fa-icon>
-              } @else {
-                <fa-icon [icon]="faEyeSlash"></fa-icon>
-              }
-            </div>
-          </mat-card-header>
-          <mat-card-title>{{ note.title }}</mat-card-title>
-          <mat-card-content>{{ note.description }}</mat-card-content>
-          <mat-card-footer>
-            <div class="note-description"></div>
-            @if (note.tags.length != 0) {
-              @let tags = note.tags.slice(0, TagQuantity);
-              @let sub = note.tags.length - TagQuantity;
-              <div class="note-tag-list">
-                <fa-icon [icon]="faTag"></fa-icon>
-                @for (tag of tags; track tag.name) {
-                  <span class="note-tag-item">#{{ tag.name }}</span>
-                }
-                @if (sub > 0) {
-                  @let tagsOther = note.tags.slice(TagQuantity, note.tags.length);
-                  <span class="note-tag-more">+{{ sub }} more</span>
-                  <details>
-                    <summary></summary>
-                    @for (tag of tagsOther; track tag.name) {
-                      <span class="note-tag-item">#{{ tag.name }}</span>
-                    }
-                  </details>
-
+          <div class="card-wrapper">
+            <mat-card-header class="card-inside-item card-eye-item">
+              <div class="note-eye">
+                @if (note.is_public) {
+                  <fa-icon class="icon icon-eye" [icon]="faEye"></fa-icon>
+                } @else {
+                  <fa-icon class="icon icon-eye" [icon]="faEyeSlash"></fa-icon>
                 }
               </div>
-            }
-            <div><span><fa-icon [icon]="faUser"></fa-icon>
-              {{ note.owner_account_name }}</span>·<span></span><span><fa-icon [icon]="faClock"></fa-icon>
-              {{ note.createdAtText }}</span></div>
-            <a href="note/{{note.path}}">Go</a>
-          </mat-card-footer>
+            </mat-card-header>
+            <mat-card-title class="card-inside-item">
+              <h1 class="title-head"><a href="note/{{note.path}}">{{ note.title }}</a></h1>
+            </mat-card-title>
+            <hr class="card-line">
+            <mat-card-content class="card-inside-item card-description">{{ note.description }}</mat-card-content>
+            <mat-card-footer class="card-inside-item card-footer">
+              @if (note.tags.length != 0) {
+                @let tags = note.tags.slice(0, TagQuantity);
+                @let sub = note.tags.length - TagQuantity;
+                <div class="card-tag-list card-inside-item">
+                  <fa-icon class="icon" [icon]="faTag"></fa-icon>
+                  @for (tag of tags; track tag.name) {
+                    <span class="note-tag-item">#{{ tag.name }}</span>
+                  }
+                  @if (sub > 0) {
+                    @let tagsOther = note.tags.slice(TagQuantity, note.tags.length);
+                    <span [matTooltip]="toTags(tagsOther)" class="note-tag-more">+{{ sub }} more</span>
+                  }
+                </div>
+              }
+              <div class="card-inside-item card-account-info"><span><fa-icon class="icon"
+                                                                             [icon]="faUser"></fa-icon><span
+                class="username">
+                {{ note.owner_account_name }}</span></span><span class="dot">·</span><span><fa-icon class="icon"
+                                                                                                    [icon]="faClock"></fa-icon>
+                <span class="created-at">{{ note.createdAtText }}</span></span></div>
+            </mat-card-footer>
+          </div>
         </mat-card>
       }
-      <app-pagination
-        [pageData]="loadNote"
-        (pageChanged)="updatePage($event)"
-      ></app-pagination>
-    }
-    <details>
-      <summary></summary>
-      <app-note-form></app-note-form>
-    </details>
-  </div>
+    </div>
+    <!--    <details>-->
+      <!--      <summary></summary>-->
+      <!--      <app-note-form></app-note-form>-->
+      <!--    </details>-->
+    <app-pagination
+      [pageData]="loadNote"
+      (pageChanged)="updatePage($event)"
+    ></app-pagination>
+  }
 </main>
+<footer>
+  <app-footer></app-footer>
+</footer>

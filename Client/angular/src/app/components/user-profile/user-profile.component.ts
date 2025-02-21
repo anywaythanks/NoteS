@@ -2,13 +2,15 @@ import {Component, OnInit} from '@angular/core';
 import {User} from '../../models/user.model';
 import {UserService} from "../../services/keycloak-profile.service";
 import {MenuComponent} from "../menu/menu.component";
+import {FooterComponent} from "../footer/footer.component";
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: 'user-profile.component.html',
   standalone: true,
   imports: [
-    MenuComponent
+    MenuComponent,
+    FooterComponent
   ],
   styleUrls: [`user-profile.component.css`]
 })

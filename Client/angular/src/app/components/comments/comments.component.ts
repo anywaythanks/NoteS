@@ -1,8 +1,7 @@
 ﻿import {Component, Input, OnInit} from '@angular/core';
 import {NoteService} from "../../services/note.service";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {timeAgo} from "../../helpers/date.helper";
-import {faClock, faReply, faTrash, faUser} from "@fortawesome/free-solid-svg-icons";
+import {faEllipsisVertical, faLink, faTrash, faUser} from "@fortawesome/free-solid-svg-icons";
 import {AngularMarkdownEditorModule, EditorOption} from 'angular-markdown-editor';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MarkdownComponent, MarkdownService} from "ngx-markdown";
@@ -12,7 +11,11 @@ import {PaginationComponent} from "../pagination/pagination.component";
 import {BehaviorSubject, switchMap} from "rxjs";
 import {AsyncPipe} from "@angular/common";
 import {debounceTime} from "rxjs/operators";
-import {User} from "../../models/user.model";
+import {MatExpansionModule, MatExpansionPanel, MatExpansionPanelTitle} from "@angular/material/expansion";
+import {MatIconButton} from "@angular/material/button";
+import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
+import clipboard from "clipboard-js";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-comments',
@@ -25,9 +28,16 @@ import {User} from "../../models/user.model";
     MarkdownComponent,
     ReactiveFormsModule,
     PaginationComponent,
-    AsyncPipe
+    AsyncPipe,
+    MatExpansionPanel,
+    MatExpansionPanelTitle,
+    MatExpansionModule,
+    MatIconButton,
+    MatMenuTrigger,
+    MatMenu,
+    MatMenuItem
   ],
-  styleUrls: ['./comments.component.css'],
+  styleUrls: ['./comments.component.scss'],
 })
 export class CommentsComponent implements OnInit {
   @Input() uuid!: string;
@@ -43,6 +53,7 @@ export class CommentsComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private fb: FormBuilder,
+              private snackBar: MatSnackBar,
               private markdownService: MarkdownService,
               private readonly noteService: NoteService) {
   }
@@ -131,13 +142,13 @@ export class CommentsComponent implements OnInit {
 
   deleteComment(path: string) {//TODO:Доделайте
     if (confirm('Are you sure you want to delete this?')) {
-      this.noteService.deleteComment(path).subscribe(_=>this.syncPage());
+      this.noteService.deleteComment(path).subscribe(_ => this.syncPage());
     }
   }
 
   hideComment(path: string) {
     if (confirm('Are you sure you want to hide this?')) {
-      this.noteService.publicNote(false, path).subscribe(_=>this.syncPage());
+      this.noteService.publicNote(false, path).subscribe(_ => this.syncPage());
     }
   }
 
@@ -163,10 +174,26 @@ export class CommentsComponent implements OnInit {
     });
   }
 
-  protected readonly timeAgo = timeAgo;
+  private showFeedback() {
+    this.snackBar.open("Copied!", "Ok");
+    setTimeout(() => {
+      this.snackBar.dismiss();
+    }, 2000);
+  }
+
+  copyLink(path: string) {
+    path = `${window.location.host}/note/${path}`
+    clipboard.copy(path)
+      .then(() => {
+        this.showFeedback();
+      })
+      .catch(err => {
+        console.error('Failed to copy:', err);
+      });
+  }
+
   protected readonly faUser = faUser;
-  protected readonly faClock = faClock;
-  protected readonly faReply = faReply;
-  protected readonly console = console;
   protected readonly faTrash = faTrash;
+  protected readonly faEllipsisVertical = faEllipsisVertical;
+  protected readonly faLink = faLink;
 }

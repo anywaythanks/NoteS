@@ -3,6 +3,7 @@ import {Tag} from "./tag.model";
 export interface Note {
   path: string;
   title: string;
+  note_type: 'COMMENT' | "NOTE" | "COMMENT_REDACTED";
   owner_account_name: string;//TODO: исправить апи// Эм в чем? Я чет забыл
   content: string;
   description: string;
@@ -35,7 +36,17 @@ export class NoteSaveContent {
     this.content = content;
   }
 }
+export class CommentSaveContent {
+  syntax_name: string;
+  content: string;
+  title: string;
 
+  constructor(syntax_name: string, content: string, title: string) {
+    this.syntax_name = syntax_name;
+    this.content = content;
+    this.title = title;
+  }
+}
 export class NoteSaveOther {
   title: string;
   description: string;

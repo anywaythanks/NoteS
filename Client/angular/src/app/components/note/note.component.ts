@@ -18,7 +18,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {AngularMarkdownEditorModule, EditorOption} from 'angular-markdown-editor';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MarkdownComponent, MarkdownService} from "ngx-markdown";
-import {Subject} from "rxjs";
+import {forkJoin, Observable, Subject, tap} from "rxjs";
 import {UserService} from "../../services/keycloak-profile.service";
 import {Anonymous, User} from "../../models/user.model";
 import {Router} from "@angular/router";
@@ -27,6 +27,10 @@ import {parseKatex} from "../../helpers/parse.helper";
 import {TagsComponent} from "../tags/tags.component";
 import {CopyComponent} from "../copy/copy.component";
 import {MenuComponent} from "../menu/menu.component";
+import {Title} from "@angular/platform-browser";
+import {FooterComponent} from "../footer/footer.component";
+import {MatFormField} from "@angular/material/form-field";
+import {MatInput} from "@angular/material/input";
 
 @Component({
   selector: 'app-note',
@@ -41,9 +45,12 @@ import {MenuComponent} from "../menu/menu.component";
     CommentsComponent,
     TagsComponent,
     CopyComponent,
-    MenuComponent
+    MenuComponent,
+    FooterComponent,
+    MatFormField,
+    MatInput
   ],
-  styleUrls: ['./note.component.css'],
+  styleUrls: ['./note.component.scss'],
 })
 export class NoteComponent implements OnInit, OnDestroy {
   @Input() uuid!: string;
@@ -62,7 +69,7 @@ export class NoteComponent implements OnInit, OnDestroy {
   private userService = inject(UserService);
   hasUnsavedChangesProp: boolean = false;
 
-  constructor(private router: Router, private fb: FormBuilder, private markdownService: MarkdownService, private readonly noteService: NoteService) {
+  constructor(private titleService: Title, private router: Router, private fb: FormBuilder, private markdownService: MarkdownService, private readonly noteService: NoteService) {
   }
 
   buildForm(markdownText: string) {
@@ -74,41 +81,70 @@ export class NoteComponent implements OnInit, OnDestroy {
 
   saveChanges() {
     if (!this.hasUnsavedChangesProp) return;
-    if (this.note?.content != this.markdownText)
-      this.noteService.saveContentNote({content: this.markdownText, syntax_name: "markdown"}, this.uuid).subscribe({
-        next: note => {
-          if (this.note != undefined)
-            this.note.content = note.content || "";
-          this.checkAndChangeVals()
-        },
-        error: (err) => {
-          console.error('Save failed:', err);
-        }
-      });
-    if (this.note?.is_public != this.isPublic)
-      this.noteService.publicNote(this.isPublic, this.uuid).subscribe({
-        next: note => {
-          if (this.note != undefined)
-            this.note.is_public = note.is_public;
-          this.checkAndChangeVals()
-        },
-        error: (err) => {
-          console.error('Save failed:', err);
-        }
-      });
-    if (this.note?.description !== this.description || this.note?.title !== this.title)
-      this.noteService.saveNote(new NoteSaveOther(this.title,
-        this.description || this.note?.description || ""), this.uuid).subscribe({
-        next: note => {
-          if (this.note != undefined) {
-            this.note.description = note.description;
-            this.note.title = note.title;
-          }
-          this.checkAndChangeVals()
-        },
-        error: (err) => {
-          console.error('Save failed:', err);
-        }
+
+    const requests: Observable<Note>[] = [];
+
+    if (this.note?.note_type === 'NOTE' && this.note?.content !== this.markdownText) {
+      requests.push(
+        this.noteService.saveContentNote(
+          {content: this.markdownText, syntax_name: "markdown"},
+          this.uuid
+        ).pipe(
+          tap((note) => {
+            if (this.note) this.note.content = note.content || "";
+            this.checkAndChangeVals();
+          })
+        )
+      );
+    }
+    if ((this.note?.note_type === 'COMMENT' || this.note?.note_type === 'COMMENT_REDACTED')
+      && this.note?.content !== this.markdownText) {
+      requests.push(
+        this.noteService.saveContentComment(
+          {content: this.markdownText, syntax_name: "markdown", title: this.title},
+          this.uuid
+        ).pipe(
+          tap((note) => {
+            if (this.note) this.note.content = note.content || "";
+            this.checkAndChangeVals();
+          })
+        )
+      );
+    }
+    if (this.note?.note_type === 'NOTE' && this.note?.is_public !== this.isPublic) {
+      requests.push(
+        this.noteService.publicNote(this.isPublic, this.uuid).pipe(
+          tap((note) => {
+            if (this.note) this.note.is_public = this.isPublic;
+            this.checkAndChangeVals();
+          })
+        )
+      );
+    }
+
+    if (this.note?.note_type === 'NOTE' && this.note?.description !== this.description || this.note?.title !== this.title) {
+      requests.push(
+        this.noteService.saveNote(
+          new NoteSaveOther(this.title, this.description || this.note?.description || ""),
+          this.uuid
+        ).pipe(
+          tap((note) => {
+            if (this.note) {
+              this.note.description = note.description;
+              this.note.title = note.title;
+              this.titleService.setTitle(this.title);
+            }
+            this.checkAndChangeVals();
+          })
+        )
+      );
+    }
+
+    if (requests.length === 0) return;
+
+    forkJoin(requests)
+      .subscribe(() => {
+        // this.checkAndChangeVals();
       });
   }
 
@@ -164,6 +200,7 @@ export class NoteComponent implements OnInit, OnDestroy {
   init(note: Note, user: User | Anonymous) {
     this.note = note
     this.title = note.title;
+    this.titleService.setTitle(this.title);
     this.isPublic = note.is_public;
     this.description = note.description;
     this.isOwner = user.type != 'anonymous' && this.note.owner_account_name == user.username;
@@ -178,6 +215,7 @@ export class NoteComponent implements OnInit, OnDestroy {
   }
 
   togglePublic() {
+    this.changeVals();
   }
 
   toggleEdit() {

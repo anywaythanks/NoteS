@@ -1,9 +1,9 @@
-﻿import {Component, Input} from '@angular/core';
+﻿import {Component, inject, Input} from '@angular/core';
 import {AngularMarkdownEditorModule} from 'angular-markdown-editor';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {FaIconComponent, IconDefinition} from "@fortawesome/angular-fontawesome";
-import {NgIf} from "@angular/common";
 import clipboard from "clipboard-js";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-copy',
@@ -13,20 +13,18 @@ import clipboard from "clipboard-js";
     AngularMarkdownEditorModule,
     FormsModule,
     ReactiveFormsModule,
-    FaIconComponent,
-    NgIf
+    FaIconComponent
   ],
-  styleUrls: ['./copy.component.css'],
+  styleUrls: ['./copy.component.scss'],
 })
 export class CopyComponent {
   @Input() data!: string | Element;
   @Input() icon!: IconDefinition;
-  showCopiedAlert = false;
-
+  private snackBar = inject(MatSnackBar);
   private showFeedback() {
-    this.showCopiedAlert = true;
+    this.snackBar.open("Copied!", "Ok");
     setTimeout(() => {
-      this.showCopiedAlert = false;
+      this.snackBar.dismiss();
     }, 2000);
   }
 

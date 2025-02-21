@@ -1,24 +1,28 @@
 <nav class="menu">
   <ul>
-    <li>
-      <a routerLink="/" class="action-item">NoteS</a>
+    <li class="menu-left">
+      <ul>
+        <li>
+          <a routerLink="/" class="title-link action-item"><span class="title-span"><span class="title-word">N</span><span class="title-words">ote</span><span class="title-word">S</span></span></a>
+        </li>
+      </ul>
     </li>
-    @if (isSearch) {
-      <li>
-        @let state = state$ | async;
-        @if (state != null) {
-          <div class="search-container">
-            <input id="semantic-toggle" type="checkbox"
-                   [(ngModel)]="isSemantic"
-                   (change)="toggleSemantic()"
-                   class="hidden-radio">
-            <input id="tags-toggle" type="checkbox"
-                   [(ngModel)]="isTags"
-                   (change)="toggleTags()"
-                   class="hidden-radio">
-            @if (state.searchType == 'by-tags') {
-              <div class="tags-section">
-                <mat-form-field appearance="outline">
+    <li class="menu-center">
+      <ul>
+        @if (isSearch) {
+          <li class="search-container">
+            @let state = state$ | async;
+            @if (state != null) {
+              <input id="semantic-toggle" type="checkbox"
+                     [(ngModel)]="isSemantic"
+                     (change)="toggleSemantic()"
+                     class="hidden-radio">
+              <input id="tags-toggle" type="checkbox"
+                     [(ngModel)]="isTags"
+                     (change)="toggleTags()"
+                     class="hidden-radio">
+              @if (state.searchType == 'by-tags') {
+                <mat-form-field class="searcher" appearance="outline">
                   <span matPrefix class="search-wrap"><fa-icon [icon]="faMagnifyingGlass" class="search-icon"></fa-icon></span>
                   <input matInput
                          placeholder="Select tags..."
@@ -59,7 +63,8 @@
 
                   <div class="excluded-tags">
                     <mat-chip-listbox>
-                      <mat-chip-row *ngFor="let tag of (state$ | async)?.excludedTags"
+                      <mat-chip-row
+                        *ngFor="let tag of (state$ | async)?.excludedTags"
                                     class="excluded-chip"
                                     (removed)="removeTag(tag, 'excluded')">
                         {{ tag.name }}
@@ -68,43 +73,49 @@
                     </mat-chip-listbox>
                   </div>
                 </div>
-              </div>
-            } @else {
-              <mat-form-field appearance="outline">
+              } @else {
+                <mat-form-field appearance="outline">
                 <span matPrefix class="search-wrap"><fa-icon matPrefix [icon]="faMagnifyingGlass"
                                                              class="search-icon"></fa-icon></span>
-                <form (ngSubmit)="search($event)">
-                  <div class="input-group no-border">
-                    <input matInput type="text" [formControl]="searchControl" class="form-control"
-                           placeholder="Search...">
-                  </div>
-                </form>
-                <label matIconSuffix for="semantic-toggle" class="semantic-toggle">
-                  <fa-icon [icon]="faWandMagicSparkles"
-                           [class]="state.searchType == 'semantic'?'semantic-icon':'not-semantic-icon'"></fa-icon>
-                </label>
-                <label matIconSuffix for="tags-toggle" class="tags-toggle">
-                  <fa-icon [icon]="faTags" class="not-tags-icon"></fa-icon>
-                </label>
-              </mat-form-field>
+                  <form (ngSubmit)="search($event)">
+                    <div class="input-group no-border">
+                      <input matInput type="text" [formControl]="searchControl" class="form-control"
+                             placeholder="Search...">
+                    </div>
+                  </form>
+                  <label matIconSuffix for="semantic-toggle" class="semantic-toggle">
+                    <fa-icon [icon]="faWandMagicSparkles"
+                             [class]="state.searchType == 'semantic'?'semantic-icon':'not-semantic-icon'"></fa-icon>
+                  </label>
+                  <label matIconSuffix for="tags-toggle" class="tags-toggle">
+                    <fa-icon [icon]="faTags" class="not-tags-icon"></fa-icon>
+                  </label>
+                </mat-form-field>
+              }
             }
-          </div>
-
+          </li>
         }
-      </li>
-    }
-    @let userL = user();
-    @if (userL !== undefined && userL.type === 'user') {
-      <li>
-        <a routerLink="/profile" class="action-item">{{ userL.username }}</a>
-      </li>
-    }
-    <li>
-      @if (!authenticated) {
-        <button class="action-item" (click)="login()">Login</button>
-      } @else {
-        <button class="action-item" (click)="logout()">Logout</button>
-      }
+      </ul>
+    </li>
+    <li class="menu-right">
+      <ul>
+        @let userL = user();
+        <li>
+          <button mat-button [matMenuTriggerFor]="menu"  class="user-circle">
+            @if (userL !== undefined && userL.type === 'user') {
+              {{ userL.username.charAt(0).toUpperCase() }}
+            }
+          </button>
+          <mat-menu #menu="matMenu">
+            @if (authenticated && userL !== undefined && userL.type === 'user') {
+              <button mat-menu-item class="action-item" (click)="profile()">{{ userL.username }}</button>
+              <button mat-menu-item class="action-item" (click)="logout()">Logout</button>
+            } @else {
+              <button mat-menu-item class="action-item" (click)="login()">Logout</button>
+            }
+          </mat-menu>
+        </li>
+      </ul>
     </li>
   </ul>
 </nav>

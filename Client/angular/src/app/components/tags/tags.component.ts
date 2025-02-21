@@ -32,7 +32,7 @@ import {MatInput} from "@angular/material/input";
     MatInput,
     MatOption
   ],
-  styleUrls: ['./tags.component.css'],
+  styleUrls: ['./tags.component.scss'],
 })
 export class TagsComponent implements OnInit {
   @Input() path!: string;

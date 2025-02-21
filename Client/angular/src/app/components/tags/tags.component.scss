@@ -1,0 +1,19 @@
+@use "colors" as c;
+
+.tag-selector {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 3em;
+}
+
+.note-tag-list {
+  display: flex;
+  align-items: center;
+}
+
+.icon-wrapper {
+  color: c.$text2;
+  margin-right: 0.5em;
+  margin-left: 1em;
+  font-size: 1.5em;
+}

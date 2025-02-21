@@ -1,5 +1,5 @@
 import {Component, effect, EventEmitter, inject, Injectable, Input, Output} from '@angular/core';
-import {RouterModule} from '@angular/router';
+import {Router, RouterModule} from '@angular/router';
 import Keycloak from 'keycloak-js';
 import {KEYCLOAK_EVENT_SIGNAL, KeycloakEventType, ReadyArgs, typeEventArgs} from 'keycloak-angular';
 import {UserService} from "../../services/keycloak-profile.service";
@@ -24,9 +24,10 @@ import {MatFormField, MatFormFieldModule, MatPrefix, MatSuffix} from "@angular/m
 import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from "@angular/material/autocomplete";
 import {MatChipListbox, MatChipRemove, MatChipRow} from "@angular/material/chips";
 import {MatInput, MatInputModule} from "@angular/material/input";
-import {MatIconButton} from "@angular/material/button";
+import {MatButton, MatIconButton} from "@angular/material/button";
 import {toColor} from "../../helpers/color.helper";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 
 @Component({
   selector: 'app-menu',
@@ -43,10 +44,10 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
     MatInput,
     MatAutocompleteTrigger,
     AsyncPipe,
-    MatIconButton, MatChipListbox, MatChipRow, MatChipRemove, MatSuffix, MatPrefix],
+    MatIconButton, MatChipListbox, MatChipRow, MatChipRemove, MatSuffix, MatPrefix, MatMenu, MatButton, MatMenuTrigger, MatMenuItem],
   templateUrl: './menu.component.html',
   standalone: true,
-  styleUrls: ['./menu.component.css']
+  styleUrls: ['./menu.component.scss']
 })
 @Injectable({providedIn: 'root'})
 export class MenuComponent extends ComponentStore<SearchState> {
@@ -84,7 +85,7 @@ export class MenuComponent extends ComponentStore<SearchState> {
     map(value => this._filterTags(value || ''))
   );
 
-  constructor() {
+  constructor(private router: Router) {
     super({
       query: '',
       searchType: 'nope',
@@ -137,7 +138,7 @@ export class MenuComponent extends ComponentStore<SearchState> {
   }
 
   search(_: SubmitEvent) {
-    this.searchChange.emit(this.get().query);
+    this.searchChange.emit(this.state().query);
   }
 
   private _filterTags(value: string): Tag[] {
@@ -202,6 +203,10 @@ export class MenuComponent extends ComponentStore<SearchState> {
       return st;
     });
     this.typeChange.emit(this.get().searchType);
+  }
+
+  profile() {
+    this.router.navigate(['/profile'])
   }
 
   protected readonly faWandMagicSparkles = faWandMagicSparkles;

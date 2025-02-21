@@ -1,7 +1,14 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {filter, map, Observable, switchMap} from 'rxjs';
-import {CommentRequest, Note, NoteRequest, NoteSaveContent, NoteSaveOther} from "../models/note.model";
+import {
+  CommentRequest,
+  CommentSaveContent,
+  Note,
+  NoteRequest,
+  NoteSaveContent,
+  NoteSaveOther
+} from "../models/note.model";
 import {Page} from "../models/page.model";
 import {environment} from "../../environments/environment";
 import {UserService} from "./keycloak-profile.service";
@@ -16,14 +23,15 @@ export class NoteService {
   private baseUrl = environment.backend.uri;
   private http = inject(HttpClient);
   private userService = inject(UserService);
-  private readonly LIMIT = 10;
+  private readonly LIMIT = 11;
 
   getNote(path: string): Observable<Note> {
     return this.userService.getUser().pipe(
       filter((user): user is User => 'username' in user),
       switchMap(user => {
         return this.http.get<Note>(`${this.baseUrl}/public/${user.username}/notes/${path}`);
-      }));
+      }),
+      map(initTime));
   }
 
   getUserTags(): Observable<Tag[]> {
@@ -32,6 +40,22 @@ export class NoteService {
       switchMap(user => {
         return this.http.get<Tag[]>(`${this.baseUrl}/public/${user.username}/tags`);
       }));
+  }
+
+  saveContentComment(noteData: CommentSaveContent, path: string): Observable<Note> {
+    return this.userService.getUser().pipe(
+      filter((user): user is User => 'username' in user),
+      switchMap(user => {
+        if (!user?.username) {
+          throw new Error('Username not available');
+        }
+        return this.http.post<Note>(
+          `${this.baseUrl}/public/${user.username}/comments/${path}`,
+          noteData
+        );
+      }),
+      map(initTime)
+    );
   }
 
   saveContentNote(noteData: NoteSaveContent, path: string): Observable<Note> {
