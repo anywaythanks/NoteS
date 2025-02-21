@@ -13,7 +13,7 @@ public class NoteTypes
     [Column("name")] public NoteTypeName Name { get; init; }
     public static readonly NoteTypes Note = new(0, NoteTypeName.NOTE);
     public static readonly NoteTypes Comment = new(1, NoteTypeName.COMMENT);
-    public static readonly NoteTypes CommentRedacted = new(1, NoteTypeName.COMMENT_REDACTED);
+    public static readonly NoteTypes CommentRedacted = new(2, NoteTypeName.COMMENT_REDACTED);
 
     [Pure]
     public static bool IsComment(NoteTypes? type)
@@ -42,6 +42,7 @@ public class NoteTypes
         {
             case 0: return Note;
             case 1: return Comment;
+            case 2: return CommentRedacted;
         }
 
         throw new ArgumentException(); //TODO: другая ошибка

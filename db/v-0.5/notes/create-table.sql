@@ -5,7 +5,7 @@ GO
 
 alter table if exists notes
     add constraint FK_Notes_Syntax_Type
-        foreign key (type)
+        foreign key (syntax_type_id)
             references custom_types_syntax
 
 GO
