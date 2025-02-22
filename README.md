@@ -20,3 +20,6 @@ docker compose up
 
 ## Десигн в фигме
 [Тык](https://www.figma.com/design/fnDv5W0H5QJdaQoFunDDA7/NoteS?node-id=0-1&t=RCA0qge5pxpyP6s4-1)
+
+## Видео
+[Тык 1 (v 0.0.1)](https://disk.yandex.ru/i/V-qiEk7sj5DS8g)
