@@ -18,6 +18,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
 import static jakarta.persistence.GenerationType.AUTO;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -28,7 +29,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 public class Tag {
    @Id
-   @GeneratedValue(strategy = AUTO)//TODO: бд должна сама сгенерить, мб не робит стратегия и будут попытки в генерацию
+   @GeneratedValue(strategy = IDENTITY)//TODO: бд должна сама сгенерить, мб не робит стратегия и будут попытки в генерацию
    Long id;
 
    @NotNull

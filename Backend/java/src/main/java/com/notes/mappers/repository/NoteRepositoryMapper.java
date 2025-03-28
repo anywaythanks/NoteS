@@ -28,6 +28,7 @@ public interface NoteRepositoryMapper {
 
    SyntaxTypeDomainDto of(SyntaxType api);
 
+   @Mapping(source = "note.mainNote.path", target = "mainPath")
    NotePartialDomainDto of(Note note);
 
    @Mapping(source = "note.id", target = "id")
@@ -44,6 +45,7 @@ public interface NoteRepositoryMapper {
    @Mapping(source = "content.score", target = "score")
    @Mapping(source = "content.content", target = "content")
    NoteContentDomainDto of(NoteDto content);
+
    @Mapping(source = "dto.note.id", target = "id")
    @Mapping(source = "dto.note.description", target = "description")
    @Mapping(source = "dto.note.title", target = "title")
@@ -78,5 +80,7 @@ public interface NoteRepositoryMapper {
 
    NoteTagsDomainDto of(NotePartialDomainDto content, List<Tag> tags);
 
-   NoteDto of(Note note, NoteContent noteContent);
+   @Mapping(source = "content", target = "content")
+   @Mapping(source = "note", target = "note")
+   NoteDto of(Note note, NoteContent content);
 }

@@ -20,8 +20,8 @@ public interface NoteRepositoryDb extends JpaRepository<Note, Long> {
 
    @Query("""
            from Note n where n.mainNote.id = :noteId
-           and (n.noteType = #{T(com.notes.models.entity.NoteType).COMMENT}
-             or n.noteType = #{T(com.notes.models.entity.NoteType).COMMENT_REDACTED})
+           and (n.noteType = :#{T(com.notes.models.entity.NoteType).COMMENT}
+             or n.noteType = :#{T(com.notes.models.entity.NoteType).COMMENT_REDACTED})
            and n.isPublic = true
            order by n.id""")
    @EntityGraph(value = "Note.owner", type = EntityGraph.EntityGraphType.LOAD)
@@ -29,19 +29,25 @@ public interface NoteRepositoryDb extends JpaRepository<Note, Long> {
 
    @Query("""
            from Note n where n.owner.id = :ownerId
-           and (n.noteType = #{T(com.notes.models.entity.NoteType).NOTE})
+           and (n.noteType = :#{T(com.notes.models.entity.NoteType).NOTE})
            and n.isPublic = true
            order by n.id""")
    Page<Note> findNotesByOwner(@NonNull @Param("ownerId") Long ownerId, Pageable pageable);
 
 
    @Query("""
-           from Note n
-               left join NoteTagRef ntr on ntr.note.id = n.id
+           select n from Note n
+           inner join NoteTagRef ntr on ntr.note.id = n.id
            where n.owner.id = :ownerId
-           and n.noteType = #{T(com.notes.models.entity.NoteType).NOTE}
-           and ntr.tag.id = all elements(:tags)
-           and not ntr.tag.id in :filterTags
+           and n.noteType = :#{T(com.notes.models.entity.NoteType).NOTE}
+           and ntr.tag.id in :tags
+           and not exists (
+               select 1 from NoteTagRef ntr2
+               where ntr2.note.id = n.id
+               and ntr2.tag.id in :filterTags
+           )
+           group by n
+           having count(distinct ntr.tag.id) = :tagsSize
            order by n.id""")
    @EntityGraph(value = "Note.owner", type = EntityGraph.EntityGraphType.LOAD)
    Page<Note> findStrongByTagId(@Param("tags") List<Long> tags,
@@ -53,7 +59,7 @@ public interface NoteRepositoryDb extends JpaRepository<Note, Long> {
            from Note n
                left join NoteTagRef ntr on ntr.note.id = n.id
            where n.owner.id = :ownerId
-           and n.noteType = #{T(com.notes.models.entity.NoteType).NOTE}
+           and n.noteType = :#{T(com.notes.models.entity.NoteType).NOTE}
            and ntr.tag.id in :tags
            and not ntr.tag.id in :filterTags
            order by n.id""")

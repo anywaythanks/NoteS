@@ -18,7 +18,7 @@
     <changeSet id="0.1" author="anywaythanks">
         <tagDatabase tag="v.0.1"/>
     </changeSet>
-<!--    Значительное упрощение типов блоков заметок. -->
+    <!--    Значительное упрощение типов блоков заметок. -->
     <include file="v-0.2/db.changelog-v.0.2.xml" relativeToChangelogFile="true"/>
 
     <changeSet id="0.2" author="anywaythanks">
@@ -32,15 +32,22 @@
     </changeSet>
     <!--   Расширение возможностей таблички Note, для поддержки комментариев и ко -->
     <include file="v-0.4/db.changelog-v.0.4.xml" relativeToChangelogFile="true"/>
-    
+
     <changeSet id="0.4" author="anywaythanks">
         <tagDatabase tag="v.0.4"/>
     </changeSet>
-    
+
     <!--   Модификация тегов и тотальное упрощение сути записок -->
     <include file="v-0.5/db.changelog-v.0.5.xml" relativeToChangelogFile="true"/>
 
     <changeSet id="0.5" author="anywaythanks">
         <tagDatabase tag="v.0.5"/>
+    </changeSet>
+
+    <!--   char -> varchar, добавление табличек для саги -->
+    <include file="v-0.6/db.changelog-v.0.6.xml" relativeToChangelogFile="true"/>
+
+    <changeSet id="0.6" author="anywaythanks">
+        <tagDatabase tag="v.0.6"/>
     </changeSet>
 </databaseChangeLog>

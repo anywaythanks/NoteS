@@ -26,15 +26,13 @@ public class TagEditService {
    public void delete(String pathNote, String accountName, String tag) {
       var note = noteInformationService.findPublicByPath(pathNote, accountName);
       var tagI = tagInformationService.getTag(accountName, tag);
-      var ntr = noteTagRefRepository.findById(new NoteTagRef.NoteTagId(note.id(), tagI.name()));
-      if (ntr.isEmpty()) throw new TagNotFoundException();
-      noteTagRefRepository.delete(ntr.get());
+      noteTagRefRepository.deleteById(new NoteTagRef.NoteTagId(note.id(), tagI.id()));
    }
 
    public void add(String pathNote, String accountName, String tag) {
       var note = noteInformationService.findPublicByPath(pathNote, accountName);
       var tagI = tagInformationService.getTag(accountName, tag);
-      var ntr = noteTagRefRepository.findById(new NoteTagRef.NoteTagId(note.id(), tagI.name()));
+      var ntr = noteTagRefRepository.findById(new NoteTagRef.NoteTagId(note.id(), tagI.id()));
       if (ntr.isPresent()) throw new TagUniqueException();
       noteTagRefRepository.save(NoteTagRef
               .builder()
