@@ -1,6 +1,6 @@
 package com.notes.converters;
 
-import com.notes.models.NoteType;
+import com.notes.models.entity.NoteType;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

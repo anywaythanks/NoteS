@@ -1,8 +1,8 @@
 package com.notes.repository;
 
-import com.notes.models.NoteTagRef;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.notes.models.entity.Note;
+import com.notes.models.entity.NoteTagRef;
+import com.notes.models.entity.Tag;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,23 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Transactional
-public interface NoteTagRefRepository extends JpaRepository<NoteTagRef, Long>, NoteRepositoryHibernate {
-   @Query("from NoteTagRef ntr where ntr.note.id = :noteId")
+public interface NoteTagRefRepository extends JpaRepository<NoteTagRef, NoteTagRef.NoteTagId> {
+   @Query("select ntr.tag from NoteTagRef ntr where ntr.note.id = :noteId")
    @EntityGraph(value = "NoteTagRef.tag", type = EntityGraph.EntityGraphType.LOAD)
-   List<NoteTagRef> findByNoteId(@Param("noteId") Integer noteId);
+   List<Tag> findByNoteId(@Param("noteId") Long noteId);
 
-   @Query("from NoteTagRef ntr where ntr.tag.id = :tagId")
+   @Query("select ntr.note from NoteTagRef ntr where ntr.tag.id = :tagId")
    @EntityGraph(value = "NoteTagRef.note", type = EntityGraph.EntityGraphType.LOAD)
-   List<NoteTagRef> findByTagId(@Param("tagId") Integer tagId);
+   List<Note> findByTagId(@Param("tagId") Long tagId);
 
-   @Query("""
-           from NoteTagRef ntr where ntr.tag.id in (:tags)
-           and not ntr.tag.id in (:filterTags)""")
-   @EntityGraph(value = "NoteTagRef.note", type = EntityGraph.EntityGraphType.LOAD)
-   Page<NoteTagRef> findByTagId(@Param("tags") List<Integer> tags,
-                                @Param("filterTags") List<Integer> filterTags,
-                                @Param("op") boolean op,
-                                @Param("ownerId") Integer ownerId,
-                                Pageable pageable);
-
+   @Query("from NoteTagRef ntr where ntr.note.id in :notesIds")
+   @EntityGraph(value = "NoteTagRef.tag", type = EntityGraph.EntityGraphType.LOAD)
+   List<NoteTagRef> findByNoteIds(@Param("noteId") List<Long> notesIds);
 }

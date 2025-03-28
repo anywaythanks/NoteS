@@ -1,8 +1,8 @@
 package com.notes.converters;
 
-import com.notes.configs.AuthorizeServerProperties;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
+import com.notes.configs.AuthorizeServerProperties;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,45 +12,45 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 public class JwtGrantedAuthoritiesConverter implements Converter<Jwt, Collection<? extends GrantedAuthority>> {
-    private final AuthorizeServerProperties.IssuerProperties properties;
+   private final AuthorizeServerProperties.IssuerProperties properties;
 
-    public JwtGrantedAuthoritiesConverter(AuthorizeServerProperties.IssuerProperties properties) {
-        this.properties = properties;
-    }
+   public JwtGrantedAuthoritiesConverter(AuthorizeServerProperties.IssuerProperties properties) {
+      this.properties = properties;
+   }
 
-    @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public Collection<? extends GrantedAuthority> convert(Jwt jwt) {
-        return Stream.of(properties.getClaims()).flatMap(claimProperties -> {
-            Object claim;
-            try {
-                claim = JsonPath.read(jwt.getClaims(), claimProperties.getJsonPath());
-            } catch (PathNotFoundException e) {
-                claim = null;
-            }
-            if (claim == null) {
-                return Stream.empty();
-            }
-            if (claim instanceof String claimStr) {
-                return Stream.of(claimStr.split(","));
-            }
-            if (claim instanceof String[] claimArr) {
-                return Stream.of(claimArr);
-            }
-            if (Collection.class.isAssignableFrom(claim.getClass())) {
-                final var iter = ((Collection) claim).iterator();
-                if (!iter.hasNext()) {
-                    return Stream.empty();
-                }
-                final var firstItem = iter.next();
-                if (firstItem instanceof String) {
-                    return (Stream<String>) ((Collection) claim).stream();
-                }
-                if (Collection.class.isAssignableFrom(firstItem.getClass())) {
-                    return (Stream<String>) ((Collection) claim).stream().flatMap(colItem -> ((Collection) colItem).stream()).map(String.class::cast);
-                }
-            }
+   @Override
+   @SuppressWarnings({"rawtypes", "unchecked"})
+   public Collection<? extends GrantedAuthority> convert(Jwt jwt) {
+      return Stream.of(properties.getClaims()).flatMap(claimProperties -> {
+         Object claim;
+         try {
+            claim = JsonPath.read(jwt.getClaims(), claimProperties.getJsonPath());
+         } catch (PathNotFoundException e) {
+            claim = null;
+         }
+         if (claim == null) {
             return Stream.empty();
-        }).map(SimpleGrantedAuthority::new).map(GrantedAuthority.class::cast).toList();
-    }
+         }
+         if (claim instanceof String claimStr) {
+            return Stream.of(claimStr.split(","));
+         }
+         if (claim instanceof String[] claimArr) {
+            return Stream.of(claimArr);
+         }
+         if (Collection.class.isAssignableFrom(claim.getClass())) {
+            final var iter = ((Collection) claim).iterator();
+            if (!iter.hasNext()) {
+               return Stream.empty();
+            }
+            final var firstItem = iter.next();
+            if (firstItem instanceof String) {
+               return (Stream<String>) ((Collection) claim).stream();
+            }
+            if (Collection.class.isAssignableFrom(firstItem.getClass())) {
+               return (Stream<String>) ((Collection) claim).stream().flatMap(colItem -> ((Collection) colItem).stream()).map(String.class::cast);
+            }
+         }
+         return Stream.empty();
+      }).map(SimpleGrantedAuthority::new).map(GrantedAuthority.class::cast).toList();
+   }
 }

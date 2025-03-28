@@ -42,6 +42,12 @@ spring:
         hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
         hibernate.format_sql: true
         hibernate.use_sql_comments: true
+  elasticsearch:
+    uris: http://clearlaptop:9200
+  ai:
+    vectorstore:
+      elasticsearch:
+        index-name: note
   mvc:
     static-path-pattern: /resources/**
   security:
@@ -49,6 +55,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${keycloak-issuer}
+
 logging:
   level:
     org:

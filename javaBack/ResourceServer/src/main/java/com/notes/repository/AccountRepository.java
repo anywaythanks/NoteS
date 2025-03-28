@@ -1,6 +1,6 @@
 package com.notes.repository;
 
-import com.notes.models.Account;
+import com.notes.models.entity.Account;
 import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;

@@ -10,97 +10,96 @@ import java.util.stream.Stream;
 @Configuration
 @ConfigurationProperties(prefix = "auth-props")
 public class AuthorizeServerProperties {
-    private IssuerProperties[] issuers = {};
+   private IssuerProperties[] issuers = {};
 
-    public static class IssuerProperties {
-        private URL uri;
-        private ClaimMappingProperties[] claims;
-        private String usernameJsonPath = JwtClaimNames.SUB;
+   public IssuerProperties get(URL issuerUri) throws MisconfigurationException {
+      final var issuerProperties = Stream.of(issuers).filter(iss -> issuerUri.equals(iss.getUri())).toList();
+      if (issuerProperties.size() == 0) {
+         throw new MisconfigurationException("Missing authorities mapping properties for %s".formatted(issuerUri.toString()));
+      }
+      if (issuerProperties.size() > 1) {
+         throw new MisconfigurationException("Too many authorities mapping properties for %s".formatted(issuerUri.toString()));
+      }
+      return issuerProperties.get(0);
+   }
 
-        public static class ClaimMappingProperties {
-            private String jsonPath;
-            private CaseProcessing caseProcessing = CaseProcessing.UNCHANGED;
-            private String prefix = "";
+   public IssuerProperties[] getIssuers() {
+      return issuers;
+   }
 
-            enum CaseProcessing {
-                UNCHANGED, TO_LOWER, TO_UPPER
-            }
+   public void setIssuers(IssuerProperties[] issuers) {
+      this.issuers = issuers;
+   }
 
-            public String getJsonPath() {
-                return jsonPath;
-            }
+   public static class IssuerProperties {
+      private URL uri;
+      private ClaimMappingProperties[] claims;
+      private String usernameJsonPath = JwtClaimNames.SUB;
 
-            public void setJsonPath(String jsonPath) {
-                this.jsonPath = jsonPath;
-            }
+      public URL getUri() {
+         return uri;
+      }
 
-            public CaseProcessing getCaseProcessing() {
-                return caseProcessing;
-            }
+      public void setUri(URL uri) {
+         this.uri = uri;
+      }
 
-            public void setCaseProcessing(CaseProcessing caseProcessing) {
-                this.caseProcessing = caseProcessing;
-            }
+      public ClaimMappingProperties[] getClaims() {
+         return claims;
+      }
 
-            public String getPrefix() {
-                return prefix;
-            }
+      public void setClaims(ClaimMappingProperties[] claims) {
+         this.claims = claims;
+      }
 
-            public void setPrefix(String prefix) {
-                this.prefix = prefix;
-            }
-        }
+      public String getUsernameJsonPath() {
+         return usernameJsonPath;
+      }
 
-        public URL getUri() {
-            return uri;
-        }
+      public void setUsernameJsonPath(String usernameJsonPath) {
+         this.usernameJsonPath = usernameJsonPath;
+      }
 
-        public void setUri(URL uri) {
-            this.uri = uri;
-        }
+      public static class ClaimMappingProperties {
+         private String jsonPath;
+         private CaseProcessing caseProcessing = CaseProcessing.UNCHANGED;
+         private String prefix = "";
 
-        public ClaimMappingProperties[] getClaims() {
-            return claims;
-        }
+         public String getJsonPath() {
+            return jsonPath;
+         }
 
-        public void setClaims(ClaimMappingProperties[] claims) {
-            this.claims = claims;
-        }
+         public void setJsonPath(String jsonPath) {
+            this.jsonPath = jsonPath;
+         }
 
-        public String getUsernameJsonPath() {
-            return usernameJsonPath;
-        }
+         public CaseProcessing getCaseProcessing() {
+            return caseProcessing;
+         }
 
-        public void setUsernameJsonPath(String usernameJsonPath) {
-            this.usernameJsonPath = usernameJsonPath;
-        }
-    }
+         public void setCaseProcessing(CaseProcessing caseProcessing) {
+            this.caseProcessing = caseProcessing;
+         }
 
+         public String getPrefix() {
+            return prefix;
+         }
 
-    public IssuerProperties get(URL issuerUri) throws MisconfigurationException {
-        final var issuerProperties = Stream.of(issuers).filter(iss -> issuerUri.equals(iss.getUri())).toList();
-        if (issuerProperties.size() == 0) {
-            throw new MisconfigurationException("Missing authorities mapping properties for %s".formatted(issuerUri.toString()));
-        }
-        if (issuerProperties.size() > 1) {
-            throw new MisconfigurationException("Too many authorities mapping properties for %s".formatted(issuerUri.toString()));
-        }
-        return issuerProperties.get(0);
-    }
+         public void setPrefix(String prefix) {
+            this.prefix = prefix;
+         }
 
-    static class MisconfigurationException extends RuntimeException {
-        private static final long serialVersionUID = 5887967904749547431L;
+         enum CaseProcessing {
+            UNCHANGED, TO_LOWER, TO_UPPER
+         }
+      }
+   }
 
-        public MisconfigurationException(String msg) {
-            super(msg);
-        }
-    }
+   static class MisconfigurationException extends RuntimeException {
+      private static final long serialVersionUID = 5887967904749547431L;
 
-    public IssuerProperties[] getIssuers() {
-        return issuers;
-    }
-
-    public void setIssuers(IssuerProperties[] issuers) {
-        this.issuers = issuers;
-    }
+      public MisconfigurationException(String msg) {
+         super(msg);
+      }
+   }
 }

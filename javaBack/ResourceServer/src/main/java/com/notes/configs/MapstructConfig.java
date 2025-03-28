@@ -1,17 +1,14 @@
 package com.notes.configs;
 
-import com.notes.mappers.*;
-import com.notes.mappers.AccountMapper;
-import com.notes.mappers.CaseMapper;
-import com.notes.mappers.GeneralAccountMapper;
-import com.notes.mappers.InventoryMapper;
-import com.notes.mappers.ItemMapper;
-import com.notes.mappers.MoneyMapper;
-import com.notes.mappers.MoneyTypeMapper;
-import com.notes.mappers.PageMapper;
-import com.notes.mappers.SlotMapper;
-import com.notes.mappers.TwistMapper;
-import com.notes.mappers.TwistMarkMapper;
+import com.notes.mappers.repository.AccountRepositoryMapper;
+import com.notes.mappers.repository.NoteRepositoryMapper;
+import com.notes.mappers.repository.PageRepositoryMapper;
+import com.notes.mappers.repository.TagRepositoryMapper;
+import com.notes.mappers.request.NoteRequestMapper;
+import com.notes.mappers.request.TagRequestMapper;
+import com.notes.mappers.response.NoteResponseMapper;
+import com.notes.mappers.response.PageResponseMapper;
+import com.notes.mappers.response.TagResponseMapper;
 import org.mapstruct.MapperConfig;
 
 import static org.mapstruct.InjectionStrategy.CONSTRUCTOR;
@@ -27,9 +24,12 @@ import static org.mapstruct.SubclassExhaustiveStrategy.COMPILE_ERROR;
         unmappedTargetPolicy = ERROR,
         subclassExhaustiveStrategy = COMPILE_ERROR,
 
-        uses = {AccountMapper.class, GeneralAccountMapper.class,
-                InventoryMapper.class, InventoryMapper.class, MoneyMapper.class,
-                MoneyTypeMapper.class, PageMapper.class, SlotMapper.class, ItemMapper.class,
-                TwistMapper.class, TwistMarkMapper.class, CaseMapper.class})
+        uses = {AccountRepositoryMapper.class, NoteRepositoryMapper.class,
+                PageRepositoryMapper.class, TagRepositoryMapper.class,
+
+                NoteRequestMapper.class, TagRequestMapper.class,
+
+                NoteResponseMapper.class, PageResponseMapper.class, TagResponseMapper.class
+        })
 public interface MapstructConfig {
 }

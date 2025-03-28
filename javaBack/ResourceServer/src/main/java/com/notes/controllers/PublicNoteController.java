@@ -1,157 +1,165 @@
 package com.notes.controllers;
 
-import com.notes.models.dto.account.AccName;
-import com.notes.models.dto.note.NoteCreateRequestDto;
-import com.notes.models.dto.note.NoteEditContentResponseDto;
-import com.notes.models.dto.note.NoteEditOnlyContentRequestDto;
-import com.notes.models.dto.note.NoteEditOtherRequestDto;
-import com.notes.models.dto.note.NoteEditOtherResponseDto;
-import com.notes.models.dto.note.NoteEditPublicRequestDto;
-import com.notes.models.dto.note.NoteEditPublicResponseDto;
-import com.notes.models.dto.note.NotePath;
-import com.notes.models.dto.note.NoteSearchContentResponseDto;
-import com.notes.models.dto.note.NoteSearchRequestDto;
-import com.notes.models.dto.note.NoteSemanticSearchRequestDto;
-import com.notes.models.dto.page.LimitDto;
-import com.notes.models.dto.page.PageDto;
-import com.notes.models.dto.page.PageSizeDto;
+import com.notes.mappers.request.NoteRequestMapper;
+import com.notes.mappers.response.NoteResponseMapper;
+import com.notes.mappers.response.PageResponseMapper;
+import com.notes.models.api.account.AccName;
+import com.notes.models.api.note.NoteCreateRequestDto;
+import com.notes.models.api.note.NoteCreateResponseDto;
+import com.notes.models.api.note.NoteEditContentResponseDto;
+import com.notes.models.api.note.NoteEditOnlyContentRequestDto;
+import com.notes.models.api.note.NoteEditOtherRequestDto;
+import com.notes.models.api.note.NoteEditOtherResponseDto;
+import com.notes.models.api.note.NoteEditPublicRequestDto;
+import com.notes.models.api.note.NoteEditPublicResponseDto;
+import com.notes.models.api.note.NotePath;
+import com.notes.models.api.note.NoteSearchContentResponseDto;
+import com.notes.models.api.note.NoteSearchRequestDto;
+import com.notes.models.api.note.NoteSearchTagsResponseDto;
+import com.notes.models.api.note.NoteSemanticSearchRequestDto;
+import com.notes.models.api.page.PageDto;
+import com.notes.models.api.page.PageLimitDto;
+import com.notes.models.api.page.PageSizeDto;
+import com.notes.services.managers.CommentEditService;
+import com.notes.services.managers.NoteEditService;
+import com.notes.services.managers.NoteInformationService;
+import com.notes.services.managers.TagInformationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/private/{accountName}/notes")
+@RequestMapping("/api/public/{accountName}/notes")
 @RequiredArgsConstructor
 public class PublicNoteController {
-   private final AccountRegisterService register;
    private final NoteInformationService noteInformationService;
-   private final TagInformationService tagInformationService;
    private final NoteEditService editService;
-
-   @PatchMapping(path = "/{pathNote}/publish", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('READ_ALL_NOTES', 'SET_ALL_PUBLIC_STATUS_NOTES')")
-   public NoteEditPublicResponseDto EditPublicAllNote(@Valid @PathVariable AccName accountName,
-                                                      @Valid @PathVariable NotePath pathNote,
-                                                      @Valid @RequestBody NoteEditPublicRequestDto editDto) {
-//        Check(accountName);
-//
-//        return editService.PublishNote(pathNote, editDto);
-      return null;
-   }
+   private final NoteResponseMapper noteResponseMapper;
+   private final NoteRequestMapper noteRequestMapper;
+   private final PageResponseMapper pageResponseMapper;
+   private final NoteEditService noteEditService;
 
    @PostMapping(path = "/{pathNote}/publish", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('READ_NOTES', 'SET_OWN_PUBLIC_STATUS_NOTES')")
-   public NoteEditPublicResponseDto EditPublicNote(@Valid @PathVariable AccName accountName,
+   public NoteEditPublicResponseDto editPublicNote(@Valid @PathVariable AccName accountName,
                                                    @Valid @PathVariable NotePath pathNote,
                                                    @Valid @RequestBody NoteEditPublicRequestDto editDto) {
-//      Check(accountName);
-//
-//      return editService.PublishNote(pathNote, accountName, editDto);
+      return noteResponseMapper.ofPublic(editService.publishNote(pathNote.path(),
+              accountName.name(),
+              noteRequestMapper.of(editDto)));
    }
 
    @PostMapping(path = "/{pathNote}", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('READ_NOTES', 'EDIT_OWN_NOTES')")
-   public NoteEditOtherResponseDto EditNote(@Valid @PathVariable AccName accountName,
+   public NoteEditOtherResponseDto editNote(@Valid @PathVariable AccName accountName,
                                             @Valid @PathVariable NotePath pathNote,
                                             @Valid @RequestBody NoteEditOtherRequestDto editDto) {
-//      Check(accountName);
-//
-//      return editService.EditNote(pathNote, accountName, editDto);
+      return noteResponseMapper.ofOther(editService.editNote(pathNote.path(), accountName.name(), noteRequestMapper.of(editDto)));
    }
 
    @PostMapping(path = "/{pathNote}/content", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('READ_NOTES', 'EDIT_OWN_NOTES')")
-   public Task<NoteEditContentResponseDto> EditContentNote(@Valid @PathVariable AccName accountName,
-                                                           @Valid @PathVariable NotePath pathNote,
-                                                           @Valid @RequestBody NoteEditOnlyContentRequestDto editDto) {
-//      Check(accountName);
-//
-//      return await editService.EditNote(pathNote, accountName, editDto);
+   public NoteEditContentResponseDto editContentNote(@Valid @PathVariable AccName accountName,
+                                                     @Valid @PathVariable NotePath pathNote,
+                                                     @Valid @RequestBody NoteEditOnlyContentRequestDto editDto) {
+      return noteResponseMapper.ofEditContent(editService.editContentNote(pathNote.path(),
+              accountName.name(),
+              noteRequestMapper.of(editDto)));
    }
 
    @PostMapping(headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('READ_NOTES', 'EDIT_OWN_NOTES')")
-   public CreatedResult CreateNote(@Valid @PathVariable AccName accountName,
-                                   @Valid @RequestBody NoteCreateRequestDto editDto) {
-//      Check(accountName);
-//      NoteCreateResponseDto r = await editService.CreateNote(accountName, editDto);
-//      return Created(Url.Action("GetNote", "PublicNote",
-//              new { accountName.AccountName, pathNote = r.Path }, Request.Scheme), r);
+   public ResponseEntity<NoteCreateResponseDto> createNote(@Valid @PathVariable AccName accountName,
+                                                           @Valid @RequestBody NoteCreateRequestDto editDto) {
+      var note = editService.createNote(accountName.name(),
+              noteRequestMapper.of(editDto));
+
+      return ResponseEntity.created(ServletUriComponentsBuilder
+                      .fromPath("/api/public/{accountName}/notes/{pathNote}")
+                      .buildAndExpand(accountName.name(), note.path()).toUri())
+              .body(noteResponseMapper.ofNoteCreate(note));
    }
 
    @GetMapping(path = "/search/title", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('READ_NOTES', 'SEARCH_OWN_NOTES')")
-   public PageDto<NoteSearchContentResponseDto> SearchByTitleNotes(@Valid @PathVariable AccName accountName,
-                                                                   @Valid @RequestAttribute PageSizeDto page,
-                                                                   @Valid @RequestAttribute LimitDto limit,
-                                                                   @Valid @RequestBody NoteSearchRequestDto noteSearch) {
-//      Check(accountName);
-//      var notes = await noteInformationService.Find(noteSearch, accountName, pagination, pagination);
-//      return um.OfContent(notes);
+   public PageDto<NoteSearchTagsResponseDto> searchByTitleNotes(@Valid @PathVariable AccName accountName,
+                                                                @Valid @RequestAttribute PageSizeDto page,
+                                                                @Valid @RequestAttribute PageLimitDto limit,
+                                                                @Valid @RequestBody NoteSearchRequestDto noteSearch) {
+      var notes = noteInformationService
+              .findByTitle(noteSearch.title(), accountName.name(), page.page(), limit.limit())
+              .map(noteResponseMapper::ofTags);
+
+      return pageResponseMapper.of(notes);
    }
 
    @GetMapping(path = "/search/tag", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('READ_NOTES', 'SEARCH_OWN_NOTES')")
-   public PageDto<NoteSearchContentResponseDto> SearchByTagNotes(@Valid @PathVariable AccName accountName,
-                                                                 @Valid @RequestAttribute("tag") List<String> tags,
-                                                                 @Valid @RequestAttribute("filter") List<String> filterTags,
-                                                                 @Valid @RequestAttribute PageSizeDto page,
-                                                                 @Valid @RequestAttribute LimitDto limit,
-                                                                 @Valid @RequestAttribute("and") boolean isAnd) {
-//      Check(accountName);
-//      var notes = tagInformationService.FindTags(
-//              tm.Of(tags), tm.Of(filterTags),
-//              accountName, isAnd, pagination, pagination);
-//      return um.OfContent(notes);
-   }
+   public PageDto<NoteSearchTagsResponseDto> searchByTagNotes(@Valid @PathVariable AccName accountName,
+                                                              @Valid @RequestAttribute("tag") List<String> tags,
+                                                              @Valid @RequestAttribute("filter") List<String> filterTags,
+                                                              @Valid @RequestAttribute PageSizeDto page,
+                                                              @Valid @RequestAttribute PageLimitDto limit,
+                                                              @Valid @RequestAttribute("and") boolean isAnd) {
+      var notes = noteInformationService
+              .findByTags(tags, filterTags, accountName.name(), isAnd, page.page(), limit.limit())
+              .map(noteResponseMapper::ofTags);
 
-   @DeleteMapping(path = "/{pathNote}", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('READ_NOTES', 'DELETE_NOTES')")
-   public NoContentResult DelNote(@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote) {
-//      Check(accountName);
-//      await editService.Delete(pathNote, accountName);
-//      return NoContent();
+      return pageResponseMapper.of(notes);
    }
 
    @GetMapping(path = "/search/semantic", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('READ_NOTES', 'SEARCH_OWN_NOTES')")
-   public PageDto<NoteSearchContentResponseDto> SemanticSearchNotes(@Valid @PathVariable AccName accountName,
-                                                                    @Valid @RequestBody NoteSemanticSearchRequestDto noteSearch,
-                                                                    @Valid @RequestAttribute PageSizeDto page,
-                                                                    @Valid @RequestAttribute LimitDto limit,) {
-//      Check(accountName);
-//      var notes = await noteInformationService.FindSemantic(accountName, noteSearch, pagination, pagination);
-//      return um.OfContent(notes);
+   public PageDto<NoteSearchTagsResponseDto> semanticSearchNotes(@Valid @PathVariable AccName accountName,
+                                                                 @Valid @RequestBody NoteSemanticSearchRequestDto noteSearch,
+                                                                 @Valid @RequestAttribute PageSizeDto page,
+                                                                 @Valid @RequestAttribute PageLimitDto limit) {
+      var notes = noteInformationService
+              .semanticSearch(noteSearch.query(), accountName.name(), page.page(), limit.limit())
+              .map(noteResponseMapper::ofTags);
+
+      return pageResponseMapper.of(notes);
    }
 
    @GetMapping(headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('READ_NOTES')")
-   public PageDto<NoteSearchContentResponseDto> Notes(@Valid @PathVariable AccName accountName,
-                                                      @Valid @RequestAttribute PageSizeDto page,
-                                                      @Valid @RequestAttribute LimitDto limit) {
-//      Check(accountName);
-//      var notes = noteInformationService.Find(accountName, pagination, pagination);
-//      return um.OfContent(notes);
+   public PageDto<NoteSearchTagsResponseDto> notes(@Valid @PathVariable AccName accountName,
+                                                   @Valid @RequestAttribute PageSizeDto page,
+                                                   @Valid @RequestAttribute PageLimitDto limit) {
+      var notes = noteInformationService
+              .findByOwner(accountName.name(), page.page(), limit.limit())
+              .map(noteResponseMapper::ofTags);
+
+      return pageResponseMapper.of(notes);
+   }
+
+   @DeleteMapping(path = "/{pathNote}", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
+   @PreAuthorize("hasAnyAuthority('READ_NOTES', 'DELETE_NOTES')")
+   @ResponseStatus(HttpStatus.NO_CONTENT)
+   public void delNote(@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote) {
+      noteEditService.deleteNote(accountName.name(), pathNote.path());
    }
 
    @GetMapping(path = "/{pathNote}", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('READ_NOTES')")
-   public NoteSearchContentResponseDto GetNote(@Valid @PathVariable AccName accountName,
+   public NoteSearchContentResponseDto getNote(@Valid @PathVariable AccName accountName,
                                                @Valid @PathVariable NotePath pathNote) {
-//      Check(accountName);
-//      var notes = await noteInformationService.GetFullPublic(pathNote, accountName);
-//      return um.OfContentSearch(notes);
+      var note = noteInformationService.fullFindPublicByPath(pathNote.path(), accountName.name());
+      return noteResponseMapper.ofFull(note);
    }
 }

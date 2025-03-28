@@ -5,25 +5,25 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 public class UserPrincipal {
-    private final String uuid;
-    private final String username;
-    private final Collection<? extends GrantedAuthority> grantedAuthorityList;
+   private final String uuid;
+   private final String username;
+   private final Collection<? extends GrantedAuthority> grantedAuthorityList;
 
-    public UserPrincipal(String uuid, String username, Collection<? extends GrantedAuthority> grantedAuthorityList) {
-        this.uuid = uuid;
-        this.username = username;
-        this.grantedAuthorityList = grantedAuthorityList;
-    }
+   public UserPrincipal(String uuid, String username, Collection<? extends GrantedAuthority> grantedAuthorityList) {
+      this.uuid = uuid;
+      this.username = username;
+      this.grantedAuthorityList = grantedAuthorityList;
+   }
 
-    public String getUuid() {
-        return uuid;
-    }
+   public String getUuid() {
+      return uuid;
+   }
 
-    public String getUsername() {
-        return username;
-    }
+   public String getUsername() {
+      return username;
+   }
 
-    public Collection<? extends GrantedAuthority> getGrantedAuthorityList() {
-        return grantedAuthorityList;
-    }
+   public Collection<? extends GrantedAuthority> getGrantedAuthorityList() {
+      return grantedAuthorityList;
+   }
 }
