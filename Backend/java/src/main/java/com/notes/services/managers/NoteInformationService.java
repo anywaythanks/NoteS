@@ -64,12 +64,12 @@ public class NoteInformationService {
       return pageMapper.of(loadTags(list));
    }
 
-   @PostAuthorize("returnObject.owner.name == nameOwner")
+   @PostAuthorize("returnObject.owner.name == #nameOwner")
    public NotePartialDomainDto findByPath(String path, String nameOwner) {
       return unsafeFindByPath(path);
    }
 
-   @PostAuthorize("returnObject.owner.name == nameOwner || returnObject.isPublic")
+   @PostAuthorize("returnObject.owner.name == #nameOwner || returnObject.isPublic")
    public NotePartialDomainDto findPublicByPath(String path, String nameOwner) {
       return unsafeFindByPath(path);
    }
@@ -80,13 +80,13 @@ public class NoteInformationService {
    }
 
 
-   @PostAuthorize("returnObject.owner.name == nameOwner || returnObject.isPublic")
+   @PostAuthorize("returnObject.owner.name == #nameOwner || returnObject.isPublic")
    public NoteContentDomainDto findPublicContentByPath(String path, String nameOwner) {
       NoteDto noteDto = noteRepository.findByPath(path).orElseThrow(NoteNotFoundException::new);
       return noteMapper.of(noteDto);
    }
 
-   @PostAuthorize("returnObject.owner.name == nameOwner || returnObject.isPublic")
+   @PostAuthorize("returnObject.owner.name == #nameOwner || returnObject.isPublic")
    public NoteFullDomainDto fullFindPublicByPath(String path, String nameOwner) {
       var partial = findPublicContentByPath(path, nameOwner);
       return loadTags(partial);

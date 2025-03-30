@@ -1,5 +1,6 @@
 package com.notes.services.managers;
 
+import com.notes.exceptions.AccountNotFoundException;
 import com.notes.exceptions.NoteForbiddenException;
 import com.notes.exceptions.NoteNotFoundException;
 import com.notes.exceptions.NoteTypeException;
@@ -15,6 +16,7 @@ import com.notes.models.entity.Account;
 import com.notes.models.entity.Note;
 import com.notes.models.entity.NoteContent;
 import com.notes.models.entity.NoteDto;
+import com.notes.repository.AccountRepository;
 import com.notes.repository.NoteRepository;
 import com.notes.repository.NoteRepositoryDb;
 import com.notes.repository.NoteRepositoryElastic;
@@ -36,6 +38,7 @@ public class NoteEditService {
    private final AccountInformationService accountInformationService;
    private final NoteRepositoryDb noteRepositoryDb;
    private final NoteRepositoryElastic noteRepositoryElastic;
+   private final AccountRepository accountRepository;
 
    public NotePartialDomainDto publishNote(String pathComment, String ownerName, NotePublicDto dto) {
       var note = noteRepositoryDb.findByPath(pathComment).orElseThrow(NoteNotFoundException::new);
@@ -105,10 +108,12 @@ public class NoteEditService {
    public NoteContentDomainDto createNote(String accountName,
                                           NoteCreateDto dto) {
       var account = accountInformationService.findAccount(accountName);
+      var accountEntity = accountRepository.findById(account.id()).orElseThrow(AccountNotFoundException::new);
       var noteNew = Note.builder()
               .path(generatorUtils.generateUUID().toString())
+              .elasticUuid(generatorUtils.generateUUID().toString())
               .description(dto.description())
-              .owner(Account.builder().id(account.id()).build())
+              .owner(accountEntity)
               .noteType(noteRepositoryMapper.of(NoteTypeDomainDto.NOTE))
               .syntaxType(noteRepositoryMapper.of(dto.syntaxType()))
               .title(dto.title())

@@ -1,6 +1,4 @@
-﻿#!/bin/bash
-
-echo "Pre-cached models.."
+﻿echo "Pre-cached models.."
 python -c "
 from transformers import AutoModel, AutoTokenizer
 AutoModel.from_pretrained('cointegrated/rubert-tiny2')

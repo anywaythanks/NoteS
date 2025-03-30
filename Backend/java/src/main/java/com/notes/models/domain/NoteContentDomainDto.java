@@ -12,10 +12,10 @@ public record NoteContentDomainDto(@NonNull Long id,
                                    @NonNull String content,
                                    @NonNull String elasticUuid,
                                    @NonNull AccountDomainDto owner,
-                                   @NonNull String mainPath,
+                                   String mainPath,
                                    @NonNull SyntaxTypeDomainDto syntaxType,
                                    @NonNull NoteTypeDomainDto noteType,
-                                   @NonNull BigDecimal score,
+                                   BigDecimal score,
                                    boolean isPublic,
                                    @NonNull Instant createdOn) {
 }

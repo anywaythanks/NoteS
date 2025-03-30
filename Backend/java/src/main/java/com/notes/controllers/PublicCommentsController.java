@@ -42,8 +42,8 @@ public class PublicCommentsController {
    private final CommentEditService commentEditService;
    private final NoteRequestMapper noteRequestMapper;
 
-   @GetMapping(path = "/notes/{pathNote}/comments", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('READ_COMMENTS')")
+   @GetMapping(path = "/notes/{pathNote}/comments")
+   @PreAuthorize("hasAnyAuthority('read-comments')")
    public PageDto<CommentSearchContentResponseDto> comments(
            @Valid @PathVariable AccName accountName,
            @Valid @PathVariable NotePath pathNote,
@@ -56,7 +56,7 @@ public class PublicCommentsController {
    }
 
    @PostMapping(path = "/notes/{pathNote}/comments", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('READ_COMMENTS', 'READ_NOTES', 'CREATE_COMMENTS')")
+   @PreAuthorize("hasAnyAuthority('read-comments', 'read-notes', 'create-comments')")
    public ResponseEntity<CommentCreateResponseDto> createComment(@Valid @PathVariable AccName accountName,
                                                                  @Valid @PathVariable NotePath pathNote,
                                                                  @Valid @RequestBody CommentCreateRequestDto createDto) {
@@ -71,7 +71,7 @@ public class PublicCommentsController {
    }
 
    @PostMapping("/comments/{pathNote}")
-   @PreAuthorize("hasAnyAuthority('READ_COMMENTS', 'READ_NOTES', 'EDIT_OWN_COMMENTS')")
+   @PreAuthorize("hasAnyAuthority('read-comments', 'read-notes', 'edit-own-comments')")
    public CommentEditResponseDto editComment(@Valid @PathVariable AccName accountName,
                                              @Valid @PathVariable NotePath pathNote,
                                              @Valid @RequestBody CommentEditRequestDto createDto) {
@@ -83,7 +83,7 @@ public class PublicCommentsController {
    }
 
    @DeleteMapping("/comments/{pathNote}")
-   @PreAuthorize("hasAnyAuthority('READ_COMMENTS', 'READ_NOTES', 'DELETE_COMMENTS')")
+   @PreAuthorize("hasAnyAuthority('read-comments', 'read-notes', 'delete-comments')")
    @ResponseStatus(HttpStatus.NO_CONTENT)
    public void delComment(@Valid @PathVariable AccName accountName,
                           @Valid @PathVariable NotePath pathNote) {

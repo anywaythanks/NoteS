@@ -23,5 +23,5 @@ public interface NoteTagRefRepository extends JpaRepository<NoteTagRef, NoteTagR
 
    @Query("from NoteTagRef ntr where ntr.note.id in :notesIds")
    @EntityGraph(value = "NoteTagRef.tag", type = EntityGraph.EntityGraphType.LOAD)
-   List<NoteTagRef> findByNoteIds(@Param("noteId") List<Long> notesIds);
+   List<NoteTagRef> findByNoteIds(@Param("notesIds") List<Long> notesIds);
 }

@@ -2,9 +2,11 @@ package com.notes.models.entity;
 
 import com.notes.converters.NoteTypeConverter;
 import com.notes.converters.SyntaxTypeConverter;
+import com.notes.listeners.NoteListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -21,6 +23,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.Instant;
@@ -36,6 +39,7 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PROTECTED)
 @Builder
 @Getter
+@EntityListeners(NoteListener.class)
 public class Note {
    @Id
    @GeneratedValue(strategy = SEQUENCE, generator = "note_seq")
@@ -89,12 +93,11 @@ public class Note {
    @Setter
    Boolean isPublic;
 
-   @NotNull
    @ManyToOne(fetch = FetchType.LAZY, optional = false)
    @JoinColumn(name = "prev", nullable = false)
    Note mainNote;
 
-   @NotNull
    @Column(name = "created_on", nullable = false)
+   @Setter
    Instant createdOn;
 }

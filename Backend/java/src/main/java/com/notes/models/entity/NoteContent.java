@@ -22,23 +22,29 @@ import static lombok.AccessLevel.PROTECTED;
 @Document(indexName = "notes")
 public class NoteContent {
    @Id
-   @Field(value = "_id", type = FieldType.Keyword)
    String uuid;
+
    @Field(value = "content", type = FieldType.Text)
    @Setter
    String content;
+
    @Field(value = "title", type = FieldType.Text)
    @Setter
    String title;
+
    @Field(value = "score", type = FieldType.Keyword)
    BigDecimal score;
+
    @Field(value = "vec.vec", type = FieldType.Dense_Vector)
    double[] vec;
+
    @Field(value = "owner", type = FieldType.Keyword)
    Long owner;
-   @Field(value = "content", type = FieldType.Text)
+
+   @Field(value = "type", type = FieldType.Text)
    @Setter
    NoteType noteType;
+
    @Field(value = "syntax", type = FieldType.Text)
    @Setter
    SyntaxType syntaxType;

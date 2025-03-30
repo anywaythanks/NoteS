@@ -1,8 +1,8 @@
 ---
 scheme: http
-origins: ${scheme}://localhost:8180/
-keycloak-port: 8180
-keycloak-realm: twister
+origins: ${scheme}://localhost:8080/
+keycloak-port: 8080
+keycloak-realm: NoteS
 keycloak-host: localhost
 keycloak-issuer: ${scheme}://${keycloak-host}:${keycloak-port}/realms/${keycloak-realm}
 auth-props:
@@ -13,7 +13,7 @@ auth-props:
         - jsonPath: $.realm_access.roles
         - jsonPath: $.resource_access.*.roles
 server:
-  port: 9180
+  port: 5267
   error:
     include-binding-errors: always
     include-message: always
@@ -69,8 +69,8 @@ springdoc:
       activated: true
     oauth:
       use-pkce-with-authorization-code-grant: true
-      client-id: browser
-      client-secret: pPJjW65hH7Qsb0zVqRThgjznA6IJKgxi
+      client-id: swager-api
+      client-secret: VRwEkXlojgt5Jt2yv8b040EOBX73ijwt
       realm: ${keycloak-realm}
     csrf:
       enabled: true

@@ -40,7 +40,7 @@ public class PublicTagsController {
 
 
    @GetMapping(path = "/notes/{pathNote}/tags", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('READ_NOTES')")
+   @PreAuthorize("hasAnyAuthority('read-notes')")
    public List<TagResponseDto> tags(@Valid @PathVariable AccName accountName,
                                     @Valid @PathVariable NotePath pathNote) {
       return tagInformationService.findTags(pathNote.path(), accountName.name())
@@ -50,7 +50,7 @@ public class PublicTagsController {
    }
 
    @PostMapping(path = "/tags", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('READ_NOTES')")
+   @PreAuthorize("hasAnyAuthority('read-notes')")
    public ResponseEntity<TagResponseDto> createTag(@Valid @PathVariable AccName accountName,
                                                    @Valid @RequestBody TagCreateRequestDto tagCreate) {
       var tag = tagEditService.create(accountName.name(),
@@ -64,7 +64,7 @@ public class PublicTagsController {
 
 
    @GetMapping(path = "/tags", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('READ_NOTES')")
+   @PreAuthorize("hasAnyAuthority('read-notes')")
    public List<TagResponseDto> tags(@Valid @PathVariable AccName accountName) {
       return tagInformationService.findTags(accountName.name())
               .stream()
@@ -73,7 +73,7 @@ public class PublicTagsController {
    }
 
    @DeleteMapping(path = "/notes/{pathNote}/tags/{tagName}", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('READ_NOTES')")
+   @PreAuthorize("hasAnyAuthority('read-notes')")
    @ResponseStatus(HttpStatus.NO_CONTENT)
    public void delTag(@Valid @PathVariable AccName accountName,
                       @Valid @PathVariable NotePath pathNote,
@@ -82,7 +82,7 @@ public class PublicTagsController {
    }
 
    @PostMapping(path = "/notes/{pathNote}/tags", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('READ_NOTES')")
+   @PreAuthorize("hasAnyAuthority('read-notes')")
    @ResponseStatus(HttpStatus.CREATED)
    public void addTag(@Valid @PathVariable AccName accountName,
                       @Valid @PathVariable NotePath pathNote,

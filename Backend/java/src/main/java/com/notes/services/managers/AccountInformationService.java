@@ -16,7 +16,7 @@ public class AccountInformationService {
    private final AccountRepositoryMapper accountRepositoryMapper;
 
    //TODO: не следует из сигнатуры, нигде не указано, является бизнес логикой и пишет в бд
-   @PreAuthorize("@accountRegisterService.registerIfAbsent(name, authentication.principal)")
+   @PreAuthorize("@accountRegisterService.registerIfAbsent(#name, authentication.principal)")
    @PostAuthorize("returnObject.uuid == authentication.principal.uuid")
    public AccountDomainDto findAccount(String name) {
       return unsafeFindAccount(name);

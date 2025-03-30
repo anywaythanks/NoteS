@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 info:
-  title: "Twister Resource Server API"
-  version: "0.0.1"
+  title: "NoteS API"
+  version: "v 0.0.1"
 servers:
   - url: "{scheme}://{domain}:{port}/{context}"
     description: Resource server
@@ -10,2085 +10,1602 @@ servers:
         enum:
           - 'http'
           - 'https'
-        default: 'https'
+        default: 'http'
       context:
         enum:
           - ''
           - 'server'
-        default: 'server'
+        default: ''
       domain:
         enum:
           - 'localhost'
-          - 'twister.fvds.ru'
-        default: twister.fvds.ru
+          - 'notes.fvds.ru'
+        default: localhost
       port:
         enum:
-          - '443'
+          - '8080'
           - '9080'
+          - '9180'
+          - '5267'
           - '8443'
-          - '9443'
-        default: '443'
+          - '80'
+          - '443'
+        default: '5267'
 components:
+  schemas:
+    AddTagRequestDto:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CommentCreateRequestDto:
+      required:
+        - syntax_name
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        syntax_name:
+          "$ref": "#/components/schemas/SyntaxTypeName"
+        content:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CommentCreateResponseDto:
+      required:
+        - note_type
+        - syntax_name
+      type: object
+      properties:
+        path:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        note_type:
+          "$ref": "#/components/schemas/NoteTypeName"
+        is_public:
+          type: boolean
+        syntax_name:
+          "$ref": "#/components/schemas/SyntaxTypeName"
+        content:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CommentEditRequestDto:
+      required:
+        - syntax_name
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        syntax_name:
+          "$ref": "#/components/schemas/SyntaxTypeName"
+        content:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CommentEditResponseDto:
+      required:
+        - note_type
+        - syntax_name
+      type: object
+      properties:
+        path:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        note_type:
+          "$ref": "#/components/schemas/NoteTypeName"
+        is_public:
+          type: boolean
+        syntax_name:
+          "$ref": "#/components/schemas/SyntaxTypeName"
+        content:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CreateTagRequestDto:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        color:
+          maximum: 16777215
+          minimum: 0
+          type: integer
+          format: int32
+      additionalProperties: false
+    NoteCreateRequestDto:
+      required:
+        - syntax_name
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        syntax_name:
+          "$ref": "#/components/schemas/SyntaxTypeName"
+        content:
+          type: string
+          nullable: true
+      additionalProperties: false
+    NoteCreateResponseDto:
+      required:
+        - note_type
+        - syntax_name
+      type: object
+      properties:
+        path:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        note_type:
+          "$ref": "#/components/schemas/NoteTypeName"
+        is_public:
+          type: boolean
+        syntax_name:
+          "$ref": "#/components/schemas/SyntaxTypeName"
+      additionalProperties: false
+    NoteEditContentResponseDto:
+      required:
+        - syntax_name
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        content:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        syntax_name:
+          "$ref": "#/components/schemas/SyntaxTypeName"
+      additionalProperties: false
+    NoteEditOnlyContentRequestDto:
+      type: object
+      properties:
+        content:
+          type: string
+          nullable: true
+        syntax_name:
+          "$ref": "#/components/schemas/SyntaxTypeName"
+      additionalProperties: false
+    NoteEditOtherRequestDto:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+      additionalProperties: false
+    NoteEditOtherResponseDto:
+      required:
+        - syntax_name
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        syntax_name:
+          "$ref": "#/components/schemas/SyntaxTypeName"
+      additionalProperties: false
+    NoteEditPublicRequestDto:
+      type: object
+      properties:
+        is_public:
+          type: boolean
+      additionalProperties: false
+    NoteEditPublicResponseDto:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        is_public:
+          type: boolean
+      additionalProperties: false
+    NoteSearchContentResponseDto:
+      required:
+        - note_type
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        path:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        owner_account_name:
+          type: string
+          nullable: true
+        main_note_path:
+          type: string
+          nullable: true
+        content:
+          type: string
+          nullable: true
+        score:
+          type: number
+          format: double
+        note_type:
+          "$ref": "#/components/schemas/NoteTypeName"
+        tags:
+          type: array
+          items:
+            "$ref": "#/components/schemas/TagResponseDto"
+          nullable: true
+        is_public:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: false
+    NoteSearchContentResponseDtoPageDto:
+      required:
+        - items
+        - total
+        - total_pages
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            "$ref": "#/components/schemas/NoteSearchContentResponseDto"
+          nullable: true
+        total_pages:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: int64
+        page:
+          type: integer
+          format: int64
+      additionalProperties: false
+    NoteTypeName:
+      enum:
+        - NOTE
+        - COMMENT
+        - COMMENT_REDACTED
+      type: string
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+      additionalProperties: { }
+    SyntaxTypeName:
+      enum:
+        - PLAINTEXT
+        - MARKDOWN
+      type: string
+    TagResponseDto:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        color:
+          maximum: 16777215
+          minimum: 0
+          type: integer
+          format: int32
+      additionalProperties: false
   securitySchemes:
-    oAuthSample:
+    Bearer:
       type: oauth2
       description: API использует [OAuth2 authorizationCode](https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow).
       flows:
         authorizationCode:
-          tokenUrl: https://twister.fvds.ru:8443/realms/twister/protocol/openid-connect/token
-          authorizationUrl: https://twister.fvds.ru:8443/realms/twister/protocol/openid-connect/auth
-          scopes: { }
-  #            write: записать значение
-  #            read: прочитать значение
-
-
-  schemas:
-    MoneyTypePartialResponseDto:
-      type: "object"
-      required:
-        - name
-        - path_to_icon
-      properties:
-        name:
-          description: "Имя типа по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-        path_to_icon:
-          description: "Путь до иконки"
-          maxLength: 64
-          minLength: 1
-          type: "string"
-          example: "icon"
-    MoneyTypeCreateRequestDto:
-      type: "object"
-      required:
-        - path_to_icon
-      properties:
-        path_to_icon:
-          description: "Путь до иконки"
-          maxLength: 64
-          minLength: 1
-          type: "string"
-          example: "icon"
-    ItemMoneyPartialResponseDto:
-       required:
-          - cost
-          - name
-          - type
-          - visible_name
-       type: object
-       properties:
-         name:
-           description: "Имя предмета по которому его можно однозначно идентифицировать"
-           type: "string"
-           maxLength: 64
-           example: "name"
-           minLength: 1
-         visible_name:
-           description: "Имя видимое пользователям"
-           type: "string"
-           example: "name"
-           maxLength: 64
-           minLength: 1
-         type:
-           description: "Тип предмета"
-           type: "string"
-           enum:
-            - "MONEY"
-         cost:
-           $ref: "#/components/schemas/MoneyPartialResponseDto"
-    ItemTrashPartialResponseDto:
-        required:
-          - name
-          - type
-          - visible_name
-        type: object
-        properties:
-          name:
-            description: "Имя предмета по которому его можно однозначно идентифицировать"
-            type: "string"
-            example: "name"
-            maxLength: 64
-            minLength: 1
-          visible_name:
-            description: "Имя видимое пользователям"
-            type: "string"
-            example: "name"
-            maxLength: 64
-            minLength: 1
-          type:
-            description: "Тип предмета"
-            type: "string"
-            enum:
-              - "TRASH"
-    MoneyPartialResponseDto:
-      type: "object"
-      required:
-        - value
-        - type
-      properties:
-        type:
-          $ref: "#/components/schemas/MoneyTypePartialResponseDto"
-        value:
-          description: "Количество денег"
-          minimum: 0
-          example: 0
-          type: number
-    ItemMoneyCreateRequestDto:
-      type: "object"
-      required:
-        - visible_name
-        - type
-        - cost
-      properties:
-        type:
-          description: "Тип предмета"
-          type: "string"
-          enum:
-            - "MONEY"
-        visible_name:
-          description: "Имя видимое пользователям"
-          type: "string"
-          example: "name"
-          maxLength: 64
-          minLength: 1
-        cost:
-          $ref: "#/components/schemas/MoneyCreateRequestDto"
-    ItemTrashCreateRequestDto:
-      type: "object"
-      required:
-        - type
-        - visible_name
-      properties:
-        type:
-          description: "Тип предмета"
-          type: "string"
-          enum:
-            - "TRASH"
-        visible_name:
-          description: "Имя видимое пользователям"
-          type: "string"
-          example: "name"
-          maxLength: 64
-          minLength: 1
-    MoneyCreateRequestDto:
-      type: "object"
-      required:
-        - type
-        - value
-      properties:
-        type:
-          $ref: "#/components/schemas/MoneyTypeNameRequestDto"
-        value:
-          description: "Количество денег"
-          minimum: 0
-          example: 0
-          type: number
-    MoneyTypeNameRequestDto:
-      type: "object"
-      required:
-        - name
-      properties:
-        name:
-          description: "Имя типа по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-    ItemPartialResponseDto:
-      oneOf:
-        - $ref: "#/components/schemas/ItemMoneyPartialResponseDto"
-        - $ref: "#/components/schemas/ItemTrashPartialResponseDto"
-      discriminator:
-        propertyName: type
-        mapping:
-          MONEY: "#/components/schemas/ItemMoneyPartialResponseDto"
-          TRASH: "#/components/schemas/ItemTrashPartialResponseDto"
-    ItemCreateRequestDto:
-      discriminator:
-        propertyName: type
-        mapping:
-          MONEY: "#/components/schemas/ItemMoneyCreateRequestDto"
-          TRASH: "#/components/schemas/ItemTrashCreateRequestDto"
-      oneOf:
-        - $ref: "#/components/schemas/ItemMoneyCreateRequestDto"
-        - $ref: "#/components/schemas/ItemTrashCreateRequestDto"
-    ItemNameRequestDto:
-      type: "object"
-      required:
-        - name
-      properties:
-        name:
-          description: "Имя предмета по которому его можно однозначно идентифицировать"
-          type: "string"
-          example: "name"
-          maxLength: 64
-          minLength: 1
-    CaseSlotCreateRequestDto:
-      type: "object"
-      required:
-        - win_rate
-        - item
-        - quantity
-      properties:
-        win_rate:
-          description: "Шанс выпадения предмета"
-          minimum: 0
-          maximum: 100
-          example: 100
-          type: number
-        item:
-          $ref: "#/components/schemas/ItemNameRequestDto"
-        quantity:
-          description: "Количество предметов в слоте"
-          minimum: 0
-          example: 1
-          type: "integer"
-          format: "int32"
-    CasePartialResponseDto:
-      type: "object"
-      required:
-        - price
-        - cooldown
-        - name
-        - visible_name
-        - description
-      properties:
-        price:
-          $ref: "#/components/schemas/MoneyPartialResponseDto"
-        cooldown:
-          type: string
-          format: duration
-          description: "Кулдаун с последней прокрутки пользователя"
-          example: 1
-        name:
-          description: "Имя кейса по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-        visible_name:
-          description: "Имя видимое пользователю"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-        description:
-          description: "Описание кейса"
-          type: "string"
-          maxLength: 1000
-          minLength: 0
-          example: ""
-    CaseCreateRequestDto:
-      type: "object"
-      required:
-        - price
-        - cooldown
-        - visible_name
-        - description
-      properties:
-        items:
-          description: "**В сумме `win_rate` должен быть `100`**"
-          type: "array"
-          items:
-            $ref: "#/components/schemas/CaseSlotCreateRequestDto"
-        price:
-          $ref: "#/components/schemas/MoneyCreateRequestDto"
-        cooldown:
-          type: string
-          format: duration
-          description: "Кулдаун с последней прокрутки пользователя"
-          example: 1
-        visible_name:
-          description: "Имя видимое пользователю"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-        description:
-          description: "Описание кейса"
-          type: "string"
-          maxLength: 1000
-          minLength: 0
-          example: ""
-    CaseSlotPartialResponseDto:
-      type: "object"
-      required:
-        - win_rate
-        - item
-        - quantity
-        - name
-      properties:
-        win_rate:
-          description: "Шанс выпадения предмета"
-          minimum: 0
-          maximum: 100
-          type: number
-        item:
-          $ref: "#/components/schemas/ItemPartialResponseDto"
-        quantity:
-          description: "Количество предметов в слоте"
-          minimum: 0
-          type: "integer"
-          format: "int32"
-        name:
-          description: "Имя слота по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-    CaseItemsPartialResponseDto:
-      type: "object"
-      required:
-        - price
-        - cooldown
-        - visible_name
-        - description
-        - name
-        - items
-      properties:
-        items:
-          description: "**В сумме `win_rate` должен быть `100`**"
-          type: "array"
-          items:
-            $ref: "#/components/schemas/CaseSlotPartialResponseDto"
-        price:
-          $ref: "#/components/schemas/MoneyPartialResponseDto"
-        cooldown:
-          type: string
-          format: duration
-          description: "Кулдаун с последней прокрутки пользователя"
-          example: 1
-        name:
-          description: "Имя кейса по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-        visible_name:
-          description: "Имя видимое пользователю"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-        description:
-          description: "Описание кейса"
-          type: "string"
-          maxLength: 1000
-          minLength: 1
-    CaseItemsWithoutCooldownPartialResponseDto:
-      type: "object"
-      required:
-        - price
-        - visible_name
-        - description
-        - name
-        - items
-      properties:
-        items:
-          description: "**В сумме `win_rate` должен быть `100`**"
-          type: "array"
-          items:
-            $ref: "#/components/schemas/CaseSlotPartialResponseDto"
-        price:
-          $ref: "#/components/schemas/MoneyPartialResponseDto"
-        name:
-          description: "Имя кейса по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-        visible_name:
-          description: "Имя видимое пользователю"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-        description:
-          description: "Описание кейса"
-          type: "string"
-          maxLength: 1000
-          minLength: 1
-    CaseLightWithoutCooldownPartialResponseDto:
-      type: "object"
-      required:
-        - price
-        - visible_name
-        - description
-        - name
-      properties:
-        price:
-          $ref: "#/components/schemas/MoneyPartialResponseDto"
-        name:
-          description: "Имя кейса по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-        visible_name:
-          description: "Имя видимое пользователю"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-        description:
-          description: "Описание кейса"
-          type: "string"
-          maxLength: 1000
-          minLength: 1
-    CaseWithoutCooldownPagePartialResponseDto:
-      type: "object"
-      required:
-        - values
-        - total_pages
-        - page
-      properties:
-        values:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/CaseLightWithoutCooldownPartialResponseDto"
-        total_pages:
-          description: "Полное количество страниц кейсов"
-          type: "integer"
-          format: "int32"
-          minimum: 0
-          example: 1
-        page:
-          description: "Номер страницы из которой взята информация. Индексация начиная с нуля"
-          type: "integer"
-          format: "int32"
-          minimum: 0
-          example: 0
-    CaseLightPartialResponseDto:
-      type: "object"
-      required:
-        - price
-        - cooldown
-        - name
-        - visible_name
-        - description
-      properties:
-        price:
-          $ref: "#/components/schemas/MoneyPartialResponseDto"
-        cooldown:
-          type: string
-          format: duration
-          description: "Кулдаун с последней прокрутки пользователя"
-          example: 0
-        name:
-          description: "Имя кейса по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-        visible_name:
-          description: "Имя видимое пользователю"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-        description:
-          description: "Описание кейса"
-          type: "string"
-          maxLength: 1000
-          minLength: 0
-          example: ""
-    CasePagePartialResponseDto:
-      type: "object"
-      required:
-        - values
-        - total_pages
-        - page
-      properties:
-        values:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/CaseLightPartialResponseDto"
-        total_pages:
-          description: "Полное количество страниц кейсов"
-          type: "integer"
-          format: "int32"
-          minimum: 0
-          example: 1
-        page:
-          description: "Номер страницы из которой взята информация. Индексация начиная с нуля"
-          type: "integer"
-          format: "int32"
-          minimum: 0
-          example: 0
-    GeneralAccountCreateRequestDto:
-      type: "object"
-      required:
-        - nickname
-      properties:
-        nickname:
-          description: "Уникальный никнейм аккаунта видимый всем"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-    GeneralAccountPartialResponseDto:
-      type: "object"
-      required:
-        - nickname
-        - name
-      properties:
-        nickname:
-          description: "Уникальный никнейм аккаунта видимый всем"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-        name:
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-    GeneralAccountNameResponseDto:
-      type: "object"
-      required:
-        - name
-      properties:
-        name:
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-    GeneralAccountPublicResponseDto:
-      type: "object"
-      required:
-        - nickname
-        - name
-      properties:
-        nickname:
-          description: "Уникальный никнейм аккаунта видимый всем"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-        name:
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-    GeneralAccountNotRegisteredException:
-      type: "object"
-      required:
-        - message
-      properties:
-        message:
-          description: "Аккаунт не зарегистрирован"
-          type: "string"
-          example: "General account not registered."
-    InsufficientFundsException:
-      type: "object"
-      required:
-        - message
-      properties:
-        message:
-          description: "Недостоточно денег на счету"
-          type: "string"
-          example: "Insufficient funds on the account."
-    CooldownException:
-      type: "object"
-      required:
-        - message
-      properties:
-        message:
-          description: "Кейс недоступен в данный момент"
-          type: "string"
-          example: "Cooldown."
-    GeneralAccountExistsException:
-      type: "object"
-      required:
-        - message
-      properties:
-        message:
-          description: "Аккаунт уже существует. В header Location адрес."
-          type: "string"
-          example: "General Account already exists."
-    InvalidMoneyTypeException:
-      type: "object"
-      required:
-        - message
-      properties:
-        message:
-          description: "Указан неправильный тип денег."
-          type: "string"
-          example: "Invalid type specified."
-    InvalidItemTypeException:
-      type: "object"
-      required:
-        - message
-      properties:
-        message:
-          description: "Указан неправильный тип предмета."
-          type: "string"
-          example: "Invalid type specified."
-    NicknameUniqueException:
-      type: "object"
-      required:
-        - message
-      properties:
-        message:
-          description: "Никнейм уже занят"
-          type: "string"
-          example: "The nickname already exists."
-    NoSellingItemException:
-      type: "object"
-      required:
-        - message
-      properties:
-        message:
-          description: "Предмет не для продажи"
-          type: "string"
-          example: "The item is not for sale."
-    NotEnoughItemsException:
-      type: "object"
-      required:
-        - message
-      properties:
-        message:
-          description: "Предмет недостаточно"
-          type: "string"
-          example: "Not enough items in inventory."
-    UniqueException:
-      type: "object"
-      required:
-        - message
-      properties:
-        message:
-          description: "Уже существует"
-          type: "string"
-          example: "Already exists."
-    NotFoundException:
-      type: "object"
-      required:
-        - message
-      properties:
-        message:
-          description: "Не найден"
-          type: "string"
-          example: "Not found."
-    AccountCreateRequestDto:
-      type: "object"
-      properties:
-        type:
-          $ref: "#/components/schemas/MoneyTypeNameRequestDto"
-    AccountPartialResponseDto:
-      type: "object"
-      required:
-        - number
-        - amount
-      properties:
-        amount:
-          $ref: "#/components/schemas/MoneyPartialResponseDto"
-        number:
-          description: "Номер счета по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-    SlotQuantityRequestDto:
-      type: "object"
-      required:
-        - quantity
-      properties:
-        quantity:
-          description: "Количество предметов в слоте"
-          minimum: 0
-          example: 1
-          type: "integer"
-          format: "int32"
-    SlotPartialResponseDto:
-      type: "object"
-      required:
-        - item
-        - quantity
-      properties:
-        item:
-          $ref: "#/components/schemas/ItemPartialResponseDto"
-        quantity:
-          description: "Количество предметов в слоте"
-          minimum: 0
-          example: 1
-          type: "integer"
-          format: "int32"
-    InventoryPartialSlotsResponseDto:
-      type: "object"
-      required:
-        - slots
-        - name
-      properties:
-        slots:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/SlotPartialResponseDto"
-        name:
-          description: "Имя инвентаря по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-    InventoryPartialResponseDto:
-      type: "object"
-      required:
-        - name
-      properties:
-        name:
-          description: "Имя инвентаря по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-    InventoryNameResponseDto:
-      type: "object"
-      required:
-        - name
-      properties:
-        name:
-          description: "Имя инвентаря по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-    CaseNameResponseDto:
-      type: "object"
-      required:
-        - name
-      properties:
-        name:
-          description: "Имя кейса по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-    AccountNumberResponseDto:
-      type: "object"
-      required:
-        - number
-      properties:
-        number:
-          description: "Номер счета по которому его можно однозначно идентифицировать"
-          type: "string"
-          maxLength: 64
-          minLength: 1
-          example: "name"
-    TwistPartialResponseDto:
-      type: "object"
-      required:
-        - selectCase
-        - account
-        - twistedOn
-        - item
-        - quantity
-        - wonSlotName
-        - number
-      properties:
-        selectCase:
-          $ref: "#/components/schemas/CaseNameResponseDto"
-        account:
-          $ref: "#/components/schemas/AccountNumberResponseDto"
-        twistedOn:
-          type: string
-          format: date-time
-          example: 2018-03-20T09:12:28Z
-        item:
-          $ref: "#/components/schemas/ItemPartialResponseDto"
-        quantity:
-          description: "Количество предметов в слоте"
-          minimum: 0
-          example: 1
-          type: "integer"
-          format: "int32"
-        wonSlotName:
-          minLength: 1
-          maxLength: 64
-          example: "slot"
-          type: "string"
-        number:
-          minLength: 1
-          maxLength: 64
-          example: "317"
-          type: "string"
+          authorizationUrl: http://localhost:8080/realms/NoteS/protocol/openid-connect/auth
+          tokenUrl: http://localhost:8080/realms/NoteS/protocol/openid-connect/token
+          scopes:
+            read: Balea Server HTTP Api
 security:
-  - oAuthSample:
-      - write
-      - read
+  - Bearer: [ ]
 paths:
-  /api/public/money/type:
-    get:
+  "/api/private/{accountName}/notes/{pathNote}/publish":
+    patch:
       tags:
-        - public money type
-      summary: "GET api/public/money/type"
-      description: "Получить все существующие типы денег."
-      operationId: "listMoneyTypes"
-      security: [ ]
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/MoneyTypePartialResponseDto"
-  /api/public/money/type/{name}:
-    get:
-      tags:
-        - public money type
-      summary: "GET api/public/money/type/{name}"
-      description: "Получить конкретный тип денег."
-      security: [ ]
-      operationId: "getMoneyType"
+        - PrivateNote
+      description: Редактирование свойства публичности любой заметки или комментария
       parameters:
-        - name: "name"
-          in: "path"
+        - name: accountName
+          in: path
           required: true
-          description: "Имя типа по которому его можно однозначно идентифицировать"
           schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                $ref: "#/components/schemas/MoneyTypePartialResponseDto"
-        "404":
-          description: "Тип не найден"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-  /api/public/item:
-    get:
-      tags:
-        - public item
-      summary: "GET api/public/item"
-      operationId: "listItems"
-      security: [ ]
-      description: "Получить все существующие предметы"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/ItemPartialResponseDto"
-  /api/public/item/{name}:
-    get:
-      tags:
-        - public item
-      summary: "GET api/public/item/{name}"
-      operationId: "get"
-      security: [ ]
-      description: "Получить конкретный предмет"
-      parameters:
-        - name: "name"
-          in: "path"
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
           required: true
-          description: "Имя предмета по которому его можно однозначно идентифицировать"
           schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
+            maxLength: 128
+            minLength: 3
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditPublicRequestDto"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditPublicRequestDto"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditPublicRequestDto"
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           content:
-            'application/json':
+            text/plain:
               schema:
-                $ref: "#/components/schemas/ItemPartialResponseDto"
-        "404":
-          description: "Тип не найден"
+                "$ref": "#/components/schemas/NoteEditPublicResponseDto"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NoteEditPublicResponseDto"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/NoteEditPublicResponseDto"
+        '401':
+          description: Unauthorized
           content:
-            'application/json':
+            text/plain:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-  /api/public/case:
-    get:
-      description: "Получить страницу кейсов"
-      security: [ ]
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/private/{accountName}/notes/{pathNote}/content":
+    patch:
       tags:
-        - public case
-      summary: "GET api/public/case"
-      operationId: "listCase"
+        - PrivateNote
+      description: Редактирование любой заметки или комментария
       parameters:
-        - name: "page"
-          in: "query"
-          required: false
-          description: "номер страницы"
+        - name: accountName
+          in: path
+          required: true
           schema:
-            type: "integer"
-            format: "int32"
-            minimum: 0
-            example: 0
-            default: 0
-        - name: "size"
-          in: "query"
-          required: false
-          description: "То сколько будет кейсов в каждой странице"
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
+          required: true
           schema:
-            type: "integer"
-            format: "int32"
+            maxLength: 128
+            minLength: 3
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditOtherRequestDto"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditOtherRequestDto"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditOtherRequestDto"
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/NoteEditOtherResponseDto"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NoteEditOtherResponseDto"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/NoteEditOtherResponseDto"
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+    post:
+      tags:
+        - PrivateNote
+      description: Редактирование контента заметки (комментария в другом месте)
+      parameters:
+        - name: accountName
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            minLength: 3
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditOnlyContentRequestDto"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditOnlyContentRequestDto"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditOnlyContentRequestDto"
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/NoteEditContentResponseDto"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NoteEditContentResponseDto"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/NoteEditContentResponseDto"
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/private/{accountName}/notes/{pathNote}":
+    get:
+      tags:
+        - PrivateNote
+      description: Получение данных любой заметки или комментария
+      parameters:
+        - name: accountName
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            minLength: 3
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/NoteCreateResponseDto"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NoteCreateResponseDto"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/NoteCreateResponseDto"
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/public/{accountName}/notes/{pathNote}/comments":
+    get:
+      tags:
+        - PublicComments
+      description: Список комментариев к заметке
+      parameters:
+        - name: accountName
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            minLength: 3
+            type: string
+        - name: Page
+          in: query
+          schema:
+            maximum: 2147483647
             minimum: 1
-            maximum: 50
-            example: 5
-            default: 5
+            type: integer
+            format: int32
+        - name: Limit
+          in: query
+          schema:
+            maximum: 20
+            minimum: 5
+            type: integer
+            format: int32
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           content:
-            'application/json':
+            text/plain:
               schema:
-                $ref: "#/components/schemas/CaseWithoutCooldownPagePartialResponseDto"
-  /api/public/case/{name}:
-    get:
-      description: "Получить информацию об конкретном кейсе"
-      security: [ ]
+                "$ref": "#/components/schemas/NoteSearchContentResponseDtoPageDto"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NoteSearchContentResponseDtoPageDto"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/NoteSearchContentResponseDtoPageDto"
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+    post:
       tags:
-        - public case
-      summary: "GET api/public/case/{name}"
-      operationId: "info"
+        - PublicComments
+      description: Создание комментария к заметке
       parameters:
-        - name: "name"
-          in: "path"
+        - name: accountName
+          in: path
           required: true
-          description: "Имя кейса по которому его можно однозначно идентифицировать"
           schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            minLength: 3
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CommentCreateRequestDto"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/CommentCreateRequestDto"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/CommentCreateRequestDto"
       responses:
-        "200":
-          description: "OK"
+        '201':
+          description: Created
           content:
-            'application/json':
+            text/plain:
               schema:
-                $ref: "#/components/schemas/CaseItemsWithoutCooldownPartialResponseDto"
-        "404":
-          description: "Кейс не найден"
+                "$ref": "#/components/schemas/CommentCreateResponseDto"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CommentCreateResponseDto"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/CommentCreateResponseDto"
+        '401':
+          description: Unauthorized
           content:
-            'application/json':
+            text/plain:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-  /api/general/{name}/actual_case:
-    get:
-      description: "Получить страницу кейсов с информацией о том сколько осталось времени, чтобы покрутить еще раз. Если прокрутки никогда не было, то `0`."
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/public/{accountName}/comments/{pathNote}":
+    post:
       tags:
-        - actual case
-      security:
-        - oAuthSample:
-            - read
-      summary: "GET api/general/{name}/actual_case"
-      operationId: "listCase"
+        - PublicComments
+      description: Редактирование комментария
       parameters:
-        - name: "name"
-          in: "path"
+        - name: accountName
+          in: path
           required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
           schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "page"
-          in: "query"
-          required: false
-          description: "номер страницы"
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
+          required: true
           schema:
-            type: "integer"
-            format: "int32"
-            minimum: 0
-            example: 0
-            default: 0
-        - name: "size"
-          in: "query"
-          required: false
-          description: "То сколько будет кейсов в каждой странице"
+            maxLength: 128
+            minLength: 3
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CommentEditRequestDto"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/CommentEditRequestDto"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/CommentEditRequestDto"
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/CommentEditResponseDto"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CommentEditResponseDto"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/CommentEditResponseDto"
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+    delete:
+      tags:
+        - PublicComments
+      description: Удаление комментария
+      parameters:
+        - name: accountName
+          in: path
+          required: true
           schema:
-            type: "integer"
-            format: "int32"
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            minLength: 3
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/public/{accountName}/notes/{pathNote}/publish":
+    post:
+      tags:
+        - PublicNote
+      description: Редактирование публичности заметки/комменатрия
+      parameters:
+        - name: accountName
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            minLength: 3
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditPublicRequestDto"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditPublicRequestDto"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditPublicRequestDto"
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/public/{accountName}/notes/{pathNote}":
+    post:
+      tags:
+        - PublicNote
+      description: Редактирование остальных полей заметки (комментария в другом месте)
+      parameters:
+        - name: accountName
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            minLength: 3
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditOtherRequestDto"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditOtherRequestDto"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditOtherRequestDto"
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+    delete:
+      tags:
+        - PublicNote
+      description: Удаление заметки
+      parameters:
+        - name: accountName
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            minLength: 3
+            type: string
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+    get:
+      tags:
+        - PublicNote
+      description: Данные заметки или комментария
+      parameters:
+        - name: accountName
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            minLength: 3
+            type: string
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/public/{accountName}/notes/{pathNote}/content":
+    post:
+      tags:
+        - PublicNote
+      description: Редактирование контента заметки (комментария в другом месте)
+      parameters:
+        - name: accountName
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            minLength: 3
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditOnlyContentRequestDto"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditOnlyContentRequestDto"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/NoteEditOnlyContentRequestDto"
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/public/{accountName}/notes":
+    post:
+      tags:
+        - PublicNote
+      description: Создание заметки
+      parameters:
+        - name: accountName
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NoteCreateRequestDto"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/NoteCreateRequestDto"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/NoteCreateRequestDto"
+      responses:
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+    get:
+      tags:
+        - PublicNote
+      description: Список заметок пользователя
+      parameters:
+        - name: accountName
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            type: string
+        - name: Page
+          in: query
+          schema:
+            maximum: 2147483647
             minimum: 1
-            maximum: 50
-            example: 5
-            default: 5
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                $ref: "#/components/schemas/CasePagePartialResponseDto"
-        "404":
-          description: "Аккаунт не найден"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-  /api/general/{name}/actual_case/{case_name}:
-    get:
-      description: "Получить конкретный кейс с информацией о том сколько осталось времени, чтобы покрутить еще раз. Если прокрутки никогда не было, то `0`."
-      tags:
-        - actual case
-      security:
-        - oAuthSample:
-            - read
-      summary: "GET api/general/{name}/actual_case/{case_name}"
-      operationId: "info"
-      parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
+            type: integer
+            format: int32
+        - name: Limit
+          in: query
           schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "case_name"
-          in: "path"
-          required: true
-          description: "Имя кейса по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
+            maximum: 20
+            minimum: 5
+            type: integer
+            format: int32
       responses:
-        "200":
-          description: "OK"
+        '401':
+          description: Unauthorized
           content:
-            'application/json':
+            text/plain:
               schema:
-                $ref: "#/components/schemas/CaseItemsPartialResponseDto"
-        "404":
-          description: "Аккаунт или/и кейс не найден"
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
           content:
-            'application/json':
+            text/plain:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-
-  /api/public/general/{name}:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/public/{accountName}/notes/search/title":
     get:
       tags:
-        - public general
-      security: [ ]
-      description: "Получить публичные данные аккаунта"
-      summary: "GET api/public/general/{name}"
-      operationId: "infoPublic"
+        - PublicNote
+      description: Поиск по заголовку
       parameters:
-        - name: "name"
-          in: "path"
+        - name: accountName
+          in: path
           required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
           schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
+            maxLength: 128
+            type: string
+        - name: Title
+          in: query
+          schema:
+            type: string
+        - name: Page
+          in: query
+          schema:
+            maximum: 2147483647
+            minimum: 1
+            type: integer
+            format: int32
+        - name: Limit
+          in: query
+          schema:
+            maximum: 20
+            minimum: 5
+            type: integer
+            format: int32
       responses:
-        "200":
-          description: "OK"
+        '401':
+          description: Unauthorized
           content:
-            'application/json':
+            text/plain:
               schema:
-                $ref: "#/components/schemas/GeneralAccountPublicResponseDto"
-        "404":
-          description: "Аккаунт не найден"
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
           content:
-            'application/json':
+            text/plain:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-  /api/public/general/search:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/public/{accountName}/notes/search/tag":
     get:
       tags:
-        - public general
-      security: [ ]
-      description: "Найти аккаунт"
-      summary: "GET api/public/general/search"
-      operationId: "search"
+        - PublicNote
+      description: Поиск по тегам
       parameters:
-        - name: "name"
-          in: "path"
+        - name: accountName
+          in: path
           required: true
-          description: "Никнейм аккаунта"
           schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
+            maxLength: 128
+            type: string
+        - name: tag
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: filter
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: Page
+          in: query
+          schema:
+            maximum: 2147483647
+            minimum: 1
+            type: integer
+            format: int32
+        - name: Limit
+          in: query
+          schema:
+            maximum: 20
+            minimum: 5
+            type: integer
+            format: int32
+        - name: and
+          in: query
+          schema:
+            type: boolean
+            default: true
       responses:
-        "200":
-          description: "OK"
+        '401':
+          description: Unauthorized
           content:
-            'application/json':
+            text/plain:
               schema:
-                $ref: "#/components/schemas/GeneralAccountPublicResponseDto"
-        "404":
-          description: "Аккаунт не найден"
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
           content:
-            'application/json':
+            text/plain:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-  /api/general/{name}:
-    put:
-      tags:
-        - general
-      security:
-        - oAuthSample:
-            - write
-            - read
-      summary: "PUT api/general/{name}"
-      description: "Поместить новый или существующий аккаунт"
-      operationId: "put"
-      parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "content-type"
-          in: "header"
-          required: false
-          schema:
-            type: "string"
-            enum:
-              - "application/json"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/GeneralAccountCreateRequestDto"
-        required: true
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
               schema:
-                $ref: "#/components/schemas/GeneralAccountPartialResponseDto"
-        "409":
-          description: "Ошибка регистрации"
-          content:
-            'application/json':
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NicknameUniqueException"
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/public/{accountName}/notes/search/semantic":
     get:
       tags:
-        - general
-      security:
-        - oAuthSample:
-            - read
-      summary: "GET api/general/{name}"
-      operationId: "info"
-      description: "Поместить информацию об конкретном аккаунте"
+        - PublicNote
+      description: Семантический поиск
       parameters:
-        - name: "name"
-          in: "path"
+        - name: accountName
+          in: path
           required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
           schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                $ref: "#/components/schemas/GeneralAccountPartialResponseDto"
-        "404":
-          description: "Аккаунт не найден"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-  /api/general:
-    post:
-      description: "Создать новый аккаунт"
-      tags:
-        - general
-      security:
-        - oAuthSample:
-            - write
-            - read
-      summary: "POST api/general"
-      operationId: "register"
-      parameters:
-        - name: "content-type"
-          in: "header"
-          required: false
+            maxLength: 128
+            type: string
+        - name: Query
+          in: query
           schema:
-            type: "string"
-            enum:
-              - "application/json"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/GeneralAccountCreateRequestDto"
-        required: true
+            type: string
+        - name: Page
+          in: query
+          schema:
+            maximum: 2147483647
+            minimum: 1
+            type: integer
+            format: int32
+        - name: Limit
+          in: query
+          schema:
+            maximum: 20
+            minimum: 5
+            type: integer
+            format: int32
       responses:
-        "201":
-          headers:
-            Location:
-              description: "Ссылка на персональную страничку акканута"
-          description: "OK"
+        '401':
+          description: Unauthorized
           content:
-            'application/json':
+            text/plain:
               schema:
-                $ref: "#/components/schemas/GeneralAccountPartialResponseDto"
-        "409":
-          description: "Ошибка регистрации"
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
           content:
-            'application/json':
+            text/plain:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/GeneralAccountExistsException"
-                  - $ref: "#/components/schemas/NicknameUniqueException"
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/public/{accountName}/notes/{pathNote}/tags":
     get:
-      description: "Получить имя своего аккаунта"
       tags:
-        - general
-      security:
-        - oAuthSample:
-            - read
-      summary: "GET api/general"
-      operationId: "name"
+        - PublicTags
+      description: Теги конкретной заметки
+      parameters:
+        - name: accountName
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            minLength: 3
+            type: string
       responses:
-        "200":
-          description: "OK"
+        '401':
+          description: Unauthorized
           content:
-            'application/json':
+            text/plain:
               schema:
-                $ref: "#/components/schemas/GeneralAccountNameResponseDto"
-  /api/general/{name}/accounts/{sourceNumber}/transfer/{recipientNumber}:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
     post:
       tags:
-        - account
-      security:
-        - oAuthSample:
-            - read
-            - write
-      summary: "POST api/general/{name}/accounts/{sourceNumber}/transfer/{recipientNumber}"
-      description: "Перевести деньги с одного счета на другой"
-      operationId: "transfer"
+        - PublicTags
+      description: Добавить тег к заметке
       parameters:
-        - name: "name"
-          in: "path"
+        - name: accountName
+          in: path
           required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
           schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "sourceNumber"
-          in: "path"
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
           required: true
-          description: "Номер счета откуда будут переводиться деньги"
           schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "recipientNumber"
-          in: "path"
-          required: true
-          description: "Номер счета куда будут переводиться деньги"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "content-type"
-          in: "header"
-          required: false
-          schema:
-            type: "string"
-            enum:
-              - "application/json"
+            maxLength: 128
+            minLength: 3
+            type: string
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/MoneyCreateRequestDto"
-        required: true
-      responses:
-        "200":
-          description: "OK"
-        "403":
-          description: "Счет не принадлежит вам"
-        "404":
-          description: "Счет или/и аккаунт не найден"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-        "409":
-          description: "Денег на счету не достаточно"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/InsufficientFundsException"
-                  - $ref: "#/components/schemas/InvalidMoneyTypeException"
-  /api/general/{name}/accounts/{number}:
-    put:
-      tags:
-        - account
-      security:
-        - oAuthSample:
-            - read
-            - write
-      description: "Поместить новый или существующий счет."
-      summary: "PUT api/general/{name}/accounts/{number}"
-      operationId: "register"
-      parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "number"
-          in: "path"
-          required: true
-          description: "Номер счета по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "content-type"
-          in: "header"
-          required: false
-          schema:
-            type: "string"
-            enum:
-              - "application/json"
-      requestBody:
-        content:
-          application/json:
+              "$ref": "#/components/schemas/AddTagRequestDto"
+          text/json:
             schema:
-              $ref: "#/components/schemas/AccountCreateRequestDto"
-        required: true
+              "$ref": "#/components/schemas/AddTagRequestDto"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/AddTagRequestDto"
       responses:
-        "200":
-          description: "OK"
+        '401':
+          description: Unauthorized
           content:
-            'application/json':
+            text/plain:
               schema:
-                $ref: "#/components/schemas/AccountPartialResponseDto"
-        "404":
-          description: "Счет или/и аккаунт не найден"
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
           content:
-            'application/json':
+            text/plain:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-    get:
-      tags:
-        - account
-      security:
-        - oAuthSample:
-            - read
-            - write
-      summary: "GET api/general/{name}/accounts/{number}"
-      operationId: "info"
-      parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "number"
-          in: "path"
-          required: true
-          description: "Номер счета по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
               schema:
-                $ref: "#/components/schemas/AccountPartialResponseDto"
-        "404":
-          description: "Счет или/и аккаунт не найден"
-          content:
-            'application/json':
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-  /api/general/{name}/accounts:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/public/{accountName}/tags":
     post:
       tags:
-        - account
-      security:
-        - oAuthSample:
-            - read
-            - write
-      description: "Создать новый счет."
-      summary: "POST api/general/{name}/accounts"
-      operationId: "register_post"
+        - PublicTags
+      description: Создание тега
       parameters:
-        - name: "name"
-          in: "path"
+        - name: accountName
+          in: path
           required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
           schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "content-type"
-          in: "header"
-          required: false
-          schema:
-            type: "string"
-            enum:
-              - "application/json"
+            maxLength: 128
+            type: string
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AccountCreateRequestDto"
-        required: true
-      responses:
-        "201":
-          headers:
-            Location:
-              description: "Ссылка на персональную страничку счета"
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/AccountPartialResponseDto"
-        "404":
-          description: "Аккаунт не найден"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-    get:
-      tags:
-        - account
-      security:
-        - oAuthSample:
-            - read
-      description: "Получить все счета на аккаунте"
-      summary: "GET api/general/{name}/accounts"
-      operationId: "listAccounts"
-      parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/AccountPartialResponseDto"
-        "404":
-          description: "Аккаунт не найден"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-  /api/general/{name}/inventory/{name_inventory}/{item}/sell/{account_number}:
-    post:
-      tags:
-        - inventory
-      security:
-        - oAuthSample:
-            - read
-            - write
-      description: "Продать предметы в инвентаре"
-      summary: "POST api/general/{name}/inventory/{name_inventory}/{item}/sell/{accountNumber}"
-      operationId: "sell"
-      parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "name_inventory"
-          in: "path"
-          required: true
-          description: "Имя инвентаря по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "item"
-          in: "path"
-          required: true
-          description: "Имя предмета который есть в инвентаре"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "account_number"
-          in: "path"
-          required: true
-          description: "Счет куда положить деньги после продажи"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "content-type"
-          in: "header"
-          required: false
-          schema:
-            type: "string"
-            enum:
-              - "application/json"
-      requestBody:
-        content:
-          application/json:
+              "$ref": "#/components/schemas/CreateTagRequestDto"
+          text/json:
             schema:
-              $ref: "#/components/schemas/SlotQuantityRequestDto"
-        required: true
-      responses:
-        "200":
-          description: "OK"
-        "403":
-          description: "Инвентарь не принадлежит вам"
-        "404":
-          description: "Инвентарь, предмет, счет или/и аккаунт не найден"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-        "409":
-          description: "Предметов в инвентаре не достаточно"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NoSellingItemException"
-                  - $ref: "#/components/schemas/NotEnoughItemsException"
-                  - $ref: "#/components/schemas/InvalidMoneyTypeException"
-  /api/general/{name}/inventory:
-    post:
-      tags:
-        - inventory
-      security:
-        - oAuthSample:
-            - read
-            - write
-      description: "Создать новый инвентарь"
-      summary: "POST api/general/{name}/inventory"
-      operationId: "register"
-      parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-      responses:
-        "201":
-          headers:
-            Location:
-              description: "Ссылка на персональную страничку инвентаря"
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                $ref: "#/components/schemas/InventoryPartialResponseDto"
-    get:
-      tags:
-        - inventory
-      security:
-        - oAuthSample:
-            - read
-            - write
-      description: "Получить список инвентарей"
-      summary: "GET api/general/{name}/inventory"
-      operationId: "names"
-      parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          schema:
-            type: "object"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/InventoryNameResponseDto"
-  /api/general/{name}/inventory/{name_inventory}:
-    get:
-      tags:
-        - inventory
-      security:
-        - oAuthSample:
-            - read
-      description: "Получить информацию об инвентаре"
-      summary: "GET api/general/{name}/inventory/{name_inventory}"
-      operationId: "info"
-      parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "name_inventory"
-          in: "path"
-          required: true
-          description: "Имя инвентаря по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                $ref: "#/components/schemas/InventoryPartialSlotsResponseDto"
-        "404":
-          description: "Инвентарь или/и аккаунт не найден"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-  /api/general/{name}/inventory/{name_inventory}/{item}:
-    get:
-      tags:
-        - inventory
-      security:
-        - oAuthSample:
-            - read
-      description: "Получить информацию об слоте в инвентаре"
-      summary: "GET api/general/{name}/inventory/{name_inventory}/{item}"
-      operationId: "infoSlot"
-      parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "name_inventory"
-          in: "path"
-          required: true
-          description: "Имя инвентаря по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "item"
-          in: "path"
-          required: true
-          description: "Предмет в инвентаре"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                $ref: "#/components/schemas/SlotPartialResponseDto"
-        "404":
-          description: "Инвентарь, предмет или/и аккаунт не найден"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-  /api/general/{name}/accounts/{number}/twist/{name_inventory}/{case_name}:
-    post:
-      tags:
-        - twist
-      security:
-        - oAuthSample:
-            - read
-            - write
-      description: "Сделать прокрутку кейса"
-      summary: "POST api/general/{name}/accounts/{number}/twist/{name_inventory}/{caseName}"
-      operationId: "twist"
-      parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          description: "Имя аккаунта по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "name_inventory"
-          in: "path"
-          required: true
-          description: "Инвентарь куда складывать выйгрыш"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "number"
-          in: "path"
-          required: true
-          description: "Номер счета с которого спишутся деньги на прокрутку"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "case_name"
-          in: "path"
-          required: true
-          description: "Кейс который крутить"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/TwistPartialResponseDto"
-        "403":
-          description: "Счет вам не принадлежит"
-        "404":
-          description: "Инвентарь, счет, кейс или/и аккаунт не найден"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-        "409":
-          description: "Неудачная прокрутка"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/InsufficientFundsException"
-                  - $ref: "#/components/schemas/InvalidMoneyTypeException"
-                  - $ref: "#/components/schemas/CooldownException"
-
-  /api/money/type:
-    get:
-      tags:
-        - money type
-      summary: "GET api/money/type"
-      description: "Получить все существующие типы денег.<br>**Это API доступно только для роли `ADMIN`**"
-      operationId: "listMoneyTypes"
-      security:
-        - oAuthSample:
-            - read
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/MoneyTypePartialResponseDto"
-        "403":
-          description: "У вас нет роли `ADMIN`."
-  /api/money/type/{name}:
-    put:
-      tags:
-        - money type
-      summary: "PUT api/money/type/{name}"
-      description: "Поместить новый или существующий тип денег.<br>**Это API доступно только для роли `ADMIN`**"
-      operationId: "putMoneyType"
-      security:
-        - oAuthSample:
-            - read
-            - write
-      parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          description: "Имя типа по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "content-type"
-          in: "header"
-          required: false
-          schema:
-            type: "string"
-            enum:
-              - "application/json"
-      requestBody:
-        content:
-          application/json:
+              "$ref": "#/components/schemas/CreateTagRequestDto"
+          application/*+json:
             schema:
-              $ref: "#/components/schemas/MoneyTypeCreateRequestDto"
-        required: true
+              "$ref": "#/components/schemas/CreateTagRequestDto"
       responses:
-        "200":
-          description: "OK"
+        '401':
+          description: Unauthorized
           content:
-            'application/json':
+            text/plain:
               schema:
-                $ref: "#/components/schemas/MoneyTypePartialResponseDto"
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
     get:
       tags:
-        - money type
-      summary: "GET api/money/type/{name}"
-      description: "Получить конкретный тип денег.<br>**Это API доступно только для роли `ADMIN`**"
-      operationId: "getMoneyType"
+        - PublicTags
+      description: Список тегов пользователя
       parameters:
-        - name: "name"
-          in: "path"
+        - name: accountName
+          in: path
           required: true
           schema:
-            description: "Имя типа по которому его можно однозначно идентифицировать"
-            type: "string"
-            maxLength: 64
-            minLength: 1
+            maxLength: 128
+            type: string
       responses:
-        "200":
-          description: "OK"
+        '401':
+          description: Unauthorized
           content:
-            'application/json':
+            text/plain:
               schema:
-                $ref: "#/components/schemas/MoneyTypePartialResponseDto"
-        "404":
-          description: "Тип не найден"
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
           content:
-            'application/json':
+            text/plain:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-        "403":
-          description: "У вас нет роли `ADMIN`."
-  /api/item/{name}:
-    get:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/api/public/{accountName}/notes/{pathNote}/tags/{tagName}":
+    delete:
       tags:
-        - item
-      summary: "GET api/item/{name}"
-      description: "Получить конкретный предмет<br>**Это API доступно только для роли `ADMIN`**"
-      operationId: "get"
+        - PublicTags
+      description: Удаление тега для заметки
       parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          description: "Имя предмета по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                $ref: "#/components/schemas/ItemPartialResponseDto"
-        "404":
-          description: "Предмет не найден"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-        "403":
-          description: "У вас нет роли `ADMIN`."
-    put:
-      tags:
-        - item
-      summary: "PUT api/item/{name}"
-      operationId: "put"
-      description: "Поместить новый или существующий предмет.<br>**Это API доступно только для роли `ADMIN`**"
-      security:
-        - oAuthSample:
-            - read
-      parameters:
-        - name: "name"
-          in: "path"
+        - name: accountName
+          in: path
           required: true
           schema:
-            description: "Имя типа по которому его можно однозначно идентифицировать"
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "content-type"
-          in: "header"
-          required: false
-          schema:
-            type: "string"
-            enum:
-              - "application/json"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ItemCreateRequestDto"
-        required: true
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                $ref: "#/components/schemas/ItemPartialResponseDto"
-        "403":
-          description: "У вас нет роли `ADMIN`."
-        "404":
-          description: "Тип денег не найден"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-  /api/item:
-    get:
-      tags:
-        - item
-      summary: "GET api/item"
-      description: "Получить все существующие предметы<br>**Это API доступно только для роли `ADMIN`**"
-      operationId: "listItems"
-      security:
-        - oAuthSample:
-            - read
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/ItemPartialResponseDto"
-        "403":
-          description: "У вас нет роли `ADMIN`."
-  /api/case/{name}:
-    put:
-      tags:
-        - case
-      security:
-        - oAuthSample:
-            - read
-            - write
-      summary: "PUT api/case/{name}"
-      description: "Поместить новый или существующий кейс.<br>На данный момент невозможно изменение слотов.<br>**Это API доступно только для роли `ADMIN`**"
-      operationId: "putCase"
-      parameters:
-        - name: "name"
-          in: "path"
-          required: true
-          description: "Имя кейса по которому его можно однозначно идентифицировать"
-          schema:
-            type: "string"
-            maxLength: 64
-            minLength: 1
-        - name: "content-type"
-          in: "header"
-          required: false
-          schema:
-            type: "string"
-            enum:
-              - "application/json"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CaseCreateRequestDto"
-        required: true
-      responses:
-        "200":
-          description: "OK"
-          content:
-            'application/json':
-              schema:
-                $ref: "#/components/schemas/CasePartialResponseDto"
-        "403":
-          description: "У вас нет роли `ADMIN`."
-        "404":
-          description: "Предмет не найден"
-          content:
-            'application/json':
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-    get:
-      tags:
-        - case
-      security:
-        - oAuthSample:
-            - read
-      summary: "GET api/case/{name}"
-      description: "Получить полную информацию по конкретному кейсу<br>**Это API доступно только для роли `ADMIN`**"
-      operationId: "info"
-      parameters:
-        - name: "name"
-          in: "path"
+            maxLength: 128
+            type: string
+        - name: pathNote
+          in: path
           required: true
           schema:
-            description: "Имя кейса по которому его можно однозначно идентифицировать"
-            type: "string"
-            maxLength: 64
-            minLength: 1
+            maxLength: 128
+            minLength: 3
+            type: string
+        - name: tagName
+          in: path
+          required: true
+          schema:
+            maxLength: 128
+            type: string
       responses:
-        "200":
-          description: "OK"
+        '401':
+          description: Unauthorized
           content:
-            'application/json':
+            text/plain:
               schema:
-                $ref: "#/components/schemas/CaseItemsPartialResponseDto"
-        "404":
-          description: "Тип не найден"
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+        '403':
+          description: Forbidden
           content:
-            'application/json':
+            text/plain:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/NotFoundException"
-        "403":
-          description: "У вас нет роли `ADMIN`."
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"

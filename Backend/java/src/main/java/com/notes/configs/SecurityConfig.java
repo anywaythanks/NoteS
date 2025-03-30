@@ -19,6 +19,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.List;
+import java.util.Objects;
 
 @Configuration
 @EnableWebSecurity
@@ -27,6 +28,7 @@ public class SecurityConfig {
    @Bean
    SecurityFilterChain resourceServerSecurityFilterChain(
            HttpSecurity http,
+           @Value("${scheme}") String scheme,
            @Value("${origins:[]}") String[] origins,
            SpringAddonsJwtAuthenticationUserConverter authenticationConverter,
            HandlerMappingIntrospector mvcHandlerMappingIntrospector)
@@ -59,8 +61,9 @@ public class SecurityConfig {
                               new MvcRequestMatcher(mvcHandlerMappingIntrospector, "api/case/**"))
                       .hasAuthority("ADMIN")
                       .anyRequest().authenticated());
-      http.requiresChannel(channelRequestMatcherRegistry ->
-              channelRequestMatcherRegistry.anyRequest().requiresSecure());
+      if (Objects.equals(scheme, "https"))
+         http.requiresChannel(channelRequestMatcherRegistry ->
+                 channelRequestMatcherRegistry.anyRequest().requiresSecure());
       http.cors(cors -> {
          if (origins.length == 0) {
             cors.disable();

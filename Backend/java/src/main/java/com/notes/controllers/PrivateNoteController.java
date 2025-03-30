@@ -35,7 +35,7 @@ public class PrivateNoteController {
    private final NoteResponseMapper noteResponseMapper;
 
    @PatchMapping(path = "/{pathNote}/publish", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('READ_ALL_NOTES', 'SET_ALL_PUBLIC_STATUS_NOTES')")
+   @PreAuthorize("hasAnyAuthority('read-all-notes', 'set-all-public-status-notes')")
    public NoteEditPublicResponseDto editPublicAllNote(@Valid @PathVariable AccName accountName,//TODO: не используется
                                                       @Valid @PathVariable NotePath pathNote,
                                                       @Valid @RequestBody NoteEditPublicRequestDto editDto) {
@@ -43,7 +43,7 @@ public class PrivateNoteController {
    }
 
    @PatchMapping(path = "/{pathNote}/content", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('READ_ALL_NOTES', 'EDIT_ALL_NOTES')")
+   @PreAuthorize("hasAnyAuthority('read-all-notes', 'edit-all-notes')")
    public NoteEditOtherResponseDto editNoteAll(@Valid @PathVariable AccName accountName,//TODO: не используется
                                                @Valid @PathVariable NotePath pathNote,
                                                @Valid @RequestBody NoteEditOtherRequestDto editDto) {
@@ -51,15 +51,15 @@ public class PrivateNoteController {
    }
 
    @PostMapping(path = "/{pathNote}/content", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('READ_NOTES', 'EDIT_OWN_NOTES')")
+   @PreAuthorize("hasAnyAuthority('read-notes', 'edit-own-notes')")
    public NoteEditContentResponseDto editContentNote(@Valid @PathVariable AccName accountName,//TODO: не используется
                                                      @Valid @PathVariable NotePath pathNote,
                                                      @Valid @RequestBody NoteEditOnlyContentRequestDto editDto) {
       return noteResponseMapper.ofEditContent(editService.unsafeEditContentNote(pathNote.path(), noteRequestMapper.of(editDto)));
    }
 
-   @GetMapping(path = "/{pathNote}", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('READ_ALL_NOTES')")
+   @GetMapping(path = "/{pathNote}")
+   @PreAuthorize("hasAnyAuthority('read-all-notes')")
    public NoteSearchContentResponseDto getNoteAll(@Valid @PathVariable AccName accountName,//TODO: не используется
                                                   @Valid @PathVariable NotePath pathNote) {
       return noteResponseMapper.ofFull(noteInformationService.unsafeFullFindByPath(pathNote.path()));

@@ -39,7 +39,7 @@
       - esnet
   es-init-remote:
     build: ./src/es-init
-    container_name: es-initializer
+    container_name: es-initializer-remote
     volumes:
       - ./src/resource:/resource
     command: [ "sh", "/resource/scripts/init-remote.sh" ]
