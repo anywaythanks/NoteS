@@ -11,16 +11,11 @@ servers:
           - 'http'
           - 'https'
         default: 'http'
-      context:
-        enum:
-          - ''
-          - 'server'
-        default: ''
       domain:
         enum:
           - 'localhost'
           - 'notes.fvds.ru'
-        default: localhost
+        default: 'localhost'
       port:
         enum:
           - '8080'
@@ -31,6 +26,11 @@ servers:
           - '80'
           - '443'
         default: '5267'
+      context:
+        enum:
+          - ''
+          - 'server'
+        default: ''
 components:
   schemas:
     AddTagRequestDto:
