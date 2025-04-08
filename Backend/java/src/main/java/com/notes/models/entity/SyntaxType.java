@@ -13,7 +13,7 @@ public enum SyntaxType {
    }
 
    public static SyntaxType valueOf(int i) {
-      return switch (i) {
+      return switch(i) {
          case 0 -> PLAINTEXT;
          case 1 -> MARKDOWN;
          default -> throw new IllegalArgumentException("Unknown syntax type: " + i);

@@ -14,7 +14,7 @@ public enum NoteType {
    }
 
    public static NoteType valueOf(int i) {
-      return switch (i) {
+      return switch(i) {
          case 0 -> NOTE;
          case 1 -> COMMENT;
          case 2 -> COMMENT_REDACTED;

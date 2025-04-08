@@ -17,10 +17,10 @@ public class AuthorizeServerProperties {
 
    public IssuerProperties get(URL issuerUri) throws MisconfigurationException {
       final var issuerProperties = Stream.of(issuers).filter(iss -> issuerUri.equals(iss.getUri())).toList();
-      if (issuerProperties.isEmpty()) {
+      if(issuerProperties.isEmpty()) {
          throw new MisconfigurationException("Missing authorities mapping properties for %s".formatted(issuerUri.toString()));
       }
-      if (issuerProperties.size() > 1) {
+      if(issuerProperties.size() > 1) {
          throw new MisconfigurationException("Too many authorities mapping properties for %s".formatted(issuerUri.toString()));
       }
       return issuerProperties.getFirst();

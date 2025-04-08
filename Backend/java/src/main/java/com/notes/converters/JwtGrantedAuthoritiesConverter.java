@@ -25,28 +25,28 @@ public class JwtGrantedAuthoritiesConverter implements Converter<Jwt, Collection
          Object claim;
          try {
             claim = JsonPath.read(jwt.getClaims(), claimProperties.getJsonPath());
-         } catch (PathNotFoundException e) {
+         } catch(PathNotFoundException e) {
             claim = null;
          }
-         if (claim == null) {
+         if(claim == null) {
             return Stream.empty();
          }
-         if (claim instanceof String claimStr) {
+         if(claim instanceof String claimStr) {
             return Stream.of(claimStr.split(","));
          }
-         if (claim instanceof String[] claimArr) {
+         if(claim instanceof String[] claimArr) {
             return Stream.of(claimArr);
          }
-         if (Collection.class.isAssignableFrom(claim.getClass())) {
+         if(Collection.class.isAssignableFrom(claim.getClass())) {
             final var iter = ((Collection) claim).iterator();
-            if (!iter.hasNext()) {
+            if(!iter.hasNext()) {
                return Stream.empty();
             }
             final var firstItem = iter.next();
-            if (firstItem instanceof String) {
+            if(firstItem instanceof String) {
                return (Stream<String>) ((Collection) claim).stream();
             }
-            if (Collection.class.isAssignableFrom(firstItem.getClass())) {
+            if(Collection.class.isAssignableFrom(firstItem.getClass())) {
                return (Stream<String>) ((Collection) claim).stream().flatMap(colItem -> ((Collection) colItem).stream()).map(String.class::cast);
             }
          }

@@ -12,7 +12,6 @@ import com.notes.models.domain.NoteEditOtherDto;
 import com.notes.models.domain.NotePartialDomainDto;
 import com.notes.models.domain.NotePublicDto;
 import com.notes.models.domain.NoteTypeDomainDto;
-import com.notes.models.entity.Account;
 import com.notes.models.entity.Note;
 import com.notes.models.entity.NoteContent;
 import com.notes.models.entity.NoteDto;
@@ -27,6 +26,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+/**
+ * Service handling note modification operations including creation, editing, publishing, and deletion.
+ * Manages both core note content and metadata updates with ownership validation.
+ */
 @Service
 @RequiredArgsConstructor
 public class NoteEditService {
@@ -40,12 +43,23 @@ public class NoteEditService {
    private final NoteRepositoryElastic noteRepositoryElastic;
    private final AccountRepository accountRepository;
 
+   /**
+    * Publishes or unpublishes a note with ownership validation.
+    *
+    * @param pathComment Note's path identifier
+    * @param ownerName   Account name of the requester
+    * @param dto         Publication status DTO
+    * @return Updated NotePartialDomainDto
+    * @throws NoteNotFoundException  If note not found
+    * @throws NoteForbiddenException If requester isn't note owner/comment parent owner
+    * @throws NoteTypeException      If invalid note type for operation
+    */
    public NotePartialDomainDto publishNote(String pathComment, String ownerName, NotePublicDto dto) {
       var note = noteRepositoryDb.findByPath(pathComment).orElseThrow(NoteNotFoundException::new);
-      if (noteUtils.isComment(noteRepositoryMapper.of(note.getNoteType()))) {
-         if (!Objects.equals(note.getMainNote().getOwner().getName(), ownerName))
+      if(noteUtils.isComment(noteRepositoryMapper.of(note.getNoteType()))) {
+         if(!Objects.equals(note.getMainNote().getOwner().getName(), ownerName))
             throw new NoteForbiddenException();
-      } else if (!note.getOwner().getName().equals(ownerName)) throw new NoteForbiddenException();
+      } else if(!note.getOwner().getName().equals(ownerName)) throw new NoteForbiddenException();
       note.setIsPublic(dto.isPublic());
       var r = noteRepositoryDb.save(note);
       return noteRepositoryMapper.of(r);
@@ -76,7 +90,7 @@ public class NoteEditService {
 
    private NotePartialDomainDto editNote(NotePartialDomainDto note,
                                          NoteEditOtherDto dto) {
-      if (note.noteType() != NoteTypeDomainDto.NOTE) throw new NoteTypeException();
+      if(note.noteType() != NoteTypeDomainDto.NOTE) throw new NoteTypeException();
       var noteEntity = noteRepositoryDb.findById(note.id()).orElseThrow(NoteNotFoundException::new);
       noteEntity.setTitle(dto.title());
       noteEntity.setDescription(dto.description());
@@ -96,7 +110,7 @@ public class NoteEditService {
 
    private NoteContentDomainDto editContentNote(NotePartialDomainDto note,
                                                 NoteEditOnlyContentDto dto) {
-      if (note.noteType() != NoteTypeDomainDto.NOTE) throw new NoteTypeException();
+      if(note.noteType() != NoteTypeDomainDto.NOTE) throw new NoteTypeException();
       var noteContent = noteRepositoryElastic.findById(note.elasticUuid())
               .orElseThrow(NoteNotFoundException::new);
       noteContent.setContent(dto.content());

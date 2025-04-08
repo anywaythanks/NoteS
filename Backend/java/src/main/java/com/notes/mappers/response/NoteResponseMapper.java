@@ -32,12 +32,14 @@ public interface NoteResponseMapper {
    NoteEditOtherResponseDto ofOther(NotePartialDomainDto dto);
 
    NoteEditContentResponseDto ofEditContent(NoteContentDomainDto dto);
+
    @Mapping(source = "dto.owner.name", target = "ownerName")
    CommentSearchContentResponseDto ofCommentContent(NoteContentDomainDto dto);
 
    CommentCreateResponseDto ofCommentCreate(NoteContentDomainDto dto);
 
    NoteCreateResponseDto ofNoteCreate(NoteContentDomainDto dto);
+
    @Mapping(source = "dto.owner.name", target = "ownerName")
    NoteSearchContentResponseDto ofFull(NoteFullDomainDto dto);
 

@@ -8,7 +8,6 @@ import com.notes.models.api.tag.AddTagRequestDto;
 import com.notes.models.api.tag.TagCreateRequestDto;
 import com.notes.models.api.tag.TagNameRequestDto;
 import com.notes.models.api.tag.TagResponseDto;
-import com.notes.services.managers.AccountRegisterService;
 import com.notes.services.managers.TagEditService;
 import com.notes.services.managers.TagInformationService;
 import jakarta.validation.Valid;

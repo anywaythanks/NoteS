@@ -2,7 +2,6 @@ package com.notes.models.api.note;
 
 import lombok.NonNull;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 public record NoteSearchTagsResponseDto(@NonNull String description,

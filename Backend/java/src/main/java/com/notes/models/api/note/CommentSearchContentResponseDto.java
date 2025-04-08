@@ -1,11 +1,9 @@
 package com.notes.models.api.note;
 
-import com.notes.models.api.tag.TagResponseDto;
 import lombok.NonNull;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.List;
 
 public record CommentSearchContentResponseDto(@NonNull String description,
                                               @NonNull String title,

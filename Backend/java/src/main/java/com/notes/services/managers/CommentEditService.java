@@ -18,6 +18,10 @@ import com.notes.services.utils.NoteUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service handling comment editing operations including creation, modification, and deletion.
+ * Manages comment lifecycle with validation checks for edit windows and comment types.
+ */
 @Service
 @RequiredArgsConstructor
 public class CommentEditService {
@@ -28,6 +32,17 @@ public class CommentEditService {
    private final GeneratorUtils generatorUtils;
    private final AccountInformationService accountInformationService;
 
+   /**
+    * Edits an existing comment with validation checks.
+    *
+    * @param pathComment The path identifier of the comment to edit
+    * @param ownerName   The name of the comment owner
+    * @param dto         Data transfer object containing edit information
+    * @return The updated {@link NoteContentDomainDto}
+    * @throws NoteNotFoundException          If comment not found
+    * @throws NoteTypeException              If the note is not a comment
+    * @throws CommentEditTimeMissedException If edit window has expired
+    */
    public NoteContentDomainDto editComment(String pathComment, String ownerName,
                                            CommentEditDto dto) {
       var commentEntity = getComment(pathComment, ownerName);
@@ -39,6 +54,14 @@ public class CommentEditService {
       return noteRepositoryMapper.of(r);
    }
 
+   /**
+    * Creates a new comment associated with a parent note.
+    *
+    * @param accountName The name of the commenting account
+    * @param pathNote    The path of the parent note
+    * @param dto         Data transfer object containing comment details
+    * @return The created {@link NoteContentDomainDto}
+    */
    public NoteContentDomainDto createComment(String accountName, String pathNote,
                                              NoteCreateDto dto) {
       var account = accountInformationService.findAccount(accountName);
@@ -68,16 +91,35 @@ public class CommentEditService {
       return noteRepositoryMapper.of(r);
    }
 
+   /**
+    * Deletes a comment with validation checks.
+    *
+    * @param pathComment The path identifier of the comment to delete
+    * @param ownerName   The name of the comment owner
+    * @throws NoteNotFoundException          If comment not found
+    * @throws NoteTypeException              If the note is not a comment
+    * @throws CommentEditTimeMissedException If deletion window has expired
+    */
    public void deleteComment(String pathComment, String ownerName) {
       var commentEntity = getComment(pathComment, ownerName);
       noteRepository.delete(commentEntity.note());
    }
 
+   /**
+    * Retrieves and validates a comment entity.
+    *
+    * @param pathComment The path identifier of the comment
+    * @param ownerName   The name of the comment owner
+    * @return Validated {@link NoteDto} comment entity
+    * @throws NoteNotFoundException          If comment not found
+    * @throws NoteTypeException              If the note is not a comment
+    * @throws CommentEditTimeMissedException If edit window has expired
+    */
    private NoteDto getComment(String pathComment, String ownerName) {
       var comment = noteInformationService.findPublicByPath(pathComment, ownerName);
       var commentEntity = noteRepository.findById(comment.id()).orElseThrow(NoteNotFoundException::new);
-      if (!noteUtils.isComment(comment.noteType())) throw new NoteTypeException();
-      if (!noteUtils.isEdit(comment)) throw new CommentEditTimeMissedException();
+      if(!noteUtils.isComment(comment.noteType())) throw new NoteTypeException();
+      if(!noteUtils.isEdit(comment)) throw new CommentEditTimeMissedException();
       return commentEntity;
    }
 }
