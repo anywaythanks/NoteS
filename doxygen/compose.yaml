@@ -4,4 +4,4 @@ services:
     volumes:
       - ../Backend/java/src/main/java:/data/src
       - ./Doxyfile:/data/Doxyfile
-      - ../wiki/doc:/tmp/doxygen
+      - ../docs:/tmp/doxygen/html
