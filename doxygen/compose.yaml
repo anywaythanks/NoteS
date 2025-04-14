@@ -1,0 +1,7 @@
+services:
+  doxygen:
+    image: nakatt/doxygen
+    volumes:
+      - ../Backend/java/src/main/java:/data/src
+      - ./Doxyfile:/data/Doxyfile
+      - ../wiki/doc:/tmp/doxygen
