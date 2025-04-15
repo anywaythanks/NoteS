@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['jwtgrantedauthoritiesconverter_145',['JwtGrantedAuthoritiesConverter',['../classcom_1_1notes_1_1converters_1_1JwtGrantedAuthoritiesConverter.html',1,'com::notes::converters']]]
+  ['jwtgrantedauthoritiesconverter_166',['JwtGrantedAuthoritiesConverter',['../classcom_1_1notes_1_1converters_1_1JwtGrantedAuthoritiesConverter.html',1,'com::notes::converters']]]
 ];

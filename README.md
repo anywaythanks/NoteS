@@ -30,6 +30,7 @@ dotnet run
 
 ```zsh
 cd Backend/java
+mvn package
 docker compose up
 ```
 

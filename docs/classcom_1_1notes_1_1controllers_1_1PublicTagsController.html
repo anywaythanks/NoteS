@@ -75,22 +75,205 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8d5d9013a4213c5cecbd31ce4ef5b455"><td class="memItemLeft" align="right" valign="top"><a id="a8d5d9013a4213c5cecbd31ce4ef5b455"></a>
-List&lt; TagResponseDto &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tags</b> (@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote)</td></tr>
+<tr class="memitem:a8d5d9013a4213c5cecbd31ce4ef5b455"><td class="memItemLeft" align="right" valign="top">List&lt; TagResponseDto &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1controllers_1_1PublicTagsController.html#a8d5d9013a4213c5cecbd31ce4ef5b455">tags</a> (@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote)</td></tr>
 <tr class="separator:a8d5d9013a4213c5cecbd31ce4ef5b455"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96bd41f974a210d8c94de0f005e309c1"><td class="memItemLeft" align="right" valign="top"><a id="a96bd41f974a210d8c94de0f005e309c1"></a>
-ResponseEntity&lt; TagResponseDto &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>createTag</b> (@Valid @PathVariable AccName accountName, @Valid @RequestBody TagCreateRequestDto tagCreate)</td></tr>
+<tr class="memitem:a96bd41f974a210d8c94de0f005e309c1"><td class="memItemLeft" align="right" valign="top">ResponseEntity&lt; TagResponseDto &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1controllers_1_1PublicTagsController.html#a96bd41f974a210d8c94de0f005e309c1">createTag</a> (@Valid @PathVariable AccName accountName, @Valid @RequestBody TagCreateRequestDto tagCreate)</td></tr>
 <tr class="separator:a96bd41f974a210d8c94de0f005e309c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af058a2ddceb86cc85d13a9ca5d1eff4e"><td class="memItemLeft" align="right" valign="top"><a id="af058a2ddceb86cc85d13a9ca5d1eff4e"></a>
-List&lt; TagResponseDto &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tags</b> (@Valid @PathVariable AccName accountName)</td></tr>
+<tr class="memitem:af058a2ddceb86cc85d13a9ca5d1eff4e"><td class="memItemLeft" align="right" valign="top">List&lt; TagResponseDto &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1controllers_1_1PublicTagsController.html#af058a2ddceb86cc85d13a9ca5d1eff4e">tags</a> (@Valid @PathVariable AccName accountName)</td></tr>
 <tr class="separator:af058a2ddceb86cc85d13a9ca5d1eff4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac47794ff9faa4dbad3ce8fcc2d9c4f9f"><td class="memItemLeft" align="right" valign="top"><a id="ac47794ff9faa4dbad3ce8fcc2d9c4f9f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>delTag</b> (@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote, @Valid @PathVariable TagNameRequestDto tagName)</td></tr>
+<tr class="memitem:ac47794ff9faa4dbad3ce8fcc2d9c4f9f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1controllers_1_1PublicTagsController.html#ac47794ff9faa4dbad3ce8fcc2d9c4f9f">delTag</a> (@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote, @Valid @PathVariable TagNameRequestDto tagName)</td></tr>
 <tr class="separator:ac47794ff9faa4dbad3ce8fcc2d9c4f9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a029976ef4e287cc02f3b9516774ba190"><td class="memItemLeft" align="right" valign="top"><a id="a029976ef4e287cc02f3b9516774ba190"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addTag</b> (@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote, @Valid @RequestBody AddTagRequestDto createTagRequestDto)</td></tr>
+<tr class="memitem:a029976ef4e287cc02f3b9516774ba190"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1controllers_1_1PublicTagsController.html#a029976ef4e287cc02f3b9516774ba190">addTag</a> (@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote, @Valid @RequestBody AddTagRequestDto createTagRequestDto)</td></tr>
 <tr class="separator:a029976ef4e287cc02f3b9516774ba190"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a029976ef4e287cc02f3b9516774ba190"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a029976ef4e287cc02f3b9516774ba190">&#9670;&nbsp;</a></span>addTag()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void com.notes.controllers.PublicTagsController.addTag </td>
+          <td>(</td>
+          <td class="paramtype">@Valid @PathVariable AccName&#160;</td>
+          <td class="paramname"><em>accountName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">@Valid @PathVariable NotePath&#160;</td>
+          <td class="paramname"><em>pathNote</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">@Valid @RequestBody AddTagRequestDto&#160;</td>
+          <td class="paramname"><em>createTagRequestDto</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a href="https://anywaythanks.github.io/NoteS-API/#/PublicTags/delete_api_public__accountName__notes__pathNote__tags__tagName_">Click</a> </p>
+
+</div>
+</div>
+<a id="a96bd41f974a210d8c94de0f005e309c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a96bd41f974a210d8c94de0f005e309c1">&#9670;&nbsp;</a></span>createTag()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ResponseEntity&lt;TagResponseDto&gt; com.notes.controllers.PublicTagsController.createTag </td>
+          <td>(</td>
+          <td class="paramtype">@Valid @PathVariable AccName&#160;</td>
+          <td class="paramname"><em>accountName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">@Valid @RequestBody TagCreateRequestDto&#160;</td>
+          <td class="paramname"><em>tagCreate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a href="https://anywaythanks.github.io/NoteS-API/#/PublicTags/post_api_public__accountName__notes__pathNote__tags">Click</a> </p>
+
+</div>
+</div>
+<a id="ac47794ff9faa4dbad3ce8fcc2d9c4f9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac47794ff9faa4dbad3ce8fcc2d9c4f9f">&#9670;&nbsp;</a></span>delTag()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void com.notes.controllers.PublicTagsController.delTag </td>
+          <td>(</td>
+          <td class="paramtype">@Valid @PathVariable AccName&#160;</td>
+          <td class="paramname"><em>accountName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">@Valid @PathVariable NotePath&#160;</td>
+          <td class="paramname"><em>pathNote</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">@Valid @PathVariable TagNameRequestDto&#160;</td>
+          <td class="paramname"><em>tagName</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a href="https://anywaythanks.github.io/NoteS-API/#/PublicTags/get_api_public__accountName__tags">Click</a> </p>
+
+</div>
+</div>
+<a id="af058a2ddceb86cc85d13a9ca5d1eff4e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af058a2ddceb86cc85d13a9ca5d1eff4e">&#9670;&nbsp;</a></span>tags() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">List&lt;TagResponseDto&gt; com.notes.controllers.PublicTagsController.tags </td>
+          <td>(</td>
+          <td class="paramtype">@Valid @PathVariable AccName&#160;</td>
+          <td class="paramname"><em>accountName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a href="https://anywaythanks.github.io/NoteS-API/#/PublicTags/post_api_public__accountName__tags">Click</a> </p>
+
+</div>
+</div>
+<a id="a8d5d9013a4213c5cecbd31ce4ef5b455"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d5d9013a4213c5cecbd31ce4ef5b455">&#9670;&nbsp;</a></span>tags() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">List&lt;TagResponseDto&gt; com.notes.controllers.PublicTagsController.tags </td>
+          <td>(</td>
+          <td class="paramtype">@Valid @PathVariable AccName&#160;</td>
+          <td class="paramname"><em>accountName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">@Valid @PathVariable NotePath&#160;</td>
+          <td class="paramname"><em>pathNote</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a href="https://anywaythanks.github.io/NoteS-API/#/PublicTags/get_api_public__accountName__notes__pathNote__tags">Click</a> </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/com/notes/controllers/PublicTagsController.java</li>
 </ul>

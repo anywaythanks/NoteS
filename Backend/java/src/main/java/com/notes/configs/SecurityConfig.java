@@ -45,21 +45,13 @@ public class SecurityConfig {
       http.authorizeHttpRequests((authorizeHttpRequests) ->
               authorizeHttpRequests
                       .requestMatchers(
-                              new MvcRequestMatcher(mvcHandlerMappingIntrospector, "api/public/**"),
+                              new MvcRequestMatcher(mvcHandlerMappingIntrospector, "api/kafka/**"),
                               new MvcRequestMatcher(mvcHandlerMappingIntrospector, "resources/**"),
                               new MvcRequestMatcher(mvcHandlerMappingIntrospector, "swagger-ui"),
                               new MvcRequestMatcher(mvcHandlerMappingIntrospector, "swagger-ui/**"),
                               new MvcRequestMatcher(mvcHandlerMappingIntrospector, "v3/api-docs/**"),
                               new MvcRequestMatcher(mvcHandlerMappingIntrospector, "v3/api-docs"))
                       .permitAll()
-                      .requestMatchers(
-                              new MvcRequestMatcher(mvcHandlerMappingIntrospector, "api/item"),
-                              new MvcRequestMatcher(mvcHandlerMappingIntrospector, "api/money/type"),
-                              new MvcRequestMatcher(mvcHandlerMappingIntrospector, "api/case"),
-                              new MvcRequestMatcher(mvcHandlerMappingIntrospector, "api/item/**"),
-                              new MvcRequestMatcher(mvcHandlerMappingIntrospector, "api/money/type/**"),
-                              new MvcRequestMatcher(mvcHandlerMappingIntrospector, "api/case/**"))
-                      .hasAuthority("ADMIN")
                       .anyRequest().authenticated());
       if(Objects.equals(scheme, "https"))
          http.requiresChannel(channelRequestMatcherRegistry ->

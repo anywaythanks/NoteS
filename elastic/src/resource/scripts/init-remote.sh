@@ -16,6 +16,11 @@ until curl -s http://clearlaptop:9200; do
   sleep 5
 done
 
+if curl -sSf http://clearlaptop:9200/_ml/trained_models/cointegrated__rubert-tiny2 >/dev/null; then
+  echo "Model exists... Delete."
+  curl -X DELETE http://clearlaptop:9200/_ml/trained_models/cointegrated__rubert-tiny2?force=true
+fi
+
 # Import E5 model
 echo "Importing rubert-tiny2..."
 eland_import_hub_model \

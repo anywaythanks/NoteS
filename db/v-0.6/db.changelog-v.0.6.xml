@@ -10,4 +10,5 @@
     <include file="tag/table.xml" relativeToChangelogFile="true"/>
     <include file="syntax/table.xml" relativeToChangelogFile="true"/>
     <include file="note-types/table.xml" relativeToChangelogFile="true"/>
+    <include file="tag-note-map/table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

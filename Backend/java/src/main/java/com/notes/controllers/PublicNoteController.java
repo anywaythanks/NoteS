@@ -52,6 +52,9 @@ public class PublicNoteController {
    private final PageResponseMapper pageResponseMapper;
    private final NoteEditService noteEditService;
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/post_api_public__accountName__notes__pathNote__publish">Click</a>
+    */
    @PostMapping(path = "/{pathNote}/publish", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes', 'set-own-public-status-notes')")
    public NoteEditPublicResponseDto editPublicNote(@Valid @PathVariable AccName accountName,
@@ -62,6 +65,9 @@ public class PublicNoteController {
               noteRequestMapper.of(editDto)));
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/post_api_public__accountName__notes__pathNote_">Click</a>
+    */
    @PostMapping(path = "/{pathNote}", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes', 'edit-own-notes')")
    public NoteEditOtherResponseDto editNote(@Valid @PathVariable AccName accountName,
@@ -70,6 +76,9 @@ public class PublicNoteController {
       return noteResponseMapper.ofOther(editService.editNote(pathNote.path(), accountName.name(), noteRequestMapper.of(editDto)));
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/delete_api_public__accountName__notes__pathNote_">Click</a>
+    */
    @PostMapping(path = "/{pathNote}/content", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes', 'edit-own-notes')")
    public NoteEditContentResponseDto editContentNote(@Valid @PathVariable AccName accountName,
@@ -80,6 +89,9 @@ public class PublicNoteController {
               noteRequestMapper.of(editDto)));
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/get_api_public__accountName__notes__pathNote_">Click</a>
+    */
    @PostMapping(headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes', 'edit-own-notes')")
    public ResponseEntity<NoteCreateResponseDto> createNote(@Valid @PathVariable AccName accountName,
@@ -93,6 +105,9 @@ public class PublicNoteController {
               .body(noteResponseMapper.ofNoteCreate(note));
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/post_api_public__accountName__notes__pathNote__content">Click</a>
+    */
    @GetMapping(path = "/search/title")
    @PreAuthorize("hasAnyAuthority('read-notes', 'search-own-notes')")
    public PageDto<NoteSearchTagsResponseDto> searchByTitleNotes(@Valid @PathVariable AccName accountName,
@@ -106,6 +121,9 @@ public class PublicNoteController {
       return pageResponseMapper.of(notes);
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/post_api_public__accountName__notes">Click</a>
+    */
    @GetMapping(path = "/search/tag")
    @PreAuthorize("hasAnyAuthority('read-notes', 'search-own-notes')")
    public PageDto<NoteSearchTagsResponseDto> searchByTagNotes(@Valid @PathVariable AccName accountName,
@@ -121,6 +139,9 @@ public class PublicNoteController {
       return pageResponseMapper.of(notes);
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/get_api_public__accountName__notes">Click</a>
+    */
    @GetMapping(path = "/search/semantic")
    @PreAuthorize("hasAnyAuthority('read-notes', 'search-own-notes')")
    public PageDto<NoteSearchTagsResponseDto> semanticSearchNotes(@Valid @PathVariable AccName accountName,
@@ -134,6 +155,9 @@ public class PublicNoteController {
       return pageResponseMapper.of(notes);
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/get_api_public__accountName__notes_search_title">Click</a>
+    */
    @GetMapping
    @PreAuthorize("hasAnyAuthority('read-notes')")
    public PageDto<NoteSearchTagsResponseDto> notes(@Valid @PathVariable AccName accountName,
@@ -146,6 +170,9 @@ public class PublicNoteController {
       return pageResponseMapper.of(notes);
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/get_api_public__accountName__notes_search_tag">Click</a>
+    */
    @DeleteMapping(path = "/{pathNote}", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes', 'delete-notes')")
    @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -153,6 +180,9 @@ public class PublicNoteController {
       noteEditService.deleteNote(accountName.name(), pathNote.path());
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/get_api_public__accountName__notes_search_semantic">Click</a>
+    */
    @GetMapping(path = "/{pathNote}")
    @PreAuthorize("hasAnyAuthority('read-notes')")
    public NoteSearchContentResponseDto getNote(@Valid @PathVariable AccName accountName,

@@ -38,6 +38,9 @@ public class PublicTagsController {
    private final TagRequestMapper tagRequestMapper;
 
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicTags/get_api_public__accountName__notes__pathNote__tags">Click</a>
+    */
    @GetMapping(path = "/notes/{pathNote}/tags", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes')")
    public List<TagResponseDto> tags(@Valid @PathVariable AccName accountName,
@@ -48,6 +51,9 @@ public class PublicTagsController {
               .toList();
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicTags/post_api_public__accountName__notes__pathNote__tags">Click</a>
+    */
    @PostMapping(path = "/tags", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes')")
    public ResponseEntity<TagResponseDto> createTag(@Valid @PathVariable AccName accountName,
@@ -62,6 +68,9 @@ public class PublicTagsController {
    }
 
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicTags/post_api_public__accountName__tags">Click</a>
+    */
    @GetMapping(path = "/tags", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes')")
    public List<TagResponseDto> tags(@Valid @PathVariable AccName accountName) {
@@ -71,6 +80,9 @@ public class PublicTagsController {
               .toList();
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicTags/get_api_public__accountName__tags">Click</a>
+    */
    @DeleteMapping(path = "/notes/{pathNote}/tags/{tagName}", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes')")
    @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -80,6 +92,9 @@ public class PublicTagsController {
       tagEditService.delete(pathNote.path(), accountName.name(), tagName.name());
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicTags/delete_api_public__accountName__notes__pathNote__tags__tagName_">Click</a>
+    */
    @PostMapping(path = "/notes/{pathNote}/tags", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes')")
    @ResponseStatus(HttpStatus.CREATED)

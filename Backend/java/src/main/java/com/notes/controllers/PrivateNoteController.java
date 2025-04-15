@@ -34,6 +34,9 @@ public class PrivateNoteController {
    private final NoteRequestMapper noteRequestMapper;
    private final NoteResponseMapper noteResponseMapper;
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PrivateNote/patch_api_private__accountName__notes__pathNote__publish">Click</a>
+    */
    @PatchMapping(path = "/{pathNote}/publish", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-all-notes', 'set-all-public-status-notes')")
    public NoteEditPublicResponseDto editPublicAllNote(@Valid @PathVariable AccName accountName,//TODO: не используется
@@ -42,6 +45,9 @@ public class PrivateNoteController {
       return noteResponseMapper.ofPublic(editService.unsafePublishNote(pathNote.path(), noteRequestMapper.of(editDto)));
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PrivateNote/patch_api_private__accountName__notes__pathNote__content">Click</a>
+    */
    @PatchMapping(path = "/{pathNote}/content", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-all-notes', 'edit-all-notes')")
    public NoteEditOtherResponseDto editNoteAll(@Valid @PathVariable AccName accountName,//TODO: не используется
@@ -50,6 +56,9 @@ public class PrivateNoteController {
       return noteResponseMapper.ofOther(editService.unsafeEditNote(pathNote.path(), noteRequestMapper.of(editDto)));
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PrivateNote/post_api_private__accountName__notes__pathNote__content">Click</a>
+    */
    @PostMapping(path = "/{pathNote}/content", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes', 'edit-own-notes')")
    public NoteEditContentResponseDto editContentNote(@Valid @PathVariable AccName accountName,//TODO: не используется
@@ -58,6 +67,9 @@ public class PrivateNoteController {
       return noteResponseMapper.ofEditContent(editService.unsafeEditContentNote(pathNote.path(), noteRequestMapper.of(editDto)));
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PrivateNote/get_api_private__accountName__notes__pathNote_">Click</a>
+    */
    @GetMapping(path = "/{pathNote}")
    @PreAuthorize("hasAnyAuthority('read-all-notes')")
    public NoteSearchContentResponseDto getNoteAll(@Valid @PathVariable AccName accountName,//TODO: не используется

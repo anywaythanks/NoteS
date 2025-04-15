@@ -42,6 +42,9 @@ public class PublicCommentsController {
    private final CommentEditService commentEditService;
    private final NoteRequestMapper noteRequestMapper;
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicComments/get_api_public__accountName__notes__pathNote__comments">Click</a>
+    */
    @GetMapping(path = "/notes/{pathNote}/comments")
    @PreAuthorize("hasAnyAuthority('read-comments')")
    public PageDto<CommentSearchContentResponseDto> comments(
@@ -55,6 +58,9 @@ public class PublicCommentsController {
       return pageResponseMapper.of(comments);
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicComments/post_api_public__accountName__notes__pathNote__comments">Click</a>
+    */
    @PostMapping(path = "/notes/{pathNote}/comments", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-comments', 'read-notes', 'create-comments')")
    public ResponseEntity<CommentCreateResponseDto> createComment(@Valid @PathVariable AccName accountName,
@@ -70,6 +76,9 @@ public class PublicCommentsController {
               .body(noteResponseMapper.ofCommentCreate(note));
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicComments/post_api_public__accountName__comments__pathNote_">Click</a>
+    */
    @PostMapping("/comments/{pathNote}")
    @PreAuthorize("hasAnyAuthority('read-comments', 'read-notes', 'edit-own-comments')")
    public CommentEditResponseDto editComment(@Valid @PathVariable AccName accountName,
@@ -82,6 +91,9 @@ public class PublicCommentsController {
       return noteResponseMapper.ofCommentEdit(comment);
    }
 
+   /**
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicComments/delete_api_public__accountName__comments__pathNote_">Click</a>
+    */
    @DeleteMapping("/comments/{pathNote}")
    @PreAuthorize("hasAnyAuthority('read-comments', 'read-notes', 'delete-comments')")
    @ResponseStatus(HttpStatus.NO_CONTENT)
