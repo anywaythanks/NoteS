@@ -26,6 +26,6 @@ public class KafkaConfig {
 
    @Bean
    public NewTopic notesTopic() {
-      return new NewTopic("NoteS", 1, (short) 1);
+      return new NewTopic("notes.saga", 1, (short) 1);
    }
 }

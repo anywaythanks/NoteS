@@ -9,7 +9,7 @@ import com.notes.models.api.note.NoteEditOtherRequestDto;
 import com.notes.models.api.note.NoteEditPublicRequestDto;
 import com.notes.models.api.note.SyntaxTypeApiDto;
 import com.notes.models.domain.CommentEditDto;
-import com.notes.models.domain.NoteCreateDto;
+import com.notes.models.domain.NoteCreateDomainDto;
 import com.notes.models.domain.NoteEditOnlyContentDto;
 import com.notes.models.domain.NoteEditOtherDto;
 import com.notes.models.domain.NotePublicDto;
@@ -26,9 +26,9 @@ public interface NoteRequestMapper {
 
    NoteEditOnlyContentDto of(NoteEditOnlyContentRequestDto dto);
 
-   NoteCreateDto of(CommentCreateRequestDto dto);
+   NoteCreateDomainDto of(CommentCreateRequestDto dto);
 
-   NoteCreateDto of(NoteCreateRequestDto dto);
+   NoteCreateDomainDto of(NoteCreateRequestDto dto);
 
    CommentEditDto of(CommentEditRequestDto dto);
 

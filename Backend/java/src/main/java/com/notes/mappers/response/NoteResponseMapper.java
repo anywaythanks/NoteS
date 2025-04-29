@@ -12,9 +12,9 @@ import com.notes.models.api.note.NoteSearchContentResponseDto;
 import com.notes.models.api.note.NoteSearchTagsResponseDto;
 import com.notes.models.api.note.NoteTypeApiDto;
 import com.notes.models.api.note.SyntaxTypeApiDto;
-import com.notes.models.domain.NoteContentDomainDto;
-import com.notes.models.domain.NoteFullDomainDto;
-import com.notes.models.domain.NotePartialDomainDto;
+import com.notes.models.domain.NoteMinimalDomainDto;
+import com.notes.models.domain.NoteSearchDomainDto;
+import com.notes.models.domain.NoteSearchTagsDomainDto;
 import com.notes.models.domain.NoteTagsDomainDto;
 import com.notes.models.domain.NoteTypeDomainDto;
 import com.notes.models.domain.SyntaxTypeDomainDto;
@@ -27,23 +27,23 @@ public interface NoteResponseMapper {
 
    SyntaxTypeApiDto of(SyntaxTypeDomainDto api);
 
-   NoteEditPublicResponseDto ofPublic(NotePartialDomainDto dto);
+   NoteEditPublicResponseDto ofPublic(NoteMinimalDomainDto dto);
 
-   NoteEditOtherResponseDto ofOther(NotePartialDomainDto dto);
+   NoteEditOtherResponseDto ofOther(NoteMinimalDomainDto dto);
 
-   NoteEditContentResponseDto ofEditContent(NoteContentDomainDto dto);
-
-   @Mapping(source = "dto.owner.name", target = "ownerName")
-   CommentSearchContentResponseDto ofCommentContent(NoteContentDomainDto dto);
-
-   CommentCreateResponseDto ofCommentCreate(NoteContentDomainDto dto);
-
-   NoteCreateResponseDto ofNoteCreate(NoteContentDomainDto dto);
+   NoteEditContentResponseDto ofEditContent(NoteSearchDomainDto dto);
 
    @Mapping(source = "dto.owner.name", target = "ownerName")
-   NoteSearchContentResponseDto ofFull(NoteFullDomainDto dto);
+   CommentSearchContentResponseDto ofCommentContent(NoteSearchDomainDto dto);
+
+   CommentCreateResponseDto ofCommentCreate(NoteSearchDomainDto dto);
+
+   NoteCreateResponseDto ofNoteCreate(NoteSearchDomainDto dto);
+
+   @Mapping(source = "dto.owner.name", target = "ownerName")
+   NoteSearchContentResponseDto ofFull(NoteSearchTagsDomainDto dto);
 
    NoteSearchTagsResponseDto ofTags(NoteTagsDomainDto dto);
 
-   CommentEditResponseDto ofCommentEdit(NoteContentDomainDto dto);
+   CommentEditResponseDto ofCommentEdit(NoteSearchDomainDto dto);
 }

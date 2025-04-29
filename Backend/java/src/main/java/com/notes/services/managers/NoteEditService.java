@@ -1,24 +1,21 @@
 package com.notes.services.managers;
 
-import com.notes.exceptions.AccountNotFoundException;
 import com.notes.exceptions.NoteForbiddenException;
 import com.notes.exceptions.NoteNotFoundException;
 import com.notes.exceptions.NoteTypeException;
 import com.notes.mappers.repository.NoteRepositoryMapper;
-import com.notes.models.domain.NoteContentDomainDto;
-import com.notes.models.domain.NoteCreateDto;
+import com.notes.models.domain.NoteCreateDomainDto;
 import com.notes.models.domain.NoteEditOnlyContentDto;
 import com.notes.models.domain.NoteEditOtherDto;
+import com.notes.models.domain.NoteMinimalDomainDto;
 import com.notes.models.domain.NotePartialDomainDto;
 import com.notes.models.domain.NotePublicDto;
 import com.notes.models.domain.NoteTypeDomainDto;
-import com.notes.models.entity.Note;
-import com.notes.models.entity.NoteContent;
-import com.notes.models.entity.NoteDto;
+import com.notes.models.entity.NoteCreateDto;
+import com.notes.models.entity.NoteEditDto;
 import com.notes.repository.AccountRepository;
-import com.notes.repository.NoteRepository;
-import com.notes.repository.NoteRepositoryDb;
-import com.notes.repository.NoteRepositoryElastic;
+import com.notes.repository.NoteRepositoryCommand;
+import com.notes.repository.NoteRepositoryQuery;
 import com.notes.services.utils.GeneratorUtils;
 import com.notes.services.utils.NoteUtils;
 import lombok.RequiredArgsConstructor;
@@ -35,12 +32,11 @@ import java.util.Objects;
 public class NoteEditService {
    private final NoteInformationService noteInformationService;
    private final NoteUtils noteUtils;
-   private final NoteRepository noteRepository;
+   private final NoteRepositoryCommand noteRepositoryCommand;
    private final NoteRepositoryMapper noteRepositoryMapper;
    private final GeneratorUtils generatorUtils;
    private final AccountInformationService accountInformationService;
-   private final NoteRepositoryDb noteRepositoryDb;
-   private final NoteRepositoryElastic noteRepositoryElastic;
+   private final NoteRepositoryQuery noteRepositoryQuery;
    private final AccountRepository accountRepository;
 
    /**
@@ -54,96 +50,92 @@ public class NoteEditService {
     * @throws NoteForbiddenException If requester isn't note owner/comment parent owner
     * @throws NoteTypeException      If invalid note type for operation
     */
-   public NotePartialDomainDto publishNote(String pathComment, String ownerName, NotePublicDto dto) {
-      var note = noteRepositoryDb.findByPath(pathComment).orElseThrow(NoteNotFoundException::new);
+   public NoteMinimalDomainDto publishNote(String pathComment, String ownerName, NotePublicDto dto) {
+      var note = noteRepositoryQuery.findByPath(pathComment).orElseThrow(NoteNotFoundException::new);
       if(noteUtils.isComment(noteRepositoryMapper.of(note.getNoteType()))) {
          if(!Objects.equals(note.getMainNote().getOwner().getName(), ownerName))
             throw new NoteForbiddenException();
       } else if(!note.getOwner().getName().equals(ownerName)) throw new NoteForbiddenException();
-      note.setIsPublic(dto.isPublic());
-      var r = noteRepositoryDb.save(note);
-      return noteRepositoryMapper.of(r);
+      noteRepositoryCommand.publish(note.getId(), dto.isPublic());
+      return noteRepositoryMapper.of(note);//TODO: мейби ошибка
    }
 
    public void deleteNote(String pathComment, String ownerName) {
       var note = noteInformationService.findByPath(pathComment, ownerName);
-      var noteEntity = noteRepository.findById(note.id()).orElseThrow(NoteNotFoundException::new);
-      noteRepository.delete(noteEntity.note());
+      noteRepositoryCommand.delete(note.id());
    }
 
-   public NotePartialDomainDto unsafePublishNote(String pathComment, NotePublicDto dto) {
-      var note = noteRepositoryDb.findByPath(pathComment).orElseThrow(NoteNotFoundException::new);
-      note.setIsPublic(dto.isPublic());
-      var r = noteRepositoryDb.save(note);
-      return noteRepositoryMapper.of(r);
+   public NoteMinimalDomainDto unsafePublishNote(String pathComment, NotePublicDto dto) {
+      var note = noteRepositoryQuery.findByPath(pathComment).orElseThrow(NoteNotFoundException::new);
+      noteRepositoryCommand.publish(note.getId(), dto.isPublic());
+      return noteRepositoryMapper.of(note);
    }
 
-   public NotePartialDomainDto editNote(String pathComment, String ownerName, NoteEditOtherDto dto) {
+   public NoteMinimalDomainDto editNote(String pathComment, String ownerName, NoteEditOtherDto dto) {
       var note = noteInformationService.findByPath(pathComment, ownerName);
       return editNote(note, dto);
    }
 
-   public NotePartialDomainDto unsafeEditNote(String pathComment, NoteEditOtherDto dto) {
+   public NoteMinimalDomainDto unsafeEditNote(String pathComment, NoteEditOtherDto dto) {
       var note = noteInformationService.unsafeFindByPath(pathComment);
       return editNote(note, dto);
    }
 
-   private NotePartialDomainDto editNote(NotePartialDomainDto note,
+   private NoteMinimalDomainDto editNote(NoteMinimalDomainDto noteDto,
                                          NoteEditOtherDto dto) {
-      if(note.noteType() != NoteTypeDomainDto.NOTE) throw new NoteTypeException();
-      var noteEntity = noteRepositoryDb.findById(note.id()).orElseThrow(NoteNotFoundException::new);
-      noteEntity.setTitle(dto.title());
-      noteEntity.setDescription(dto.description());
-      var r = noteRepositoryDb.save(noteEntity);
-      return noteRepositoryMapper.of(noteEntity);
+      if(noteDto.noteType() != NoteTypeDomainDto.NOTE) throw new NoteTypeException();
+      var note = noteRepositoryQuery.findById(noteDto.id()).orElseThrow(NoteNotFoundException::new);
+      noteRepositoryCommand.edit(note.getId(), new NoteEditDto(
+              dto.description(),
+              dto.title(),
+              note.getActual().getContent(),
+              note.getActual().getSyntaxType(),
+              note.getNoteType()
+      ));
+      return noteRepositoryMapper.of(note);
    }
 
-   public NoteContentDomainDto editContentNote(String pathComment, String ownerName, NoteEditOnlyContentDto dto) {
+   public NotePartialDomainDto editContentNote(String pathComment, String ownerName, NoteEditOnlyContentDto dto) {
       var note = noteInformationService.findByPath(pathComment, ownerName);
       return editContentNote(note, dto);
    }
 
-   public NoteContentDomainDto unsafeEditContentNote(String pathComment, NoteEditOnlyContentDto dto) {
+   public NotePartialDomainDto unsafeEditContentNote(String pathComment, NoteEditOnlyContentDto dto) {
       var note = noteInformationService.unsafeFindByPath(pathComment);
       return editContentNote(note, dto);
    }
 
-   private NoteContentDomainDto editContentNote(NotePartialDomainDto note,
+   private NotePartialDomainDto editContentNote(NoteMinimalDomainDto noteDto,
                                                 NoteEditOnlyContentDto dto) {
-      if(note.noteType() != NoteTypeDomainDto.NOTE) throw new NoteTypeException();
-      var noteContent = noteRepositoryElastic.findById(note.elasticUuid())
-              .orElseThrow(NoteNotFoundException::new);
-      noteContent.setContent(dto.content());
-      noteContent.setSyntaxType(noteRepositoryMapper.of(dto.syntaxType()));
-      var r = noteRepositoryElastic.save(noteContent);
-      return noteRepositoryMapper.of(note, r);
+      var note = noteRepositoryQuery.findById(noteDto.id()).orElseThrow(NoteNotFoundException::new);
+      if(noteDto.noteType() != NoteTypeDomainDto.NOTE) throw new NoteTypeException();
+      noteRepositoryCommand.edit(note.getId(), new NoteEditDto(
+              note.getActual().getDescription(),
+              note.getActual().getTitle(),
+              dto.content(),
+              noteRepositoryMapper.of(dto.syntaxType()),
+              note.getNoteType()
+      ));
+      return noteRepositoryMapper.ofPartial(note);
+
    }
 
-   public NoteContentDomainDto createNote(String accountName,
-                                          NoteCreateDto dto) {
+   public NoteMinimalDomainDto createNote(String accountName,
+                                          NoteCreateDomainDto dto) {
       var account = accountInformationService.findAccount(accountName);
-      var accountEntity = accountRepository.findById(account.id()).orElseThrow(AccountNotFoundException::new);
-      var noteNew = Note.builder()
-              .path(generatorUtils.generateUUID().toString())
-              .elasticUuid(generatorUtils.generateUUID().toString())
-              .description(dto.description())
-              .owner(accountEntity)
-              .noteType(noteRepositoryMapper.of(NoteTypeDomainDto.NOTE))
-              .syntaxType(noteRepositoryMapper.of(dto.syntaxType()))
-              .title(dto.title())
-              .isPublic(false)
-              .build();
-      var note = new NoteDto(noteNew,
-              NoteContent.builder()
-                      .content(dto.content())
-                      .title(noteNew.getTitle())
-                      .uuid(noteNew.getElasticUuid())
-                      .owner(account.id())
-                      .noteType(noteNew.getNoteType())
-                      .syntaxType(noteNew.getSyntaxType())
-                      .build()
+      var createDto = new NoteCreateDto(
+              dto.description(),
+              dto.title(),
+              generatorUtils.generateUUID().toString(),
+              dto.content(),
+              generatorUtils.generateUUID(),
+              account.id(),
+              null,
+              noteRepositoryMapper.of(dto.syntaxType()),
+              noteRepositoryMapper.of(NoteTypeDomainDto.NOTE),
+              false
       );
-      var r = noteRepository.save(note);
-      return noteRepositoryMapper.of(r);
+      noteRepositoryCommand.create(createDto);
+      return noteInformationService.findByPath(createDto.path(), accountName);//TODO: зачем..? x2
    }
 }

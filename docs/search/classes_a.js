@@ -1,10 +1,4 @@
 var searchData=
 [
-  ['securityconfig_201',['SecurityConfig',['../classcom_1_1notes_1_1configs_1_1SecurityConfig.html',1,'com::notes::configs']]],
-  ['servletinitializer_202',['ServletInitializer',['../classcom_1_1notes_1_1ServletInitializer.html',1,'com::notes']]],
-  ['springaddonsjwtauthenticationuserconverter_203',['SpringAddonsJwtAuthenticationUserConverter',['../classcom_1_1notes_1_1converters_1_1SpringAddonsJwtAuthenticationUserConverter.html',1,'com::notes::converters']]],
-  ['syntaxtype_204',['SyntaxType',['../enumcom_1_1notes_1_1models_1_1entity_1_1SyntaxType.html',1,'com::notes::models::entity']]],
-  ['syntaxtypeapidto_205',['SyntaxTypeApiDto',['../enumcom_1_1notes_1_1models_1_1api_1_1note_1_1SyntaxTypeApiDto.html',1,'com::notes::models::api::note']]],
-  ['syntaxtypeconverter_206',['SyntaxTypeConverter',['../classcom_1_1notes_1_1converters_1_1SyntaxTypeConverter.html',1,'com::notes::converters']]],
-  ['syntaxtypedomaindto_207',['SyntaxTypeDomainDto',['../enumcom_1_1notes_1_1models_1_1domain_1_1SyntaxTypeDomainDto.html',1,'com::notes::models::domain']]]
+  ['orchestrator_228',['Orchestrator',['../classcom_1_1notes_1_1services_1_1utils_1_1Orchestrator.html',1,'com::notes::services::utils']]]
 ];

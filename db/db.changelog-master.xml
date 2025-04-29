@@ -44,10 +44,17 @@
         <tagDatabase tag="v.0.5"/>
     </changeSet>
 
-    <!--   char -> varchar, добавление табличек для саги -->
+    <!--   char -> varchar -->
     <include file="v-0.6/db.changelog-v.0.6.xml" relativeToChangelogFile="true"/>
 
     <changeSet id="0.6" author="anywaythanks">
         <tagDatabase tag="v.0.6"/>
+    </changeSet>
+
+    <!--  Возвращение содержания заметок, добавление истории и саги -->
+    <include file="v-0.7/db.changelog-v.0.7.xml" relativeToChangelogFile="true"/>
+
+    <changeSet id="0.7" author="anywaythanks">
+        <tagDatabase tag="v.0.7"/>
     </changeSet>
 </databaseChangeLog>

@@ -48,19 +48,15 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
+      bootstrap-servers: localhost:9092
       auto-offset-reset: earliest
-      group-id: example
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "com.notes.controllers,com.notes.*"  # Add all relevant packages
-        spring.json.type.mapping: noteDto:com.notes.controllers.KafkaController$NoteDto
-      max-poll-records: 1
-      fetch-max-wait: 36000
-      enable-auto-commit: false
-      client-id: example
+        spring.json.trusted.packages: "*"
+        spring.json.type.mapping: accName:com.notes.models.api.account.AccName
     producer:
-      client-id: example
+      bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       retries: 2
@@ -80,7 +76,7 @@ spring:
 
 logging:
   level:
-    com.notes.services.utils.KafkaConsumer: DEBUG
+    com.notes.services.utils.com.notes.services.utils.Orchestrator: DEBUG
     org:
       springframework:
         web: DEBUG
@@ -98,6 +94,8 @@ springdoc:
       realm: ${keycloak-realm}
     csrf:
       enabled: true
+sync-notes:
+  strategy: single_task
 ---
 scheme: https
 keycloak-issuer: ${scheme}://${keycloak-host}:${keycloak-port}/realms/${keycloak-realm}

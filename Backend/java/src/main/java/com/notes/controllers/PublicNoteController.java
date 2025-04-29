@@ -74,10 +74,10 @@ public class PublicNoteController {
                                             @Valid @PathVariable NotePath pathNote,
                                             @Valid @RequestBody NoteEditOtherRequestDto editDto) {
       return noteResponseMapper.ofOther(editService.editNote(pathNote.path(), accountName.name(), noteRequestMapper.of(editDto)));
-   }
+   }//TODO: Смерджить с контентом
 
    /**
-    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/delete_api_public__accountName__notes__pathNote_">Click</a>
+    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/post_api_public__accountName__notes__pathNote__content">Click</a>
     */
    @PostMapping(path = "/{pathNote}/content", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes', 'edit-own-notes')")

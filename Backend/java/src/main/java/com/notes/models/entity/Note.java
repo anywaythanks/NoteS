@@ -1,7 +1,7 @@
 package com.notes.models.entity;
 
 import com.notes.converters.NoteTypeConverter;
-import com.notes.converters.SyntaxTypeConverter;
+import com.notes.converters.StateConverter;
 import com.notes.listeners.NoteListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -14,8 +14,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,14 +25,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
+@DynamicUpdate
 @Table(name = "notes")
 @NamedEntityGraph(name = "Note.owner",
         attributeNodes = {@NamedAttributeNode("owner")})
@@ -53,26 +58,11 @@ public class Note {
 
    @NotNull
    @NotEmpty
-   @Length(max = 2048)
-   @Column(name = "description", nullable = false)
-   @Setter
-   String description;
-
-   @NotNull
-   @NotEmpty
-   @Length(max = 128)
-   @Column(name = "title", nullable = false)
-   @Setter
-   String title;
-
-   @NotNull
-   @NotEmpty
-   @Length(max = 128)
    @Column(name = "elastic_uuid", nullable = false, unique = true)
-   String elasticUuid;
+   UUID elasticUuid;
 
    @NotNull
-   @ManyToOne(fetch = FetchType.EAGER, optional = false)
+   @ManyToOne(fetch = FetchType.LAZY, optional = false)
    @JoinColumn(name = "account_id", nullable = false)
    Account owner;
 
@@ -82,18 +72,31 @@ public class Note {
    NoteType noteType;
 
    @NotNull
-   @Column(name = "syntax_type_id", nullable = false)
-   @Convert(converter = SyntaxTypeConverter.class)
-   @Setter
-   SyntaxType syntaxType;
-
-   @NotNull
    @Column(name = "is_public", nullable = false)
    @Setter
    Boolean isPublic;
 
+   /**
+    * {@link Version @Version} видимо так просто не работает.
+    */
+   @Version
+   @Column(name = "commit_to")
+   @Setter
+   Long commitTo;
+
+   @NotNull
+   @OneToOne(fetch = FetchType.LAZY, optional = false)
+   @JoinColumn(name = "commit_to", nullable = false, unique = true)
+   @Setter
+   Commit actual;
+
+   @Column(name = "state_id", nullable = false)
+   @Convert(converter = StateConverter.class)
+   @Setter
+   State state;
+
    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-   @JoinColumn(name = "prev", nullable = false)
+   @JoinColumn(name = "main_note", nullable = false)
    Note mainNote;
 
    @Column(name = "created_on", nullable = false)

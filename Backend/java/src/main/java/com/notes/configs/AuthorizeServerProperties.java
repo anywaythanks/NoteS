@@ -10,6 +10,8 @@ import java.io.Serial;
 import java.net.URL;
 import java.util.stream.Stream;
 
+@Setter
+@Getter
 @Configuration
 @ConfigurationProperties(prefix = "auth-props")
 public class AuthorizeServerProperties {
@@ -26,14 +28,6 @@ public class AuthorizeServerProperties {
       return issuerProperties.getFirst();
    }
 
-   public IssuerProperties[] getIssuers() {
-      return issuers;
-   }
-
-   public void setIssuers(IssuerProperties[] issuers) {
-      this.issuers = issuers;
-   }
-
    @Setter
    @Getter
    public static class IssuerProperties {
@@ -41,34 +35,12 @@ public class AuthorizeServerProperties {
       private ClaimMappingProperties[] claims;
       private String usernameJsonPath = JwtClaimNames.SUB;
 
+      @Setter
+      @Getter
       public static class ClaimMappingProperties {
          private String jsonPath;
          private CaseProcessing caseProcessing = CaseProcessing.UNCHANGED;
          private String prefix = "";
-
-         public String getJsonPath() {
-            return jsonPath;
-         }
-
-         public void setJsonPath(String jsonPath) {
-            this.jsonPath = jsonPath;
-         }
-
-         public CaseProcessing getCaseProcessing() {
-            return caseProcessing;
-         }
-
-         public void setCaseProcessing(CaseProcessing caseProcessing) {
-            this.caseProcessing = caseProcessing;
-         }
-
-         public String getPrefix() {
-            return prefix;
-         }
-
-         public void setPrefix(String prefix) {
-            this.prefix = prefix;
-         }
 
          enum CaseProcessing {
             UNCHANGED, TO_LOWER, TO_UPPER

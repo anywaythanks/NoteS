@@ -75,18 +75,18 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0a69e5d449964eabe311fae9e0036f4b"><td class="memItemLeft" align="right" valign="top">NoteContentDomainDto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1services_1_1managers_1_1CommentEditService.html#a0a69e5d449964eabe311fae9e0036f4b">editComment</a> (String pathComment, String ownerName, CommentEditDto dto)</td></tr>
-<tr class="separator:a0a69e5d449964eabe311fae9e0036f4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af648cf792ebf4a0434b7193ad105150e"><td class="memItemLeft" align="right" valign="top">NoteContentDomainDto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1services_1_1managers_1_1CommentEditService.html#af648cf792ebf4a0434b7193ad105150e">createComment</a> (String accountName, String pathNote, NoteCreateDto dto)</td></tr>
-<tr class="separator:af648cf792ebf4a0434b7193ad105150e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef65c5b4d08110bb4ade3babe14aa3cf"><td class="memItemLeft" align="right" valign="top">NotePartialDomainDto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1services_1_1managers_1_1CommentEditService.html#aef65c5b4d08110bb4ade3babe14aa3cf">editComment</a> (String pathComment, String ownerName, CommentEditDto dto)</td></tr>
+<tr class="separator:aef65c5b4d08110bb4ade3babe14aa3cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add34daae199f2c464b57f2d58f48c1ac"><td class="memItemLeft" align="right" valign="top">NotePartialDomainDto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1services_1_1managers_1_1CommentEditService.html#add34daae199f2c464b57f2d58f48c1ac">createComment</a> (String accountName, String pathNote, NoteCreateDomainDto dto)</td></tr>
+<tr class="separator:add34daae199f2c464b57f2d58f48c1ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a988047a2a521c1f0be22e537fa6c741e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1services_1_1managers_1_1CommentEditService.html#a988047a2a521c1f0be22e537fa6c741e">deleteComment</a> (String pathComment, String ownerName)</td></tr>
 <tr class="separator:a988047a2a521c1f0be22e537fa6c741e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Service handling comment editing operations including creation, modification, and deletion. Manages comment lifecycle with validation checks for edit windows and comment types. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="af648cf792ebf4a0434b7193ad105150e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af648cf792ebf4a0434b7193ad105150e">&#9670;&nbsp;</a></span>createComment()</h2>
+<a id="add34daae199f2c464b57f2d58f48c1ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add34daae199f2c464b57f2d58f48c1ac">&#9670;&nbsp;</a></span>createComment()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -95,7 +95,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">NoteContentDomainDto com.notes.services.managers.CommentEditService.createComment </td>
+          <td class="memname">NotePartialDomainDto com.notes.services.managers.CommentEditService.createComment </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
           <td class="paramname"><em>accountName</em>, </td>
@@ -109,7 +109,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">NoteCreateDto&#160;</td>
+          <td class="paramtype">NoteCreateDomainDto&#160;</td>
           <td class="paramname"><em>dto</em>&#160;</td>
         </tr>
         <tr>
@@ -133,7 +133,7 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The created <a class="el" href="">NoteContentDomainDto</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The created <a class="el" href="">NoteSearchDomainDto</a> </dd></dl>
 
 </div>
 </div>
@@ -189,8 +189,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0a69e5d449964eabe311fae9e0036f4b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0a69e5d449964eabe311fae9e0036f4b">&#9670;&nbsp;</a></span>editComment()</h2>
+<a id="aef65c5b4d08110bb4ade3babe14aa3cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef65c5b4d08110bb4ade3babe14aa3cf">&#9670;&nbsp;</a></span>editComment()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -199,7 +199,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">NoteContentDomainDto com.notes.services.managers.CommentEditService.editComment </td>
+          <td class="memname">NotePartialDomainDto com.notes.services.managers.CommentEditService.editComment </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
           <td class="paramname"><em>pathComment</em>, </td>
@@ -237,7 +237,7 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The updated <a class="el" href="">NoteContentDomainDto</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The updated <a class="el" href="">NoteSearchDomainDto</a> </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">NoteNotFoundException</td><td>If comment not found </td></tr>

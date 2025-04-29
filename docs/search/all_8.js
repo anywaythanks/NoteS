@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['kafkaconfig_74',['KafkaConfig',['../classcom_1_1notes_1_1configs_1_1KafkaConfig.html',1,'com::notes::configs']]],
-  ['kafkaconsumer_75',['KafkaConsumer',['../classcom_1_1notes_1_1services_1_1utils_1_1KafkaConsumer.html',1,'com::notes::services::utils']]],
-  ['kafkacontroller_76',['KafkaController',['../classcom_1_1notes_1_1controllers_1_1KafkaController.html',1,'com::notes::controllers']]]
+  ['iscomment_76',['isComment',['../classcom_1_1notes_1_1services_1_1utils_1_1NoteUtils.html#a149d51d5c0bb45fbae598460b1f24340',1,'com::notes::services::utils::NoteUtils']]],
+  ['isedit_77',['isEdit',['../classcom_1_1notes_1_1services_1_1utils_1_1NoteUtils.html#a197fb813fc6c115a218a00c4568918ac',1,'com::notes::services::utils::NoteUtils']]]
 ];

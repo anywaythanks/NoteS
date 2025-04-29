@@ -11,6 +11,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -22,7 +23,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Document(indexName = "notes")
 public class NoteContent {
    @Id
-   String uuid;
+   UUID uuid;
 
    @Field(value = "content", type = FieldType.Text)
    @Setter

@@ -1,21 +1,24 @@
 package com.notes.mappers.repository;
 
 import com.notes.configs.MapstructConfig;
-import com.notes.models.domain.NoteContentDomainDto;
 import com.notes.models.domain.NoteFullDomainDto;
+import com.notes.models.domain.NoteMinimalDomainDto;
 import com.notes.models.domain.NotePartialDomainDto;
+import com.notes.models.domain.NoteSearchDomainDto;
+import com.notes.models.domain.NoteSearchTagsDomainDto;
 import com.notes.models.domain.NoteTagsDomainDto;
 import com.notes.models.domain.NoteTypeDomainDto;
 import com.notes.models.domain.SyntaxTypeDomainDto;
 import com.notes.models.entity.Note;
 import com.notes.models.entity.NoteContent;
-import com.notes.models.entity.NoteDto;
+import com.notes.models.entity.NoteScored;
 import com.notes.models.entity.NoteType;
 import com.notes.models.entity.SyntaxType;
 import com.notes.models.entity.Tag;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper(config = MapstructConfig.class)
@@ -29,7 +32,7 @@ public interface NoteRepositoryMapper {
    SyntaxTypeDomainDto of(SyntaxType api);
 
    @Mapping(source = "note.mainNote.path", target = "mainPath")
-   NotePartialDomainDto of(Note note);
+   NoteMinimalDomainDto of(Note note);
 
    @Mapping(source = "note.id", target = "id")
    @Mapping(source = "note.description", target = "description")
@@ -44,7 +47,9 @@ public interface NoteRepositoryMapper {
    @Mapping(source = "note.createdOn", target = "createdOn")
    @Mapping(source = "content.score", target = "score")
    @Mapping(source = "content.content", target = "content")
-   NoteContentDomainDto of(NoteDto content);
+   NoteSearchDomainDto of(NoteScored content);
+
+   NoteSearchDomainDto ofContent(Note content);
 
    @Mapping(source = "dto.note.id", target = "id")
    @Mapping(source = "dto.note.description", target = "description")
@@ -59,7 +64,9 @@ public interface NoteRepositoryMapper {
    @Mapping(source = "dto.note.createdOn", target = "createdOn")
    @Mapping(source = "dto.content.score", target = "score")
    @Mapping(source = "dto.content.content", target = "content")
-   NoteFullDomainDto of(NoteDto dto, List<Tag> tags);
+   NoteSearchTagsDomainDto of(NoteScored dto, List<Tag> tags);
+
+   NotePartialDomainDto ofPartial(Note note);
 
    @Mapping(source = "note.id", target = "id")
    @Mapping(source = "note.description", target = "description")
@@ -74,13 +81,19 @@ public interface NoteRepositoryMapper {
    @Mapping(source = "note.createdOn", target = "createdOn")
    @Mapping(source = "content.score", target = "score")
    @Mapping(source = "content.content", target = "content")
-   NoteContentDomainDto of(NotePartialDomainDto note, NoteContent content);
+   NoteSearchDomainDto of(NoteMinimalDomainDto note, NoteContent content);
 
-   NoteFullDomainDto of(NoteContentDomainDto content, List<Tag> tags);
+   NoteFullDomainDto of(NotePartialDomainDto note, List<Tag> tags);
 
-   NoteTagsDomainDto of(NotePartialDomainDto content, List<Tag> tags);
+   NoteSearchTagsDomainDto of(NoteSearchDomainDto note, List<Tag> tags);
 
-   @Mapping(source = "content", target = "content")
+   NoteTagsDomainDto of(NoteMinimalDomainDto content, List<Tag> tags);
+
+   @Mapping(source = "content.score", target = "score")
    @Mapping(source = "note", target = "note")
-   NoteDto of(Note note, NoteContent content);
+   NoteScored of(Note note, NoteContent content);
+
+   @Mapping(source = "score", target = "score")
+   @Mapping(source = "note", target = "note")
+   NoteScored of(Note note, BigDecimal score);
 }

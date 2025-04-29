@@ -4,17 +4,16 @@ import com.notes.exceptions.NoteNotFoundException;
 import com.notes.exceptions.TagNotFoundException;
 import com.notes.mappers.repository.NoteRepositoryMapper;
 import com.notes.mappers.repository.PageRepositoryMapper;
-import com.notes.models.domain.NoteContentDomainDto;
 import com.notes.models.domain.NoteFullDomainDto;
+import com.notes.models.domain.NoteMinimalDomainDto;
 import com.notes.models.domain.NotePartialDomainDto;
-import com.notes.models.domain.NoteTagsDomainDto;
+import com.notes.models.domain.NoteSearchDomainDto;
+import com.notes.models.domain.NoteSearchTagsDomainDto;
 import com.notes.models.domain.PageDomainDto;
 import com.notes.models.entity.Note;
-import com.notes.models.entity.NoteDto;
 import com.notes.models.entity.NoteTagRef;
 import com.notes.models.entity.Tag;
-import com.notes.repository.NoteRepository;
-import com.notes.repository.NoteRepositoryDb;
+import com.notes.repository.NoteRepositoryQuery;
 import com.notes.repository.NoteTagRefRepository;
 import com.notes.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,8 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NoteInformationService {
    private final AccountInformationService accountInformationService;
-   private final NoteRepository noteRepository;
-   private final NoteRepositoryDb noteRepositoryDb;
+   private final NoteRepositoryQuery noteRepositoryQuery;
    private final NoteTagRefRepository noteTagRefRepository;
    private final PageRepositoryMapper pageMapper;
    private final NoteRepositoryMapper noteMapper;
@@ -50,9 +49,9 @@ public class NoteInformationService {
     * @param limit     Number of results per page
     * @return PageDomainDto of NoteTagsDomainDto with loaded tags
     */
-   public PageDomainDto<NoteTagsDomainDto> findByTitle(String title, String nameOwner, Integer page, Integer limit) {
+   public PageDomainDto<NoteSearchTagsDomainDto> findByTitle(String title, String nameOwner, Integer page, Integer limit) {
       var account = accountInformationService.findAccount(nameOwner);
-      var list = noteRepository
+      var list = noteRepositoryQuery
               .searchByTitle(title, account.id(),
                       PageRequest.of(page, limit))
               .map(noteMapper::of);
@@ -68,9 +67,9 @@ public class NoteInformationService {
     * @param limit     Number of results per page
     * @return PageDomainDto of NoteTagsDomainDto with loaded tags
     */
-   public PageDomainDto<NoteTagsDomainDto> semanticSearch(String query, String nameOwner, Integer page, Integer limit) {
+   public PageDomainDto<NoteSearchTagsDomainDto> semanticSearch(String query, String nameOwner, Integer page, Integer limit) {
       var account = accountInformationService.findAccount(nameOwner);
-      var list = noteRepository
+      var list = noteRepositoryQuery
               .semanticSearch(query, account.id(),
                       PageRequest.of(page, limit))
               .map(noteMapper::of);
@@ -85,11 +84,12 @@ public class NoteInformationService {
     * @param limit     Number of results per page
     * @return PageDomainDto of NoteTagsDomainDto with loaded tags
     */
-   public PageDomainDto<NoteTagsDomainDto> findByOwner(String nameOwner, Integer page, Integer limit) {
+   public PageDomainDto<NoteSearchTagsDomainDto> findByOwner(String nameOwner, Integer page, Integer limit) {
       var account = accountInformationService.findAccount(nameOwner);
-      var list = noteRepositoryDb
+      var list = noteRepositoryQuery
               .findNotesByOwner(account.id(),
                       PageRequest.of(page, limit))
+              .map(n -> noteMapper.of(n, BigDecimal.ONE))
               .map(noteMapper::of);
       return pageMapper.of(loadTags(list));
    }
@@ -103,7 +103,7 @@ public class NoteInformationService {
     * @PostAuthorize Ensures requester is the note owner
     */
    @PostAuthorize("returnObject.owner.name == #nameOwner")
-   public NotePartialDomainDto findByPath(String path, String nameOwner) {
+   public NoteMinimalDomainDto findByPath(String path, String nameOwner) {
       return unsafeFindByPath(path);
    }
 
@@ -116,7 +116,7 @@ public class NoteInformationService {
     * @PostAuthorize Allows access if public or owner matches requester
     */
    @PostAuthorize("returnObject.owner.name == #nameOwner || returnObject.isPublic")
-   public NotePartialDomainDto findPublicByPath(String path, String nameOwner) {
+   public NoteMinimalDomainDto findPublicByPath(String path, String nameOwner) {
       return unsafeFindByPath(path);
    }
 
@@ -126,8 +126,8 @@ public class NoteInformationService {
     * @param path Note's unique path identifier
     * @return NotePartialDomainDto with basic note details
     */
-   public NotePartialDomainDto unsafeFindByPath(String path) {
-      Note note = noteRepositoryDb.findByPath(path).orElseThrow(NoteNotFoundException::new);
+   public NoteMinimalDomainDto unsafeFindByPath(String path) {
+      Note note = noteRepositoryQuery.findByPath(path).orElseThrow(NoteNotFoundException::new);
       return noteMapper.of(note);
    }
 
@@ -140,9 +140,9 @@ public class NoteInformationService {
     * @PostAuthorize Allows access if public or owner matches requester
     */
    @PostAuthorize("returnObject.owner.name == #nameOwner || returnObject.isPublic")
-   public NoteContentDomainDto findPublicContentByPath(String path, String nameOwner) {
-      NoteDto noteDto = noteRepository.findByPath(path).orElseThrow(NoteNotFoundException::new);
-      return noteMapper.of(noteDto);
+   public NotePartialDomainDto findPublicContentByPath(String path, String nameOwner) {
+      var note = noteRepositoryQuery.findByPath(path).orElseThrow(NoteNotFoundException::new);
+      return noteMapper.ofPartial(note);
    }
 
    /**
@@ -167,8 +167,8 @@ public class NoteInformationService {
     * @PostAuthorize Allows access if public or owner matches requester
     */
    public NoteFullDomainDto unsafeFullFindByPath(String path) {
-      var note = noteRepository.findByPath(path).orElseThrow(NoteNotFoundException::new);
-      return loadTags(noteMapper.of(note));
+      var note = noteRepositoryQuery.findByPath(path).orElseThrow(NoteNotFoundException::new);
+      return loadTags(noteMapper.ofPartial(note));
    }
 
    /**
@@ -177,7 +177,7 @@ public class NoteInformationService {
     * @param note NoteContentDomainDto to enrich with tags
     * @return NoteFullDomainDto with associated tags
     */
-   public NoteFullDomainDto loadTags(NoteContentDomainDto note) {
+   public NoteFullDomainDto loadTags(NotePartialDomainDto note) {
       var tags = noteTagRefRepository.findByNoteId(note.id());
       return noteMapper.of(note, tags);
    }
@@ -194,16 +194,18 @@ public class NoteInformationService {
     * @return PageDomainDto of filtered NoteTagsDomainDto
     * @throws TagNotFoundException if any specified tags are invalid
     */
-   public PageDomainDto<NoteTagsDomainDto> findByTags(List<String> tags, List<String> filters, String ownerName,
-                                                      boolean isStrong, Integer limit, Integer page) {
+   public PageDomainDto<NoteSearchTagsDomainDto> findByTags(List<String> tags, List<String> filters, String ownerName,
+                                                            boolean isStrong, Integer limit, Integer page) {
       var account = accountInformationService.findAccount(ownerName);
       var tagIds = tagRepository.getTags(tags, account.id()).stream().map(Tag::getId).toList();
       var filterIds = tagRepository.getTags(filters, account.id()).stream().map(Tag::getId).toList();
       if(tagIds.size() != tags.size() || filterIds.size() != filters.size()) throw new TagNotFoundException();
       var notes = isStrong ?
-              noteRepositoryDb.findStrongByTagId(tagIds, filterIds, account.id(), PageRequest.of(page, limit)) :
-              noteRepositoryDb.findWeakByTagId(tagIds, filterIds, account.id(), PageRequest.of(page, limit));
-      var noteTags = loadTags(notes.map(noteMapper::of));
+              noteRepositoryQuery.findStrongByTagId(tagIds, filterIds, account.id(), PageRequest.of(page, limit)) :
+              noteRepositoryQuery.findWeakByTagId(tagIds, filterIds, account.id(), PageRequest.of(page, limit));
+      var noteTags = loadTags(notes
+              .map(n -> noteMapper.of(n, BigDecimal.ONE))
+              .map(noteMapper::of));
       return pageMapper.of(noteTags);
    }
 
@@ -213,8 +215,8 @@ public class NoteInformationService {
     * @param notes Page of NotePartialDomainDto to enrich
     * @return Page of NoteTagsDomainDto with associated tags
     */
-   private Page<NoteTagsDomainDto> loadTags(Page<NotePartialDomainDto> notes) {
-      var noteIds = notes.stream().map(NotePartialDomainDto::id).toList();
+   private Page<NoteSearchTagsDomainDto> loadTags(Page<NoteSearchDomainDto> notes) {
+      var noteIds = notes.stream().map(NoteSearchDomainDto::id).toList();
       var tags = noteTagRefRepository.findByNoteIds(noteIds)
               .stream().collect(Collectors.groupingBy(
                       ntr -> ntr.getNote().getId(),
