@@ -4,13 +4,15 @@ import lombok.Getter;
 
 @Getter
 public enum NoteType {
-   NOTE(0),
-   COMMENT(1),
-   COMMENT_REDACTED(2);
+   NOTE(0, "note"),
+   COMMENT(1, "comment"),
+   COMMENT_REDACTED(2, "comment_redacted");
    final int id;
+   final String name;
 
-   NoteType(int id) {
+   NoteType(int id, String name) {
       this.id = id;
+      this.name = name;
    }
 
    public static NoteType valueOf(int i) {

@@ -17,7 +17,6 @@ public record NotePartialDomainDto(@NonNull Long id,
                                    @With @NonNull SyntaxTypeDomainDto syntaxType,
                                    @NonNull NoteTypeDomainDto noteType,
                                    @NonNull StateDomainDto state,
-                                   BigDecimal score,
                                    boolean isPublic,
                                    @NonNull Instant createdOn) {
 }

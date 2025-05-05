@@ -4,6 +4,7 @@ import com.notes.exceptions.TagUniqueException;
 import com.notes.mappers.repository.TagRepositoryMapper;
 import com.notes.models.domain.TagCreateDto;
 import com.notes.models.domain.TagDomainDto;
+import com.notes.models.entity.Account;
 import com.notes.models.entity.Note;
 import com.notes.models.entity.NoteTagRef;
 import com.notes.models.entity.Tag;
@@ -55,12 +56,7 @@ public class TagEditService {
       if(ntr.isPresent()) throw new TagUniqueException();
       noteTagRefRepository.save(NoteTagRef
               .builder()
-              .tag(Tag.builder()
-                      .id(tagI.id())
-                      .build())
-              .note(Note.builder()
-                      .id(note.id())
-                      .build())
+              .id(new NoteTagRef.NoteTagId(note.id(), tagI.id()))
               .build());
    }
 
@@ -75,7 +71,11 @@ public class TagEditService {
    public TagDomainDto create(String accountName, TagCreateDto tagDto) {
       var acc = accountInformationService.findAccount(accountName);
       if(tagRepository.find(acc.id(), tagDto.name()).isPresent()) throw new TagUniqueException();
-      var tag = tagRepository.save(Tag.builder().color(tagDto.color()).name(tagDto.name()).build());
+      var tag = tagRepository.save(Tag.builder()
+              .color(tagDto.color())
+              .owner(Account.builder().id(acc.id()).build())
+              .name(tagDto.name())
+              .build());
       return tagRepositoryMapper.of(tag);
    }
 }

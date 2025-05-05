@@ -14,8 +14,8 @@ import java.util.UUID;
 public abstract class AckEvent extends BaseEvent {
    private final SimpleAcknowledge acknowledgment;
 
-   public AckEvent(UUID sagaId, Long noteId, Long oldCommitId, Long newCommitId, SagaEvent eventType, SimpleAcknowledge acknowledgment) {
-      super(sagaId, noteId, oldCommitId, newCommitId, eventType);
+   public AckEvent(UUID sagaId, Long noteId, Long oldCommitId, Long newCommitId, SimpleAcknowledge acknowledgment) {
+      super(sagaId, noteId, oldCommitId, newCommitId);
       this.acknowledgment = acknowledgment;
    }
 }

@@ -31,63 +31,51 @@ public interface NoteRepositoryMapper {
 
    SyntaxTypeDomainDto of(SyntaxType api);
 
-   @Mapping(source = "note.mainNote.path", target = "mainPath")
+   //   @Mapping(source = "note.mainNote.path", target = "mainPath")
    NoteMinimalDomainDto of(Note note);
 
    @Mapping(source = "note.id", target = "id")
-   @Mapping(source = "note.description", target = "description")
-   @Mapping(source = "note.title", target = "title")
-   @Mapping(source = "note.path", target = "path")
-   @Mapping(source = "note.owner", target = "owner")
-   @Mapping(source = "note.elasticUuid", target = "elasticUuid")
-   @Mapping(source = "note.mainNote.path", target = "mainPath")
-   @Mapping(source = "note.syntaxType", target = "syntaxType")
    @Mapping(source = "note.noteType", target = "noteType")
    @Mapping(source = "note.isPublic", target = "isPublic")
    @Mapping(source = "note.createdOn", target = "createdOn")
-   @Mapping(source = "content.score", target = "score")
-   @Mapping(source = "content.content", target = "content")
+   @Mapping(source = "note.path", target = "path")
+   @Mapping(source = "note.owner", target = "owner")
+   @Mapping(source = "note.mainNote.path", target = "mainPath")
+   @Mapping(source = "note.state", target = "state")
+   @Mapping(source = "note.actual.syntaxType", target = "syntaxType")
+   @Mapping(source = "note.actual.description", target = "description")
+   @Mapping(source = "note.actual.title", target = "title")
+   @Mapping(source = "score", target = "score")
    NoteSearchDomainDto of(NoteScored content);
 
-   NoteSearchDomainDto ofContent(Note content);
-
    @Mapping(source = "dto.note.id", target = "id")
-   @Mapping(source = "dto.note.description", target = "description")
-   @Mapping(source = "dto.note.title", target = "title")
-   @Mapping(source = "dto.note.path", target = "path")
-   @Mapping(source = "dto.note.elasticUuid", target = "elasticUuid")
-   @Mapping(source = "dto.note.owner", target = "owner")
-   @Mapping(source = "dto.note.mainNote.path", target = "mainPath")
-   @Mapping(source = "dto.note.syntaxType", target = "syntaxType")
    @Mapping(source = "dto.note.noteType", target = "noteType")
    @Mapping(source = "dto.note.isPublic", target = "isPublic")
    @Mapping(source = "dto.note.createdOn", target = "createdOn")
-   @Mapping(source = "dto.content.score", target = "score")
-   @Mapping(source = "dto.content.content", target = "content")
+   @Mapping(source = "dto.note.path", target = "path")
+   @Mapping(source = "dto.note.owner", target = "owner")
+   @Mapping(source = "dto.note.mainNote.path", target = "mainPath")
+   @Mapping(source = "dto.note.state", target = "state")
+   @Mapping(source = "dto.note.actual.syntaxType", target = "syntaxType")
+   @Mapping(source = "dto.note.actual.description", target = "description")
+   @Mapping(source = "dto.note.actual.title", target = "title")
+   @Mapping(source = "dto.score", target = "score")
+   @Mapping(source = "tags", target = "tags")
    NoteSearchTagsDomainDto of(NoteScored dto, List<Tag> tags);
 
-   NotePartialDomainDto ofPartial(Note note);
 
-   @Mapping(source = "note.id", target = "id")
-   @Mapping(source = "note.description", target = "description")
-   @Mapping(source = "note.title", target = "title")
-   @Mapping(source = "note.path", target = "path")
-   @Mapping(source = "note.owner", target = "owner")
-   @Mapping(source = "note.mainPath", target = "mainPath")
-   @Mapping(source = "note.elasticUuid", target = "elasticUuid")
-   @Mapping(source = "note.syntaxType", target = "syntaxType")
-   @Mapping(source = "note.noteType", target = "noteType")
-   @Mapping(source = "note.isPublic", target = "isPublic")
-   @Mapping(source = "note.createdOn", target = "createdOn")
-   @Mapping(source = "content.score", target = "score")
-   @Mapping(source = "content.content", target = "content")
-   NoteSearchDomainDto of(NoteMinimalDomainDto note, NoteContent content);
+   @Mapping(source = "actual.syntaxType", target = "syntaxType")
+   @Mapping(source = "actual.description", target = "description")
+   @Mapping(source = "actual.title", target = "title")
+   @Mapping(source = "actual.content", target = "content")
+   @Mapping(source = "mainNote.path", target = "mainPath")
+   @Mapping(target = "withContent", ignore = true)
+   @Mapping(target = "withSyntaxType", ignore = true)
+   NotePartialDomainDto ofPartial(Note note);
 
    NoteFullDomainDto of(NotePartialDomainDto note, List<Tag> tags);
 
    NoteSearchTagsDomainDto of(NoteSearchDomainDto note, List<Tag> tags);
-
-   NoteTagsDomainDto of(NoteMinimalDomainDto content, List<Tag> tags);
 
    @Mapping(source = "content.score", target = "score")
    @Mapping(source = "note", target = "note")

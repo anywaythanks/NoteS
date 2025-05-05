@@ -1,7 +1,9 @@
 package com.notes.models.entity;
 
+import com.notes.converters.SagaEventConverter;
 import com.notes.converters.SyntaxTypeConverter;
 import com.notes.listeners.NoteListener;
+import com.notes.listeners.SagaListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -12,7 +14,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -20,12 +21,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -37,6 +36,7 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PROTECTED)
 @Builder
 @Getter
+@EntityListeners(SagaListener.class)
 public class SagaLog {
    @Id
    @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -64,11 +64,12 @@ public class SagaLog {
 
    @NotNull
    @Column(name = "created_on", nullable = false)
+   @Setter
    private Instant createdOn;
 
    @NotNull
    @Column(name = "event_id", nullable = false)
-   @Convert(converter = SyntaxTypeConverter.class)
+   @Convert(converter = SagaEventConverter.class)
    @Setter
    SagaEvent event;
 }

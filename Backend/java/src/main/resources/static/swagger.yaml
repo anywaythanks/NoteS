@@ -33,6 +33,58 @@ servers:
         default: ''
 components:
   schemas:
+    NoteSearchTagsResponseDto:
+      required:
+        - created_at
+        - description
+        - is_public
+        - note_type
+        - path
+        - syntax_name
+        - title
+      type: object
+      properties:
+        description:
+          type: string
+        title:
+          type: string
+        path:
+          type: string
+        syntax_name:
+          type: string
+          enum:
+            - PLAINTEXT
+            - MARKDOWN
+        note_type:
+          type: string
+          enum:
+            - NOTE
+            - COMMENT
+            - COMMENT_REDACTED
+        is_public:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    PaginatedNoteSearchResponse:
+      type: object
+      required:
+        - items
+        - total_pages
+        - total_elements
+        - page
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/NoteSearchTagsResponseDto'
+        total_pages:
+          type: integer
+        total_elements:
+          type: integer
+          format: int64
+        page:
+          type: integer
     AddTagRequestDto:
       type: object
       properties:
@@ -163,24 +215,7 @@ components:
         syntax_name:
           "$ref": "#/components/schemas/SyntaxTypeName"
       additionalProperties: false
-    NoteEditContentResponseDto:
-      required:
-        - syntax_name
-      type: object
-      properties:
-        title:
-          type: string
-          nullable: true
-        content:
-          type: string
-          nullable: true
-        description:
-          type: string
-          nullable: true
-        syntax_name:
-          "$ref": "#/components/schemas/SyntaxTypeName"
-      additionalProperties: false
-    NoteEditOnlyContentRequestDto:
+    NoteEditRequestDto:
       type: object
       properties:
         content:
@@ -188,10 +223,6 @@ components:
           nullable: true
         syntax_name:
           "$ref": "#/components/schemas/SyntaxTypeName"
-      additionalProperties: false
-    NoteEditOtherRequestDto:
-      type: object
-      properties:
         title:
           type: string
           nullable: true
@@ -199,7 +230,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
-    NoteEditOtherResponseDto:
+    NoteEditResponseDto:
       required:
         - syntax_name
       type: object
@@ -413,7 +444,7 @@ paths:
             text/json:
               schema:
                 "$ref": "#/components/schemas/ProblemDetails"
-  "/api/private/{accountName}/notes/{pathNote}/content":
+  "/api/private/{accountName}/notes/{pathNote}":
     patch:
       tags:
         - PrivateNote
@@ -436,26 +467,26 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/NoteEditOtherRequestDto"
+              "$ref": "#/components/schemas/NoteEditRequestDto"
           text/json:
             schema:
-              "$ref": "#/components/schemas/NoteEditOtherRequestDto"
+              "$ref": "#/components/schemas/NoteEditRequestDto"
           application/*+json:
             schema:
-              "$ref": "#/components/schemas/NoteEditOtherRequestDto"
+              "$ref": "#/components/schemas/NoteEditRequestDto"
       responses:
         '200':
           description: OK
           content:
             text/plain:
               schema:
-                "$ref": "#/components/schemas/NoteEditOtherResponseDto"
+                "$ref": "#/components/schemas/NoteEditResponseDto"
             application/json:
               schema:
-                "$ref": "#/components/schemas/NoteEditOtherResponseDto"
+                "$ref": "#/components/schemas/NoteEditResponseDto"
             text/json:
               schema:
-                "$ref": "#/components/schemas/NoteEditOtherResponseDto"
+                "$ref": "#/components/schemas/NoteEditResponseDto"
         '401':
           description: Unauthorized
           content:
@@ -480,73 +511,6 @@ paths:
             text/json:
               schema:
                 "$ref": "#/components/schemas/ProblemDetails"
-    post:
-      tags:
-        - PrivateNote
-      description: Редактирование контента заметки (комментария в другом месте)
-      parameters:
-        - name: accountName
-          in: path
-          required: true
-          schema:
-            maxLength: 128
-            type: string
-        - name: pathNote
-          in: path
-          required: true
-          schema:
-            maxLength: 128
-            minLength: 3
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/NoteEditOnlyContentRequestDto"
-          text/json:
-            schema:
-              "$ref": "#/components/schemas/NoteEditOnlyContentRequestDto"
-          application/*+json:
-            schema:
-              "$ref": "#/components/schemas/NoteEditOnlyContentRequestDto"
-      responses:
-        '200':
-          description: OK
-          content:
-            text/plain:
-              schema:
-                "$ref": "#/components/schemas/NoteEditContentResponseDto"
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/NoteEditContentResponseDto"
-            text/json:
-              schema:
-                "$ref": "#/components/schemas/NoteEditContentResponseDto"
-        '401':
-          description: Unauthorized
-          content:
-            text/plain:
-              schema:
-                "$ref": "#/components/schemas/ProblemDetails"
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/ProblemDetails"
-            text/json:
-              schema:
-                "$ref": "#/components/schemas/ProblemDetails"
-        '403':
-          description: Forbidden
-          content:
-            text/plain:
-              schema:
-                "$ref": "#/components/schemas/ProblemDetails"
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/ProblemDetails"
-            text/json:
-              schema:
-                "$ref": "#/components/schemas/ProblemDetails"
-  "/api/private/{accountName}/notes/{pathNote}":
     get:
       tags:
         - PrivateNote
@@ -625,7 +589,7 @@ paths:
           in: query
           schema:
             maximum: 2147483647
-            minimum: 1
+            minimum: 0
             type: integer
             format: int32
         - name: Limit
@@ -909,7 +873,7 @@ paths:
     post:
       tags:
         - PublicNote
-      description: Редактирование остальных полей заметки (комментария в другом месте)
+      description: Редактирование заметки, комментарий в другом месте.
       parameters:
         - name: accountName
           in: path
@@ -928,13 +892,13 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/NoteEditOtherRequestDto"
+              "$ref": "#/components/schemas/NoteEditRequestDto"
           text/json:
             schema:
-              "$ref": "#/components/schemas/NoteEditOtherRequestDto"
+              "$ref": "#/components/schemas/NoteEditRequestDto"
           application/*+json:
             schema:
-              "$ref": "#/components/schemas/NoteEditOtherRequestDto"
+              "$ref": "#/components/schemas/NoteEditRequestDto"
       responses:
         '401':
           description: Unauthorized
@@ -1046,61 +1010,6 @@ paths:
             text/json:
               schema:
                 "$ref": "#/components/schemas/ProblemDetails"
-  "/api/public/{accountName}/notes/{pathNote}/content":
-    post:
-      tags:
-        - PublicNote
-      description: Редактирование контента заметки (комментария в другом месте)
-      parameters:
-        - name: accountName
-          in: path
-          required: true
-          schema:
-            maxLength: 128
-            type: string
-        - name: pathNote
-          in: path
-          required: true
-          schema:
-            maxLength: 128
-            minLength: 3
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/NoteEditOnlyContentRequestDto"
-          text/json:
-            schema:
-              "$ref": "#/components/schemas/NoteEditOnlyContentRequestDto"
-          application/*+json:
-            schema:
-              "$ref": "#/components/schemas/NoteEditOnlyContentRequestDto"
-      responses:
-        '401':
-          description: Unauthorized
-          content:
-            text/plain:
-              schema:
-                "$ref": "#/components/schemas/ProblemDetails"
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/ProblemDetails"
-            text/json:
-              schema:
-                "$ref": "#/components/schemas/ProblemDetails"
-        '403':
-          description: Forbidden
-          content:
-            text/plain:
-              schema:
-                "$ref": "#/components/schemas/ProblemDetails"
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/ProblemDetails"
-            text/json:
-              schema:
-                "$ref": "#/components/schemas/ProblemDetails"
   "/api/public/{accountName}/notes":
     post:
       tags:
@@ -1164,7 +1073,7 @@ paths:
           in: query
           schema:
             maximum: 2147483647
-            minimum: 1
+            minimum: 0
             type: integer
             format: int32
         - name: Limit
@@ -1219,7 +1128,7 @@ paths:
           in: query
           schema:
             maximum: 2147483647
-            minimum: 1
+            minimum: 0
             type: integer
             format: int32
         - name: Limit
@@ -1230,6 +1139,12 @@ paths:
             type: integer
             format: int32
       responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNoteSearchResponse'
         '401':
           description: Unauthorized
           content:
@@ -1282,7 +1197,7 @@ paths:
           in: query
           schema:
             maximum: 2147483647
-            minimum: 1
+            minimum: 0
             type: integer
             format: int32
         - name: Limit
@@ -1342,7 +1257,7 @@ paths:
           in: query
           schema:
             maximum: 2147483647
-            minimum: 1
+            minimum: 0
             type: integer
             format: int32
         - name: Limit

@@ -7,6 +7,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 interface Total {
    @PositiveOrZero
    @NotNull
-   @JsonProperty("total_pages")
+   @JsonProperty("total_elements")
    Long totalElements();
 }

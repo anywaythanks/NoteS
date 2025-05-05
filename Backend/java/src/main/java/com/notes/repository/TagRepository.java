@@ -36,7 +36,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     * @return {@link Optional} containing the matching tag or empty
     */
    @Query("from Tag t where t.owner.id = :ownerId and t.name = :name")
-   Optional<Tag> find(@Param("ownerId") Long ownerId, String name);
+   Optional<Tag> find(@Param("ownerId") Long ownerId,@Param("name")  String name);
 
    /**
     * Retrieves multiple tags by names for a specific owner.

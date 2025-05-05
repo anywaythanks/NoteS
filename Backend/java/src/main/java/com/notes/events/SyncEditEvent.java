@@ -6,6 +6,6 @@ import java.util.UUID;
 
 public class SyncEditEvent extends AckEvent {
    public SyncEditEvent(UUID sagaId, Long noteId, Long oldCommitId, Long newCommitId, SimpleAcknowledge acknowledgment) {
-      super(sagaId, noteId, oldCommitId, newCommitId, SagaEvent.MODIFICATE, acknowledgment);
+      super(sagaId, noteId, oldCommitId, newCommitId, acknowledgment);
    }
 }

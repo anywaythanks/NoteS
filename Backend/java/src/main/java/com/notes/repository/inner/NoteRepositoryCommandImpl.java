@@ -25,13 +25,19 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.Clock;
-import java.time.Instant;
 
 import static com.notes.configs.SyncNotesProperties.Strategy.SINGLE_TASK;
+import static com.notes.models.entity.SagaEvent.ERROR_CREATED;
+import static com.notes.models.entity.SagaEvent.ERROR_DELETED;
+import static com.notes.models.entity.SagaEvent.ERROR_EDITED;
+import static com.notes.models.entity.SagaEvent.SUCCESS_CREATED;
+import static com.notes.models.entity.SagaEvent.SUCCESS_DELETED;
+import static com.notes.models.entity.SagaEvent.SUCCESS_EDITED;
 import static com.notes.models.entity.State.ACTIVE;
 import static com.notes.models.entity.State.ARCHIVED;
 import static com.notes.models.entity.State.FAILED;
@@ -67,6 +73,7 @@ public class NoteRepositoryCommandImpl implements NoteRepositoryCommand {
                       .build())
               .mainNote(main)
               .state(PENDING)
+              .isPublic(noteDto.isPublic())
               .build();
       em.persist(note);
       var commit = Commit.builder()
@@ -83,12 +90,11 @@ public class NoteRepositoryCommandImpl implements NoteRepositoryCommand {
                  generatorUtils.generateUUID(),
                  note.getId(),
                  commit.getId(),
-                 commit.getId(),
-                 Instant.now(clock)));
+                 commit.getId()));
       }
    }
 
-   @TransactionalEventListener
+   @EventListener
    public void syncCreateNote(SyncCreateEvent event) {
       var note = proxy.getNote(event.getNoteId());
       try {
@@ -100,18 +106,18 @@ public class NoteRepositoryCommandImpl implements NoteRepositoryCommand {
                  .title(clean.title())
                  .uuid(note.getElasticUuid())
                  .owner(note.getOwner().getId())
+                 .noteType(note.getNoteType())
                  .build());
          proxy.updateNoteState(event.getNoteId(), ACTIVE);
-         applicationEventPublisher.publishEvent(eventMapper.ofSuccess(event));
+         applicationEventPublisher.publishEvent(eventMapper.ofSuccess(event, SUCCESS_CREATED));
       } catch(Exception e) {
-         applicationEventPublisher.publishEvent(eventMapper.ofFailed(event));
+         applicationEventPublisher.publishEvent(eventMapper.ofFailed(event, ERROR_CREATED));
       }
    }
 
    @Override
    public void edit(Long noteId, NoteEditDto noteDto) {
-      var note = em.find(Note.class, noteId);
-      if(note == null) throw new NoteNotFoundException();
+      var note = getNote(noteId);
       var commit = Commit.builder()
               .note_id(noteId)
               .syntaxType(noteDto.syntaxType())
@@ -128,13 +134,12 @@ public class NoteRepositoryCommandImpl implements NoteRepositoryCommand {
                  generatorUtils.generateUUID(),
                  note.getId(),
                  commit.getId(),
-                 commit.getId(),
-                 Instant.now(clock)));
+                 commit.getId()));
       }
 
    }
 
-   @TransactionalEventListener
+   @EventListener
    public void syncEditNote(SyncEditEvent event) {
       var note = proxy.getNote(event.getNoteId());
       try {
@@ -148,43 +153,40 @@ public class NoteRepositoryCommandImpl implements NoteRepositoryCommand {
                  .owner(note.getOwner().getId())
                  .build());
          proxy.updateNoteState(event.getNoteId(), ACTIVE);
-         applicationEventPublisher.publishEvent(eventMapper.ofSuccess(event));
+         applicationEventPublisher.publishEvent(eventMapper.ofSuccess(event, SUCCESS_EDITED));
       } catch(Exception e) {
-         applicationEventPublisher.publishEvent(eventMapper.ofFailed(event));
+         applicationEventPublisher.publishEvent(eventMapper.ofFailed(event, ERROR_EDITED));
       }
    }
 
    @Override
    public void delete(Long noteId) {
-      var note = em.find(Note.class, noteId);
-      if(note == null) throw new NoteNotFoundException();
+      var note = getNote(noteId);
       noteUtils.updateState(note, PENDING_ARCHIVE);
       if(properties.getStrategy() == SINGLE_TASK) {
          applicationEventPublisher.publishEvent(new ScheduleDeleteEvent(
                  generatorUtils.generateUUID(),
                  note.getId(),
                  note.getCommitTo(),
-                 note.getCommitTo(),
-                 Instant.now(clock)));
+                 note.getCommitTo()));
       }
    }
 
-   @TransactionalEventListener
+   @EventListener
    public void syncDeleteNote(SyncDeleteEvent event) {
       var note = proxy.getNote(event.getNoteId());
       try {
          repositoryElastic.deleteById(note.getElasticUuid().toString());
          proxy.updateNoteState(event.getNoteId(), ARCHIVED);
-         applicationEventPublisher.publishEvent(eventMapper.ofSuccess(event));
+         applicationEventPublisher.publishEvent(eventMapper.ofSuccess(event, SUCCESS_DELETED));
       } catch(Exception e) {
-         applicationEventPublisher.publishEvent(eventMapper.ofFailed(event));
+         applicationEventPublisher.publishEvent(eventMapper.ofFailed(event, ERROR_DELETED));
       }
    }
 
    @TransactionalEventListener
    public void compensate(CompensateEvent event) {
-      var note = em.find(Note.class, event.getNoteId());
-      if(note == null) throw new NoteNotFoundException();
+      var note = getNote(event.getNoteId());
       noteUtils.updateState(note, FAILED);
    }
 
@@ -194,5 +196,11 @@ public class NoteRepositoryCommandImpl implements NoteRepositoryCommand {
       if(note == null) throw new NoteNotFoundException();
       note.setIsPublic(isPublic);
       em.persist(note);
+   }
+
+   private Note getNote(Long id) {
+      var note = em.find(Note.class, id);
+      if(note == null) throw new NoteNotFoundException();
+      return note;
    }
 }

@@ -6,14 +6,10 @@ import com.notes.mappers.response.PageResponseMapper;
 import com.notes.models.api.account.AccName;
 import com.notes.models.api.note.NoteCreateRequestDto;
 import com.notes.models.api.note.NoteCreateResponseDto;
-import com.notes.models.api.note.NoteEditContentResponseDto;
-import com.notes.models.api.note.NoteEditOnlyContentRequestDto;
-import com.notes.models.api.note.NoteEditOtherRequestDto;
-import com.notes.models.api.note.NoteEditOtherResponseDto;
 import com.notes.models.api.note.NoteEditPublicRequestDto;
-import com.notes.models.api.note.NoteEditPublicResponseDto;
+import com.notes.models.api.note.NoteEditRequestDto;
+import com.notes.models.api.note.NoteFullResponseDto;
 import com.notes.models.api.note.NotePath;
-import com.notes.models.api.note.NoteSearchContentResponseDto;
 import com.notes.models.api.note.NoteSearchRequestDto;
 import com.notes.models.api.note.NoteSearchTagsResponseDto;
 import com.notes.models.api.note.NoteSemanticSearchRequestDto;
@@ -32,14 +28,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.List;
+import static java.util.Arrays.asList;
 
 @RestController
 @RequestMapping("/api/public/{accountName}/notes")
@@ -57,12 +53,10 @@ public class PublicNoteController {
     */
    @PostMapping(path = "/{pathNote}/publish", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes', 'set-own-public-status-notes')")
-   public NoteEditPublicResponseDto editPublicNote(@Valid @PathVariable AccName accountName,
-                                                   @Valid @PathVariable NotePath pathNote,
-                                                   @Valid @RequestBody NoteEditPublicRequestDto editDto) {
-      return noteResponseMapper.ofPublic(editService.publishNote(pathNote.path(),
-              accountName.name(),
-              noteRequestMapper.of(editDto)));
+   public void editPublicNote(@Valid @PathVariable("accountName") AccName accountName,
+                              @Valid @PathVariable NotePath pathNote,
+                              @Valid @RequestBody NoteEditPublicRequestDto editDto) {
+      editService.publishNote(pathNote.path(), accountName.name(), noteRequestMapper.of(editDto));
    }
 
    /**
@@ -70,23 +64,10 @@ public class PublicNoteController {
     */
    @PostMapping(path = "/{pathNote}", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes', 'edit-own-notes')")
-   public NoteEditOtherResponseDto editNote(@Valid @PathVariable AccName accountName,
-                                            @Valid @PathVariable NotePath pathNote,
-                                            @Valid @RequestBody NoteEditOtherRequestDto editDto) {
-      return noteResponseMapper.ofOther(editService.editNote(pathNote.path(), accountName.name(), noteRequestMapper.of(editDto)));
-   }//TODO: Смерджить с контентом
-
-   /**
-    * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/post_api_public__accountName__notes__pathNote__content">Click</a>
-    */
-   @PostMapping(path = "/{pathNote}/content", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-   @PreAuthorize("hasAnyAuthority('read-notes', 'edit-own-notes')")
-   public NoteEditContentResponseDto editContentNote(@Valid @PathVariable AccName accountName,
-                                                     @Valid @PathVariable NotePath pathNote,
-                                                     @Valid @RequestBody NoteEditOnlyContentRequestDto editDto) {
-      return noteResponseMapper.ofEditContent(editService.editContentNote(pathNote.path(),
-              accountName.name(),
-              noteRequestMapper.of(editDto)));
+   public void editNote(@Valid @PathVariable("accountName") AccName accountName,
+                        @Valid @PathVariable NotePath pathNote,
+                        @Valid @RequestBody NoteEditRequestDto editDto) {
+      editService.editNote(pathNote.path(), accountName.name(), noteRequestMapper.of(editDto));
    }
 
    /**
@@ -94,7 +75,7 @@ public class PublicNoteController {
     */
    @PostMapping(headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-notes', 'edit-own-notes')")
-   public ResponseEntity<NoteCreateResponseDto> createNote(@Valid @PathVariable AccName accountName,
+   public ResponseEntity<NoteCreateResponseDto> createNote(@Valid @PathVariable("accountName") AccName accountName,
                                                            @Valid @RequestBody NoteCreateRequestDto editDto) {
       var note = editService.createNote(accountName.name(),
               noteRequestMapper.of(editDto));
@@ -102,7 +83,7 @@ public class PublicNoteController {
       return ResponseEntity.created(ServletUriComponentsBuilder
                       .fromPath("/api/public/{accountName}/notes/{pathNote}")
                       .buildAndExpand(accountName.name(), note.path()).toUri())
-              .body(noteResponseMapper.ofNoteCreate(note));
+              .build();
    }
 
    /**
@@ -110,10 +91,10 @@ public class PublicNoteController {
     */
    @GetMapping(path = "/search/title")
    @PreAuthorize("hasAnyAuthority('read-notes', 'search-own-notes')")
-   public PageDto<NoteSearchTagsResponseDto> searchByTitleNotes(@Valid @PathVariable AccName accountName,
-                                                                @Valid @RequestAttribute("Page") PageSizeDto page,
-                                                                @Valid @RequestAttribute("Limit") PageLimitDto limit,
-                                                                @Valid @RequestAttribute("Title") NoteSearchRequestDto noteSearch) {
+   public PageDto<NoteSearchTagsResponseDto> searchByTitleNotes(@Valid @PathVariable("accountName") AccName accountName,
+                                                                @Valid @RequestParam("Page") PageSizeDto page,
+                                                                @Valid @RequestParam("Limit") PageLimitDto limit,
+                                                                @Valid @RequestParam("Title") NoteSearchRequestDto noteSearch) {
       var notes = noteInformationService
               .findByTitle(noteSearch.title(), accountName.name(), page.page(), limit.limit())
               .map(noteResponseMapper::ofTags);
@@ -126,14 +107,14 @@ public class PublicNoteController {
     */
    @GetMapping(path = "/search/tag")
    @PreAuthorize("hasAnyAuthority('read-notes', 'search-own-notes')")
-   public PageDto<NoteSearchTagsResponseDto> searchByTagNotes(@Valid @PathVariable AccName accountName,
-                                                              @Valid @RequestAttribute("tag") List<String> tags,
-                                                              @Valid @RequestAttribute("filter") List<String> filterTags,
-                                                              @Valid @RequestAttribute PageSizeDto page,
-                                                              @Valid @RequestAttribute PageLimitDto limit,
-                                                              @Valid @RequestAttribute("and") boolean isAnd) {
+   public PageDto<NoteSearchTagsResponseDto> searchByTagNotes(@Valid @PathVariable("accountName") AccName accountName,
+                                                              @Valid @RequestParam(value = "tag", defaultValue = "") String[] tags,
+                                                              @Valid @RequestParam(value = "filter", defaultValue = "") String[] filterTags,
+                                                              @Valid @RequestParam("Page") PageSizeDto page,
+                                                              @Valid @RequestParam("Limit") PageLimitDto limit,
+                                                              @Valid @RequestParam(value = "and", defaultValue = "false") boolean isAnd) {
       var notes = noteInformationService
-              .findByTags(tags, filterTags, accountName.name(), isAnd, page.page(), limit.limit())
+              .findByTags(asList(tags), asList(filterTags), accountName.name(), isAnd, limit.limit(), page.page())
               .map(noteResponseMapper::ofTags);
 
       return pageResponseMapper.of(notes);
@@ -144,10 +125,10 @@ public class PublicNoteController {
     */
    @GetMapping(path = "/search/semantic")
    @PreAuthorize("hasAnyAuthority('read-notes', 'search-own-notes')")
-   public PageDto<NoteSearchTagsResponseDto> semanticSearchNotes(@Valid @PathVariable AccName accountName,
-                                                                 @Valid @RequestAttribute("Query") NoteSemanticSearchRequestDto noteSearch,
-                                                                 @Valid @RequestAttribute PageSizeDto page,
-                                                                 @Valid @RequestAttribute PageLimitDto limit) {
+   public PageDto<NoteSearchTagsResponseDto> semanticSearchNotes(@Valid @PathVariable("accountName") AccName accountName,
+                                                                 @Valid @RequestParam("Query") NoteSemanticSearchRequestDto noteSearch,
+                                                                 @Valid @RequestParam("Page") PageSizeDto page,
+                                                                 @Valid @RequestParam("Limit") PageLimitDto limit) {
       var notes = noteInformationService
               .semanticSearch(noteSearch.query(), accountName.name(), page.page(), limit.limit())
               .map(noteResponseMapper::ofTags);
@@ -160,9 +141,9 @@ public class PublicNoteController {
     */
    @GetMapping
    @PreAuthorize("hasAnyAuthority('read-notes')")
-   public PageDto<NoteSearchTagsResponseDto> notes(@Valid @PathVariable AccName accountName,
-                                                   @Valid @RequestAttribute PageSizeDto page,
-                                                   @Valid @RequestAttribute PageLimitDto limit) {
+   public PageDto<NoteSearchTagsResponseDto> notes(@Valid @PathVariable("accountName") AccName accountName,
+                                                   @Valid @RequestParam("Page") PageSizeDto page,
+                                                   @Valid @RequestParam("Limit") PageLimitDto limit) {
       var notes = noteInformationService
               .findByOwner(accountName.name(), page.page(), limit.limit())
               .map(noteResponseMapper::ofTags);
@@ -173,11 +154,11 @@ public class PublicNoteController {
    /**
     * <a href="https://anywaythanks.github.io/NoteS-API/#/PublicNote/get_api_public__accountName__notes_search_tag">Click</a>
     */
-   @DeleteMapping(path = "/{pathNote}", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
+   @DeleteMapping(path = "/{pathNote}")
    @PreAuthorize("hasAnyAuthority('read-notes', 'delete-notes')")
    @ResponseStatus(HttpStatus.NO_CONTENT)
    public void delNote(@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote) {
-      noteEditService.deleteNote(accountName.name(), pathNote.path());
+      noteEditService.deleteNote(pathNote.path(), accountName.name());
    }
 
    /**
@@ -185,8 +166,8 @@ public class PublicNoteController {
     */
    @GetMapping(path = "/{pathNote}")
    @PreAuthorize("hasAnyAuthority('read-notes')")
-   public NoteSearchContentResponseDto getNote(@Valid @PathVariable AccName accountName,
-                                               @Valid @PathVariable NotePath pathNote) {
+   public NoteFullResponseDto getNote(@Valid @PathVariable("accountName") AccName accountName,
+                                      @Valid @PathVariable NotePath pathNote) {
       var note = noteInformationService.fullFindPublicByPath(pathNote.path(), accountName.name());
       return noteResponseMapper.ofFull(note);
    }

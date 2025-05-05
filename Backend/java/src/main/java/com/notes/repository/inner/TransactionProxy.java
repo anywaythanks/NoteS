@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+
 @Component
 @RequiredArgsConstructor
 class TransactionProxy {
@@ -20,7 +22,10 @@ class TransactionProxy {
 
    @Transactional(propagation = Propagation.REQUIRES_NEW)
    public Note getNote(Long id) {
-      var note = em.find(Note.class, id);
+      var note = em.find(Note.class, id, Collections.singletonMap(
+              "javax.persistence.loadgraph",
+              em.getEntityGraph("Note.actual.full")
+      ));
       if(note == null) throw new NoteNotFoundException();
       return note;
    }

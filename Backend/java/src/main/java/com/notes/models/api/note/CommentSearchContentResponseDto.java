@@ -13,8 +13,7 @@ public record CommentSearchContentResponseDto(@NonNull String description,
                                               @NonNull String mainPath,
                                               @NonNull SyntaxTypeApiDto syntaxType,
                                               @NonNull NoteTypeApiDto noteType,
-                                              @NonNull BigDecimal score,
                                               boolean isPublic,
                                               Instant createdOn)
-        implements Description, Content, Title, SyntaxType, NoteType, IsPublic, Path, Score, CreatedOn, OwnerName, MainPath {
+        implements Description, Content, Title, SyntaxType, NoteType, IsPublic, Path, CreatedOn, OwnerName, MainPath {
 }

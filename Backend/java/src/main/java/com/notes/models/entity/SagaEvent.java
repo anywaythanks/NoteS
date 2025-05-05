@@ -2,29 +2,33 @@ package com.notes.models.entity;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 @Getter
 public enum SagaEvent {
-   CREATE(0),
-   MODIFICATE(1),
-   DELETE(2),
-   FAILED(3),
-   SUCCESS(4),
-   COMPENSATE(5);
+   SCHEDULED_INDEX(0),
+   SCHEDULED_REINDEX(1),
+   SCHEDULED_REMOVE_INDEX(2),
+   SUCCESS_CREATED(3),
+   SUCCESS_EDITED(4),
+   SUCCESS_DELETED(5),
+   ERROR_CREATED(6),
+   ERROR_EDITED(7),
+   ERROR_DELETED(8),
+   FAILED(9),
+   COMPENSATE(10);
    final int id;
+   final static Map<Integer, SagaEvent> map = Arrays.stream(SagaEvent.values())
+           .collect(Collectors.toMap(SagaEvent::getId, Function.identity()));
 
    SagaEvent(int id) {
       this.id = id;
    }
 
    public static SagaEvent valueOf(int i) {
-      return switch(i) {
-         case 0 -> CREATE;
-         case 1 -> MODIFICATE;
-         case 2 -> DELETE;
-         case 3 -> FAILED;
-         case 4 -> SUCCESS;
-         case 5 -> COMPENSATE;
-         default -> throw new IllegalArgumentException("Unknown saga event: " + i);
-      };
+      return map.get(i);
    }
 }

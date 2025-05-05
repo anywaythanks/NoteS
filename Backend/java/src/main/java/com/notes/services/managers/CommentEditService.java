@@ -1,5 +1,7 @@
 package com.notes.services.managers;
 
+import com.cosium.spring.data.jpa.entity.graph.domain2.EntityGraphType;
+import com.cosium.spring.data.jpa.entity.graph.domain2.NamedEntityGraph;
 import com.notes.exceptions.CommentEditTimeMissedException;
 import com.notes.exceptions.NoteNotFoundException;
 import com.notes.exceptions.NoteTypeException;
@@ -113,7 +115,7 @@ public class CommentEditService {
     */
    private Note getComment(String pathComment, String ownerName) {
       var comment = noteInformationService.findPublicByPath(pathComment, ownerName);
-      var commentEntity = noteRepositoryQuery.findById(comment.id()).orElseThrow(NoteNotFoundException::new);
+      var commentEntity = noteRepositoryQuery.findById(comment.id(), new NamedEntityGraph(EntityGraphType.LOAD, "Note.actual.full")).orElseThrow(NoteNotFoundException::new);
       if(!noteUtils.isComment(comment.noteType())) throw new NoteTypeException();
       if(!noteUtils.isEdit(comment)) throw new CommentEditTimeMissedException();
       return commentEntity;

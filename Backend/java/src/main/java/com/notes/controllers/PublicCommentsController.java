@@ -7,7 +7,6 @@ import com.notes.models.api.account.AccName;
 import com.notes.models.api.note.CommentCreateRequestDto;
 import com.notes.models.api.note.CommentCreateResponseDto;
 import com.notes.models.api.note.CommentEditRequestDto;
-import com.notes.models.api.note.CommentEditResponseDto;
 import com.notes.models.api.note.CommentSearchContentResponseDto;
 import com.notes.models.api.note.NotePath;
 import com.notes.models.api.page.PageDto;
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -48,10 +48,10 @@ public class PublicCommentsController {
    @GetMapping(path = "/notes/{pathNote}/comments")
    @PreAuthorize("hasAnyAuthority('read-comments')")
    public PageDto<CommentSearchContentResponseDto> comments(
-           @Valid @PathVariable AccName accountName,
+           @Valid @PathVariable("accountName") AccName accountName,
            @Valid @PathVariable NotePath pathNote,
-           @Valid @RequestAttribute PageSizeDto page,
-           @Valid @RequestAttribute PageLimitDto limit) {
+           @Valid @RequestParam("Page") PageSizeDto page,
+           @Valid @RequestParam("Limit") PageLimitDto limit) {
       var comments = commentInformationService
               .comments(accountName.name(), pathNote.path(), page.page(), limit.limit())
               .map(noteResponseMapper::ofCommentContent);
@@ -63,7 +63,7 @@ public class PublicCommentsController {
     */
    @PostMapping(path = "/notes/{pathNote}/comments", headers = "content-type=application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
    @PreAuthorize("hasAnyAuthority('read-comments', 'read-notes', 'create-comments')")
-   public ResponseEntity<CommentCreateResponseDto> createComment(@Valid @PathVariable AccName accountName,
+   public ResponseEntity<CommentCreateResponseDto> createComment(@Valid @PathVariable("accountName") AccName accountName,
                                                                  @Valid @PathVariable NotePath pathNote,
                                                                  @Valid @RequestBody CommentCreateRequestDto createDto) {
       var note = commentEditService.createComment(accountName.name(),
@@ -73,7 +73,7 @@ public class PublicCommentsController {
       return ResponseEntity.created(ServletUriComponentsBuilder
                       .fromPath("/api/public/{accountName}/notes/{pathNote}")
                       .buildAndExpand(accountName.name(), note.path()).toUri())
-              .body(noteResponseMapper.ofCommentCreate(note));
+              .build();
    }
 
    /**
@@ -81,14 +81,12 @@ public class PublicCommentsController {
     */
    @PostMapping("/comments/{pathNote}")
    @PreAuthorize("hasAnyAuthority('read-comments', 'read-notes', 'edit-own-comments')")
-   public CommentEditResponseDto editComment(@Valid @PathVariable AccName accountName,
-                                             @Valid @PathVariable NotePath pathNote,
-                                             @Valid @RequestBody CommentEditRequestDto createDto) {
-      var comment = commentEditService.editComment(pathNote.path(),
+   public void editComment(@Valid @PathVariable("accountName") AccName accountName,
+                           @Valid @PathVariable NotePath pathNote,
+                           @Valid @RequestBody CommentEditRequestDto createDto) {
+      commentEditService.editComment(pathNote.path(),
               accountName.name(),
               noteRequestMapper.of(createDto));
-
-      return noteResponseMapper.ofCommentEdit(comment);
    }
 
    /**
@@ -97,7 +95,7 @@ public class PublicCommentsController {
    @DeleteMapping("/comments/{pathNote}")
    @PreAuthorize("hasAnyAuthority('read-comments', 'read-notes', 'delete-comments')")
    @ResponseStatus(HttpStatus.NO_CONTENT)
-   public void delComment(@Valid @PathVariable AccName accountName,
+   public void delComment(@Valid @PathVariable("accountName") AccName accountName,
                           @Valid @PathVariable NotePath pathNote) {
       commentEditService.deleteComment(pathNote.path(), accountName.name());
    }

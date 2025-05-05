@@ -38,12 +38,10 @@ public class NoteTagRef {
    @GeneratedValue(strategy = IDENTITY)
    NoteTagId id;
 
-   @NotNull
    @ManyToOne(fetch = FetchType.LAZY, optional = false)
    @JoinColumn(name = "id_note", nullable = false, insertable = false, updatable = false)
    Note note;
 
-   @NotNull
    @ManyToOne(fetch = FetchType.LAZY, optional = false)
    @JoinColumn(name = "id_tag", nullable = false, insertable = false, updatable = false)
    Tag tag;

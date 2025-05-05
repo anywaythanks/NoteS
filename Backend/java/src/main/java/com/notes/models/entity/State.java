@@ -56,7 +56,8 @@ public enum State {
          case 0 -> PENDING;
          case 1 -> ACTIVE;
          case 2 -> FAILED;
-         case 3 -> ARCHIVED;
+         case 3 -> PENDING_ARCHIVE;
+         case 4 -> ARCHIVED;
          default -> throw new IllegalArgumentException("Unknown note states: " + i);
       };
    }

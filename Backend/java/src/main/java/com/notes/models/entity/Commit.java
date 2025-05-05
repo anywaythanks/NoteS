@@ -1,7 +1,7 @@
 package com.notes.models.entity;
 
 import com.notes.converters.SyntaxTypeConverter;
-import com.notes.listeners.NoteListener;
+import com.notes.listeners.CommitListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -11,6 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
@@ -33,7 +35,11 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PROTECTED)
 @Builder
 @Getter
-@EntityListeners(NoteListener.class)
+@EntityListeners(CommitListener.class)
+@NamedEntityGraph(name = "Commit.partial",
+        attributeNodes = {@NamedAttributeNode("title"),
+                @NamedAttributeNode("description"),
+                @NamedAttributeNode("syntaxType")})
 public class Commit {
    @Id
    @GeneratedValue(strategy = SEQUENCE, generator = "note_seq")
@@ -43,14 +49,13 @@ public class Commit {
    @NotNull
    @Column(name = "note_id", nullable = false)
    Long note_id;
-   @NotNull
-   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-   @JoinColumn(name = "note_id", nullable = false, insertable = false, updatable = false)
+
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "note_id", insertable = false, updatable = false)
    @Setter
    Note note;
 
    @NotNull
-   @NotEmpty
    @Length(max = 2048)
    @Column(name = "description", nullable = false)
    @Setter
@@ -64,7 +69,6 @@ public class Commit {
    String title;
 
    @NotNull
-   @NotEmpty
    @Column(name = "content", nullable = false)
    @Setter
    String content;

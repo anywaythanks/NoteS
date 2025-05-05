@@ -10,6 +10,7 @@ import com.notes.events.SuccessSync;
 import com.notes.events.SyncCreateEvent;
 import com.notes.events.SyncDeleteEvent;
 import com.notes.events.SyncEditEvent;
+import com.notes.models.entity.SagaEvent;
 import org.mapstruct.Mapper;
 
 @Mapper(config = MapstructConfig.class)
@@ -22,7 +23,7 @@ public interface EventMapper {
 
    CompensateEvent ofCompensate(ScheduleEvent event, SimpleAcknowledge acknowledgment);
 
-   SuccessSync ofSuccess(AckEvent event);
+   SuccessSync ofSuccess(AckEvent event, SagaEvent eventType);
 
-   FailedSync ofFailed(AckEvent event);
+   FailedSync ofFailed(AckEvent event, SagaEvent eventType);
 }

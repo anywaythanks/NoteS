@@ -1,4 +1,4 @@
-create sequence saga_log_seq
+create sequence saga_logs_seq
     minvalue 1
     start with 1
     increment by 50
@@ -8,8 +8,8 @@ GO
 
 create table saga_logs
 (
-    id         bigint                      default nextval('saga_log_seq') not null primary key,
-    saga_uuid  uuid                                                        not null unique,
+    id         bigint                      default nextval('saga_logs_seq') not null primary key,
+    saga_uuid  uuid                                                        not null,
     note_id    bigint                                                      not null
         constraint fk_saga_logs_notes references notes,
     commit_id  bigint                                                      not null
@@ -22,6 +22,6 @@ create table saga_logs
 
 GO
 
-alter sequence saga_log_seq owned by saga_logs.id;
+alter sequence saga_logs_seq owned by saga_logs.id;
 
 GO

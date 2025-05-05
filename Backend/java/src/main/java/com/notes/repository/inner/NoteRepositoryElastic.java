@@ -22,11 +22,13 @@ interface NoteRepositoryElastic extends ElasticsearchRepository<NoteContent, Str
     * @return {@link Page} of matching note contents
     */
    @Query("""
-           "bool":{
+           {
+            "bool":{
               "must":[
                   {
                   "query_string":{
-                     "query": "*#{#title}",
+                     "query": "*#{#title}*",
+                     "fields": ["title"]
                   }
                   },
                  {
@@ -36,15 +38,15 @@ interface NoteRepositoryElastic extends ElasticsearchRepository<NoteContent, Str
                  },
                   {
                    "term":{
-                     "entry_type": "#{T(com.notes.models.NoteType).NOTE.name}"
+                     "entry_type": "#{T(com.notes.models.entity.NoteType).NOTE.name}"
                    }
                  }
                ]
+              }
            }""")
    Page<NoteContent> searchByTitle(@Param("title") String title,
                                    @Param("ownerId") Long ownerId,
                                    Pageable pageable);
-
    /**
     * Performs semantic search using vector embeddings with Russian language model.
     *
@@ -54,46 +56,36 @@ interface NoteRepositoryElastic extends ElasticsearchRepository<NoteContent, Str
     * @return {@link Page} of semantically similar notes
     */
    @Query("""
-           "knn": {
-                 "field": "vector.vector",
-                 "k": 10,
-                 "num_candidates": 100,
-                  "query_vector_builder": {
-                         "text_embedding": {
-                             "model_id": "cointegrated__rubert-tiny2",
-                             "model_text": "#{#query}"
-                         }
-                     },
-                 "filter":{
-                 "bool":{
-                       "must":[
-                          {
-                            "term":{
-                              "owner": "#{#ownerId}"
+           {
+              "knn": {
+                    "field": "vector.vector",
+                    "k": 10,
+                    "num_candidates": 100,
+                     "query_vector_builder": {
+                            "text_embedding": {
+                                "model_id": "cointegrated__rubert-tiny2",
+                                "model_text": "#{#query}"
                             }
-                          },
-                           {
-                            "term":{
-                              "entry_type": "#{T(com.notes.models.NoteType).NOTE.name}"
-                            }
-                          }
-                        ]
+                        },
+                    "filter":{
+                    "bool":{
+                          "must":[
+                             {
+                               "term":{
+                                 "owner": "#{#ownerId}"
+                               }
+                             },
+                              {
+                               "term":{
+                                 "entry_type": "#{T(com.notes.models.entity.NoteType).NOTE.name}"
+                               }
+                             }
+                           ]
+                       }
                     }
                  }
                }""")
    Page<NoteContent> semanticSearch(@Param("query") String query,
                                     @Param("ownerId") Long ownerId,
                                     Pageable pageable);
-   /**
-    * Retrieves documents by their Elasticsearch IDs.
-    *
-    * @param uuids List of Elasticsearch document IDs
-    * @return List of matching NoteContent entities
-    */
-//   @Query("""
-//           "terms": {
-//                 "field": "_id",
-//                 "terms": "#{#uuids}"
-//               }""")
-//   List<NoteContent> findByIds(@Param("uuids") List<String> uuids);
 }

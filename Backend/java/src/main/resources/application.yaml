@@ -1,6 +1,6 @@
 ---
 scheme: http
-origins: ${scheme}://localhost:8080/
+origins: ${scheme}://localhost:8080/,${scheme}://localhost:4200/
 keycloak-port: 8080
 keycloak-realm: NoteS
 keycloak-host: localhost
@@ -79,6 +79,10 @@ logging:
     com.notes.services.utils.com.notes.services.utils.Orchestrator: DEBUG
     org:
       springframework:
+        data:
+          elasticsearch:
+            client:
+              WIRE: TRACE
         web: DEBUG
         kafka: DEBUG
       hibernate: DEBUG

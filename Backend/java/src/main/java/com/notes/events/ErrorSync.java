@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @NoArgsConstructor
-public class SuccessSync extends ScheduleAckEvent {
-   public SuccessSync(UUID sagaId, Long noteId, Long oldCommitId, Long newCommitId, SagaEvent eventType, SimpleAcknowledge acknowledgment) {
+public class ErrorSync extends ScheduleAckEvent {
+   public ErrorSync(UUID sagaId, Long noteId, Long oldCommitId, Long newCommitId, SagaEvent eventType, SimpleAcknowledge acknowledgment) {
       super(sagaId, noteId, oldCommitId, newCommitId, eventType, acknowledgment);
    }
 }

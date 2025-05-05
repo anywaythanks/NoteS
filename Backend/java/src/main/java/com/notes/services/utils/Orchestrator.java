@@ -2,6 +2,8 @@ package com.notes.services.utils;
 
 import com.notes.events.FailedSync;
 import com.notes.events.ScheduleCreateEvent;
+import com.notes.events.ScheduleDeleteEvent;
+import com.notes.events.ScheduleEditEvent;
 import com.notes.events.ScheduleEvent;
 import com.notes.events.SuccessSync;
 import com.notes.mappers.events.EventMapper;
@@ -28,12 +30,11 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 @RequiredArgsConstructor
 public class Orchestrator {
    private final KafkaTemplate<String, ScheduleEvent> kafkaTemplate;
-   private final GeneratorUtils generatorUtils;
    private final SagaRepository sagaRepository;
    private final ApplicationEventPublisher applicationEventPublisher;
    private final EventMapper eventMapper;
 
-   @KafkaListener(topics = "sync-create")
+   @KafkaListener(topics = "sync-create", groupId = "notes")
    @RetryableTopic(
            attempts = "3",
            backoff = @Backoff(delay = 2000, multiplier = 2),
@@ -43,7 +44,7 @@ public class Orchestrator {
       applicationEventPublisher.publishEvent(eventMapper.ofCreate(event, ack::acknowledge));
    }
 
-   @KafkaListener(topics = "sync-edit")
+   @KafkaListener(topics = "sync-edit", groupId = "notes")
    @RetryableTopic(
            attempts = "3",
            backoff = @Backoff(delay = 2000, multiplier = 2),
@@ -53,7 +54,7 @@ public class Orchestrator {
       applicationEventPublisher.publishEvent(eventMapper.ofEdit(event, ack::acknowledge));
    }
 
-   @KafkaListener(topics = "sync-delete")
+   @KafkaListener(topics = "sync-delete", groupId = "notes")
    @RetryableTopic(
            attempts = "3",
            backoff = @Backoff(delay = 2000, multiplier = 2),
@@ -63,7 +64,7 @@ public class Orchestrator {
       applicationEventPublisher.publishEvent(eventMapper.ofDelete(event, ack::acknowledge));
    }
 
-   @KafkaListener(topics = {"sync-create-dlt", "sync-edit-dlt", "sync-delete-dlt"})
+   @KafkaListener(topics = {"sync-create-dlt", "sync-edit-dlt", "sync-delete-dlt"}, groupId = "notes")
    public void handleFail(ScheduleEvent event, Acknowledgment ack) {
       applicationEventPublisher.publishEvent(eventMapper.ofCompensate(event, ack::acknowledge));
    }
@@ -86,12 +87,12 @@ public class Orchestrator {
    }
 
    @TransactionalEventListener(phase = AFTER_COMMIT)
-   public void syncEditNote(ScheduleCreateEvent event) {
+   public void syncEditNote(ScheduleEditEvent event) {
       kafkaTemplate.send("sync-edit", event.getSagaId().toString(), event);
    }
 
    @TransactionalEventListener(phase = AFTER_COMMIT)
-   public void syncDeleteNote(ScheduleCreateEvent event) {
+   public void syncDeleteNote(ScheduleDeleteEvent event) {
       kafkaTemplate.send("sync-delete", event.getSagaId().toString(), event);
    }
 

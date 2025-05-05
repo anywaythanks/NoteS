@@ -14,10 +14,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.Instant;
@@ -39,11 +40,21 @@ import static lombok.AccessLevel.PROTECTED;
 @Table(name = "notes")
 @NamedEntityGraph(name = "Note.owner",
         attributeNodes = {@NamedAttributeNode("owner")})
+@NamedEntityGraph(name = "Note.actual.partial",
+        attributeNodes = {@NamedAttributeNode("owner"),
+                @NamedAttributeNode(value = "actual", subgraph = "subgraph.partial")},
+        subgraphs = {@NamedSubgraph(name = "subgraph.partial",
+                attributeNodes = {@NamedAttributeNode("title"),
+                        @NamedAttributeNode("description"),
+                        @NamedAttributeNode("syntaxType")})})
+@NamedEntityGraph(name = "Note.actual.full",
+        attributeNodes = {@NamedAttributeNode(value = "actual"), @NamedAttributeNode("owner")})
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PROTECTED)
 @Builder
 @Getter
 @EntityListeners(NoteListener.class)
+@SQLRestriction("not (state_id = 3 or state_id = 4)")
 public class Note {
    @Id
    @GeneratedValue(strategy = SEQUENCE, generator = "note_seq")
@@ -57,12 +68,11 @@ public class Note {
    String path;
 
    @NotNull
-   @NotEmpty
    @Column(name = "elastic_uuid", nullable = false, unique = true)
    UUID elasticUuid;
 
    @NotNull
-   @ManyToOne(fetch = FetchType.LAZY, optional = false)
+   @ManyToOne(fetch = FetchType.EAGER, optional = false)
    @JoinColumn(name = "account_id", nullable = false)
    Account owner;
 
@@ -76,11 +86,7 @@ public class Note {
    @Setter
    Boolean isPublic;
 
-   /**
-    * {@link Version @Version} видимо так просто не работает.
-    */
-   @Version
-   @Column(name = "commit_to")
+   @Column(name = "commit_to", insertable = false, updatable = false)
    @Setter
    Long commitTo;
 

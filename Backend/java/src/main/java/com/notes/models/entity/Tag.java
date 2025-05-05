@@ -28,7 +28,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 public class Tag {
    @Id
-   @GeneratedValue(strategy = IDENTITY)//TODO: бд должна сама сгенерить, мб не робит стратегия и будут попытки в генерацию
+   @GeneratedValue(strategy = IDENTITY)
    Long id;
 
    @NotNull
@@ -43,7 +43,6 @@ public class Tag {
    Account owner;
 
    @NotNull
-   @NotEmpty
    @Range(min = 0, max = 0xFFFFFF)
    @Column(name = "color", nullable = false)
    Integer color;

@@ -87,7 +87,7 @@ public class NoteInformationService {
    public PageDomainDto<NoteSearchTagsDomainDto> findByOwner(String nameOwner, Integer page, Integer limit) {
       var account = accountInformationService.findAccount(nameOwner);
       var list = noteRepositoryQuery
-              .findNotesByOwner(account.id(),
+              .findByOwner(account.id(),
                       PageRequest.of(page, limit))
               .map(n -> noteMapper.of(n, BigDecimal.ONE))
               .map(noteMapper::of);
@@ -127,7 +127,7 @@ public class NoteInformationService {
     * @return NotePartialDomainDto with basic note details
     */
    public NoteMinimalDomainDto unsafeFindByPath(String path) {
-      Note note = noteRepositoryQuery.findByPath(path).orElseThrow(NoteNotFoundException::new);
+      Note note = noteRepositoryQuery.findByPathMinimal(path).orElseThrow(NoteNotFoundException::new);
       return noteMapper.of(note);
    }
 
@@ -140,7 +140,7 @@ public class NoteInformationService {
     * @PostAuthorize Allows access if public or owner matches requester
     */
    @PostAuthorize("returnObject.owner.name == #nameOwner || returnObject.isPublic")
-   public NotePartialDomainDto findPublicContentByPath(String path, String nameOwner) {
+   public NotePartialDomainDto findPartialByPath(String path, String nameOwner) {
       var note = noteRepositoryQuery.findByPath(path).orElseThrow(NoteNotFoundException::new);
       return noteMapper.ofPartial(note);
    }
@@ -155,8 +155,9 @@ public class NoteInformationService {
     */
    @PostAuthorize("returnObject.owner.name == #nameOwner || returnObject.isPublic")
    public NoteFullDomainDto fullFindPublicByPath(String path, String nameOwner) {
-      var partial = findPublicContentByPath(path, nameOwner);
-      return loadTags(partial);
+      var partial = findPartialByPath(path, nameOwner);
+      var tags = loadTags(partial);
+      return tags;
    }
 
    /**
@@ -200,9 +201,7 @@ public class NoteInformationService {
       var tagIds = tagRepository.getTags(tags, account.id()).stream().map(Tag::getId).toList();
       var filterIds = tagRepository.getTags(filters, account.id()).stream().map(Tag::getId).toList();
       if(tagIds.size() != tags.size() || filterIds.size() != filters.size()) throw new TagNotFoundException();
-      var notes = isStrong ?
-              noteRepositoryQuery.findStrongByTagId(tagIds, filterIds, account.id(), PageRequest.of(page, limit)) :
-              noteRepositoryQuery.findWeakByTagId(tagIds, filterIds, account.id(), PageRequest.of(page, limit));
+      var notes = noteRepositoryQuery.findByTags(tagIds, filterIds, account.id(), isStrong, PageRequest.of(page, limit));
       var noteTags = loadTags(notes
               .map(n -> noteMapper.of(n, BigDecimal.ONE))
               .map(noteMapper::of));
@@ -217,10 +216,10 @@ public class NoteInformationService {
     */
    private Page<NoteSearchTagsDomainDto> loadTags(Page<NoteSearchDomainDto> notes) {
       var noteIds = notes.stream().map(NoteSearchDomainDto::id).toList();
-      var tags = noteTagRefRepository.findByNoteIds(noteIds)
+      var tagsMap = noteTagRefRepository.findByNoteIds(noteIds)
               .stream().collect(Collectors.groupingBy(
                       ntr -> ntr.getNote().getId(),
                       Collectors.mapping(NoteTagRef::getTag, Collectors.toList())));
-      return notes.map(note -> noteMapper.of(note, tags.get(note.id())));
+      return notes.map(note -> noteMapper.of(note, tagsMap.getOrDefault(note.id(), List.of())));
    }
 }

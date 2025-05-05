@@ -36,13 +36,13 @@ public class NoteContent {
    @Field(value = "score", type = FieldType.Keyword)
    BigDecimal score;
 
-   @Field(value = "vec.vec", type = FieldType.Dense_Vector)
+   @Field(value = "vec.vec", type = FieldType.Dense_Vector, dims = 312)
    double[] vec;
 
    @Field(value = "owner", type = FieldType.Keyword)
    Long owner;
 
-   @Field(value = "type", type = FieldType.Text)
+   @Field(value = "entry_type", type = FieldType.Text)
    @Setter
    NoteType noteType;
 
