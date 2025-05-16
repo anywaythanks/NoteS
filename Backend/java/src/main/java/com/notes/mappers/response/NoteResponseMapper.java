@@ -1,40 +1,31 @@
 package com.notes.mappers.response;
 
 import com.notes.configs.MapstructConfig;
-import com.notes.models.api.note.CommentCreateResponseDto;
-import com.notes.models.api.note.CommentEditResponseDto;
 import com.notes.models.api.note.CommentSearchContentResponseDto;
-import com.notes.models.api.note.NoteCreateResponseDto;
-import com.notes.models.api.note.NoteEditContentResponseDto;
-import com.notes.models.api.note.NoteEditOtherResponseDto;
-import com.notes.models.api.note.NoteEditPublicResponseDto;
-import com.notes.models.api.note.NoteFullResponseDto;
-import com.notes.models.api.note.NoteSearchContentResponseDto;
-import com.notes.models.api.note.NoteSearchTagsResponseDto;
-import com.notes.models.api.note.NoteTypeApiDto;
+import com.notes.models.api.note.EntrySearchTagsResponseDto;
+import com.notes.models.api.note.EntryTypeApiDto;
+import com.notes.models.api.note.EntryFullResponseDto;
 import com.notes.models.api.note.SyntaxTypeApiDto;
-import com.notes.models.domain.NoteFullDomainDto;
-import com.notes.models.domain.NoteMinimalDomainDto;
-import com.notes.models.domain.NotePartialDomainDto;
-import com.notes.models.domain.NoteSearchDomainDto;
+import com.notes.models.domain.EntryPartialDomainDto;
+import com.notes.models.domain.EntryFullDomainDto;
 import com.notes.models.domain.NoteSearchTagsDomainDto;
-import com.notes.models.domain.NoteTagsDomainDto;
-import com.notes.models.domain.NoteTypeDomainDto;
+import com.notes.models.domain.EntryTypeDomainDto;
 import com.notes.models.domain.SyntaxTypeDomainDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(config = MapstructConfig.class)
 public interface NoteResponseMapper {
-   NoteTypeApiDto of(NoteTypeDomainDto api);
+   EntryTypeApiDto of(EntryTypeDomainDto api);
 
    SyntaxTypeApiDto of(SyntaxTypeDomainDto api);
 
    @Mapping(source = "dto.owner.name", target = "ownerName")
-   CommentSearchContentResponseDto ofCommentContent(NotePartialDomainDto dto);
+   CommentSearchContentResponseDto ofCommentContent(EntryPartialDomainDto dto);
 
    @Mapping(source = "dto.owner.name", target = "ownerName")
-   NoteFullResponseDto ofFull(NoteFullDomainDto dto);
+   EntryFullResponseDto ofFull(EntryFullDomainDto dto);
 
-   NoteSearchTagsResponseDto ofTags(NoteSearchTagsDomainDto dto);
+   @Mapping(source = "dto.owner.name", target = "ownerName")
+   EntrySearchTagsResponseDto ofTags(NoteSearchTagsDomainDto dto);
 }

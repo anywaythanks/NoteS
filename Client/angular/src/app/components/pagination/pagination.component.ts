@@ -21,7 +21,7 @@ export class PaginationComponent implements OnChanges {
   @Output() pageChanged = new EventEmitter<number>();
 
   pageInput$ = new Subject<number>();
-  currentPage: number = 1;
+  currentPage: number = 0;
 
   constructor() {
     this.pageInput$.pipe(
@@ -38,8 +38,8 @@ export class PaginationComponent implements OnChanges {
 
   get pagesRange(): number[] {
     if (!this.pageData) return [];
-    const start = Math.max(1, this.pageData.page - 2);
-    const end = Math.min(this.pageData.total_pages, this.pageData.page + 2);
+    const start = Math.max(0, this.pageData.page - 2);
+    const end = Math.min(this.pageData.total_pages-1, this.pageData.page + 2);
     return Array.from({length: end - start + 1}, (_, i) => start + i);
   }
 
@@ -50,13 +50,13 @@ export class PaginationComponent implements OnChanges {
   }
 
   previousPage() {
-    if (this.pageData.page > 1) {
+    if (this.pageData.page > 0) {
       this.goToPage(this.pageData.page - 1);
     }
   }
 
   goToPage(page: number) {
-    if (page >= 1 && page <= this.pageData.total_pages) {
+    if (page >= 0 && page <= this.pageData.total_pages) {
       this.pageChanged.emit(page);
     }
   }

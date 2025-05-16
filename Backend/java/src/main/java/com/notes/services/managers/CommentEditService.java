@@ -5,20 +5,21 @@ import com.cosium.spring.data.jpa.entity.graph.domain2.NamedEntityGraph;
 import com.notes.exceptions.CommentEditTimeMissedException;
 import com.notes.exceptions.NoteNotFoundException;
 import com.notes.exceptions.NoteTypeException;
-import com.notes.mappers.repository.NoteRepositoryMapper;
+import com.notes.mappers.repository.EntryRepositoryMapper;
 import com.notes.models.domain.CommentEditDto;
-import com.notes.models.domain.NoteCreateDomainDto;
-import com.notes.models.domain.NotePartialDomainDto;
+import com.notes.models.domain.EntryPartialDomainDto;
+import com.notes.models.domain.EntryTypeDomainDto;
+import com.notes.models.domain.EntryCreateDomainDto;
 import com.notes.models.domain.NoteSearchDomainDto;
-import com.notes.models.domain.NoteTypeDomainDto;
-import com.notes.models.entity.Note;
-import com.notes.models.entity.NoteCreateDto;
-import com.notes.models.entity.NoteEditDto;
-import com.notes.models.entity.NoteScored;
-import com.notes.repository.NoteRepositoryCommand;
-import com.notes.repository.NoteRepositoryQuery;
+import com.notes.models.entity.Entry;
+import com.notes.models.entity.EntryCreateDto;
+import com.notes.models.entity.EntryEditDto;
+import com.notes.models.entity.EntryScored;
+import com.notes.models.entity.Entry_;
+import com.notes.repository.EntryRepositoryCommand;
+import com.notes.repository.EntryRepositoryQuery;
 import com.notes.services.utils.GeneratorUtils;
-import com.notes.services.utils.NoteUtils;
+import com.notes.services.utils.EntryUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,12 +31,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CommentEditService {
    private final NoteInformationService noteInformationService;
-   private final NoteUtils noteUtils;
-   private final NoteRepositoryCommand noteRepositoryCommand;
-   private final NoteRepositoryMapper noteRepositoryMapper;
+   private final EntryUtils entryUtils;
+   private final EntryRepositoryCommand entryRepositoryCommand;
+   private final EntryRepositoryMapper entryRepositoryMapper;
    private final GeneratorUtils generatorUtils;
    private final AccountInformationService accountInformationService;
-   private final NoteRepositoryQuery noteRepositoryQuery;
+   private final EntryRepositoryQuery entryRepositoryQuery;
 
    /**
     * Edits an existing comment with validation checks.
@@ -48,17 +49,17 @@ public class CommentEditService {
     * @throws NoteTypeException              If the note is not a comment
     * @throws CommentEditTimeMissedException If edit window has expired
     */
-   public NotePartialDomainDto editComment(String pathComment, String ownerName,
-                                           CommentEditDto dto) {
+   public EntryPartialDomainDto editComment(String pathComment, String ownerName,
+                                            CommentEditDto dto) {
       var comment = getComment(pathComment, ownerName);
-      noteRepositoryCommand.edit(comment.getId(), new NoteEditDto(
+      entryRepositoryCommand.edit(comment.getId(), new EntryEditDto(
               comment.getActual().getDescription(),
               dto.title(),
               dto.content(),
-              noteRepositoryMapper.of(dto.syntaxType()),
-              noteRepositoryMapper.of(NoteTypeDomainDto.COMMENT_REDACTED)
+              entryRepositoryMapper.of(dto.syntaxType()),
+              entryRepositoryMapper.of(EntryTypeDomainDto.COMMENT)
       ));
-      return noteRepositoryMapper.ofPartial(comment);
+      return entryRepositoryMapper.ofPartial(comment);
    }
 
    /**
@@ -69,11 +70,11 @@ public class CommentEditService {
     * @param dto         Data transfer object containing comment details
     * @return The created {@link NoteSearchDomainDto}
     */
-   public NotePartialDomainDto createComment(String accountName, String pathNote,
-                                             NoteCreateDomainDto dto) {
+   public EntryPartialDomainDto createComment(String accountName, String pathNote,
+                                              EntryCreateDomainDto dto) {
       var account = accountInformationService.findAccount(accountName);
       var note = noteInformationService.findPublicByPath(pathNote, accountName);
-      var createDto = new NoteCreateDto(
+      var createDto = new EntryCreateDto(
               dto.description(),
               dto.title(),
               generatorUtils.generateUUID().toString(),
@@ -81,12 +82,12 @@ public class CommentEditService {
               generatorUtils.generateUUID(),
               account.id(),
               note.id(),
-              noteRepositoryMapper.of(dto.syntaxType()),
-              noteRepositoryMapper.of(NoteTypeDomainDto.COMMENT),
+              entryRepositoryMapper.of(dto.syntaxType()),
+              entryRepositoryMapper.of(EntryTypeDomainDto.COMMENT),
               true
       );
-      noteRepositoryCommand.create(createDto);
-      return noteRepositoryMapper.ofPartial(getComment(createDto.path(), accountName));//TODO: зачем..?
+      entryRepositoryCommand.create(createDto);
+      return entryRepositoryMapper.ofPartial(getComment(createDto.path(), accountName));//TODO: зачем..?
    }
 
    /**
@@ -100,7 +101,7 @@ public class CommentEditService {
     */
    public void deleteComment(String pathComment, String ownerName) {
       var comment = getComment(pathComment, ownerName);
-      noteRepositoryCommand.delete(comment.getId());
+      entryRepositoryCommand.delete(comment.getId());
    }
 
    /**
@@ -108,16 +109,17 @@ public class CommentEditService {
     *
     * @param pathComment The path identifier of the comment
     * @param ownerName   The name of the comment owner
-    * @return Validated {@link NoteScored} comment entity
+    * @return Validated {@link EntryScored} comment entity
     * @throws NoteNotFoundException          If comment not found
     * @throws NoteTypeException              If the note is not a comment
     * @throws CommentEditTimeMissedException If edit window has expired
     */
-   private Note getComment(String pathComment, String ownerName) {
+   private Entry getComment(String pathComment, String ownerName) {
       var comment = noteInformationService.findPublicByPath(pathComment, ownerName);
-      var commentEntity = noteRepositoryQuery.findById(comment.id(), new NamedEntityGraph(EntityGraphType.LOAD, "Note.actual.full")).orElseThrow(NoteNotFoundException::new);
-      if(!noteUtils.isComment(comment.noteType())) throw new NoteTypeException();
-      if(!noteUtils.isEdit(comment)) throw new CommentEditTimeMissedException();
+      var commentEntity = entryRepositoryQuery.findById(comment.id(),
+              new NamedEntityGraph(EntityGraphType.LOAD, Entry_.GRAPH_ENTRY_ACTUAL_FULL)).orElseThrow(NoteNotFoundException::new);
+      if(!entryUtils.isComment(comment.entryType())) throw new NoteTypeException();
+      if(!entryUtils.isEdit(comment)) throw new CommentEditTimeMissedException();
       return commentEntity;
    }
 }

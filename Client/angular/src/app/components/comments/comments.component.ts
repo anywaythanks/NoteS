@@ -45,7 +45,7 @@ export class CommentsComponent implements OnInit {
   editorOptions!: EditorOption;
   commentText = '';
   templateForm!: FormGroup;
-  notesSubj = new BehaviorSubject<number>(1);
+  notesSubj = new BehaviorSubject<number>(0);
   comments = this.notesSubj.pipe(
     switchMap(page => this.noteService.pageComments(page, this.uuid))
   );
@@ -68,7 +68,7 @@ export class CommentsComponent implements OnInit {
 
   private getValidPage(page: string | null): number {
     const parsed = Number(page);
-    return Number.isInteger(parsed) && parsed > 0 ? parsed : 1;
+    return Number.isInteger(parsed) && parsed >= 0 ? parsed : 0;
   }
 
   private syncInitialPage() {
@@ -99,7 +99,7 @@ export class CommentsComponent implements OnInit {
       title: `Комментарий к ${this.uuid}`,
       description: "",
       content: this.commentText,
-      syntax_name: "markdown"
+      syntax_name: "MARKDOWN"
     }, this.uuid).pipe(debounceTime(700)).subscribe({
       next: _ => {
         this.syncPage();

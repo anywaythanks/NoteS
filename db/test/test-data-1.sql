@@ -69,7 +69,7 @@ VALUES (1001, 1001, 0, '2024-06-16 17:35:00+02', '2024-06-16 10:00:00+02'),
        (1002, 1001, 1, '2024-06-16 17:40:00+02', '2024-06-16 10:00:00+02'),
        (1003, 1001, 2, '2024-06-16 17:35:00+02', '2024-06-14 12:00:00+02');
 INSERT INTO type_custom (block_id, content, syntax_types_id)
-VALUES (1001, 'This is a plain text note block.', 1), -- Plain text (ID 1)
+VALUES (1001, 'This is a plain text entry block.', 1), -- Plain text (ID 1)
        (1002, '# This is a heading\n* This is a bulleted list item', 3), -- Markdown (ID 3)
        (1003, '\\sqrt{2} = 1.414...', 2); -- Latex (ID 2)
 INSERT INTO tags (id, name) VALUES (1, 'tag1');

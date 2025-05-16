@@ -9,10 +9,10 @@ import com.notes.models.api.note.NoteEditRequestDto;
 import com.notes.models.api.note.NoteEditPublicRequestDto;
 import com.notes.models.api.note.SyntaxTypeApiDto;
 import com.notes.models.domain.CommentEditDto;
-import com.notes.models.domain.NoteCreateDomainDto;
-import com.notes.models.domain.NoteEditOnlyContentDto;
-import com.notes.models.domain.NoteEditDto;
-import com.notes.models.domain.NotePublicDto;
+import com.notes.models.domain.EntryCreateDomainDto;
+import com.notes.models.domain.EntryEditDto;
+import com.notes.models.domain.EntryEditOnlyContentDto;
+import com.notes.models.domain.EntryPublicDto;
 import com.notes.models.domain.SyntaxTypeDomainDto;
 import org.mapstruct.Mapper;
 
@@ -20,15 +20,15 @@ import org.mapstruct.Mapper;
 public interface NoteRequestMapper {
    SyntaxTypeDomainDto of(SyntaxTypeApiDto api);
 
-   NotePublicDto of(NoteEditPublicRequestDto dto);
+   EntryPublicDto of(NoteEditPublicRequestDto dto);
 
-   NoteEditDto of(NoteEditRequestDto dto);
+   EntryEditDto of(NoteEditRequestDto dto);
 
-   NoteEditOnlyContentDto of(NoteEditOnlyContentRequestDto dto);
+   EntryEditOnlyContentDto of(NoteEditOnlyContentRequestDto dto);
 
-   NoteCreateDomainDto of(CommentCreateRequestDto dto);
+   EntryCreateDomainDto of(CommentCreateRequestDto dto);
 
-   NoteCreateDomainDto of(NoteCreateRequestDto dto);
+   EntryCreateDomainDto of(NoteCreateRequestDto dto);
 
    CommentEditDto of(CommentEditRequestDto dto);
 

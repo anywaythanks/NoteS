@@ -2,7 +2,6 @@ package com.notes.models.api.note;
 
 import lombok.NonNull;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 public record CommentSearchContentResponseDto(@NonNull String description,
@@ -12,8 +11,9 @@ public record CommentSearchContentResponseDto(@NonNull String description,
                                               @NonNull String ownerName,
                                               @NonNull String mainPath,
                                               @NonNull SyntaxTypeApiDto syntaxType,
-                                              @NonNull NoteTypeApiDto noteType,
+                                              @NonNull EntryTypeApiDto entryType,
+                                              @NonNull StateApiDto state,
                                               boolean isPublic,
                                               Instant createdOn)
-        implements Description, Content, Title, SyntaxType, NoteType, IsPublic, Path, CreatedOn, OwnerName, MainPath {
+        implements Description, Content, State, Title, SyntaxType, EntryType, IsPublic, Path, CreatedOn, OwnerName, MainPath {
 }

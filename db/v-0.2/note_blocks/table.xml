@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="table-note-blocks" author="anywaythanks">
+    <changeSet id="table-entry-blocks" author="anywaythanks">
         <sqlFile dbms="postgresql"
                  encoding="utf8"
                  endDelimiter="\nGO"

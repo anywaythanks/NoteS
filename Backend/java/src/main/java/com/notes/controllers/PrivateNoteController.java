@@ -3,11 +3,9 @@ package com.notes.controllers;
 import com.notes.mappers.request.NoteRequestMapper;
 import com.notes.mappers.response.NoteResponseMapper;
 import com.notes.models.api.account.AccName;
-import com.notes.models.api.note.NoteEditOtherResponseDto;
+import com.notes.models.api.note.EntryFullResponseDto;
 import com.notes.models.api.note.NoteEditPublicRequestDto;
-import com.notes.models.api.note.NoteEditPublicResponseDto;
 import com.notes.models.api.note.NoteEditRequestDto;
-import com.notes.models.api.note.NoteFullResponseDto;
 import com.notes.models.api.note.NotePath;
 import com.notes.services.managers.NoteEditService;
 import com.notes.services.managers.NoteInformationService;
@@ -58,8 +56,8 @@ public class PrivateNoteController {
     */
    @GetMapping(path = "/{pathNote}")
    @PreAuthorize("hasAnyAuthority('read-all-notes')")
-   public NoteFullResponseDto getNoteAll(@Valid @PathVariable("accountName") AccName accountName,//TODO: не используется
-                                         @Valid @PathVariable NotePath pathNote) {
+   public EntryFullResponseDto getNoteAll(@Valid @PathVariable("accountName") AccName accountName,//TODO: не используется
+                                          @Valid @PathVariable NotePath pathNote) {
       return noteResponseMapper.ofFull(noteInformationService.unsafeFullFindByPath(pathNote.path()));
    }
 }

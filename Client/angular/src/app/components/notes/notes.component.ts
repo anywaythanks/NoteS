@@ -41,14 +41,14 @@ export class NotesComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.notesSubj = new BehaviorSubject<number>(1);
+    this.notesSubj = new BehaviorSubject<number>(0);
     this.notes = this.notesSubj.pipe(switchMap(page => this.searchPage(page)));
     this.syncInitialPage();
   }
 
   private getValidPage(page: string | null): number {
     const parsed = Number(page);
-    return Number.isInteger(parsed) && parsed > 0 ? parsed : 1;
+    return Number.isInteger(parsed) && parsed >= 0 ? parsed : 0;
   }
 
   private syncInitialPage() {
@@ -70,11 +70,11 @@ export class NotesComponent implements AfterViewInit {
   searchChange(query: string) {
     if (query.length > 0 && (this.type == "by-title" || this.type == "semantic") && this.query !== query) {
       this.query = query;
-      this.updatePage(1);
+      this.updatePage(0);
     } else if (query.length == 0 && (this.type == "by-title" || this.type == "semantic")) {
       this.type = "nope";
       this.query = query;
-      this.updatePage(1);
+      this.updatePage(0);
     }
   }
 
@@ -88,11 +88,12 @@ export class NotesComponent implements AfterViewInit {
   tagsChange(tags: { included: Tag[]; excluded: Tag[] }) {
     this.tags = tags;
     if (this.type == "by-tags") {
-      this.updatePage(1);
+      this.updatePage(0);
     }
   }
 
   searchPage(page: number) {
+    console.log(`${this.type} [${page}]`)
     switch (this.type) {
       case "nope":
         return this.noteService.pageNotes(page);
@@ -112,7 +113,7 @@ export class NotesComponent implements AfterViewInit {
       syntax_name: "MARKDOWN",
       description: "Default description"
     }).pipe(debounceTime(500))
-      .subscribe(n => this.router.navigate([`/note/${n.path}`]));
+      .subscribe(loc => this.router.navigate([`/note/${loc}`]));
   }
 
   protected readonly faUser = faUser;

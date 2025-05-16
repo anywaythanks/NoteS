@@ -5,6 +5,7 @@ export interface Note {
   title: string;
   note_type: 'COMMENT' | "NOTE" | "COMMENT_REDACTED";
   owner_account_name: string;//TODO: исправить апи// Эм в чем? Я чет забыл
+  state: 'ACTIVE_MODIFIED' | "ACTIVE" | "PENDING_CREATE" | "PENDING_MODIFY" | "FAILED";
   content: string;
   description: string;
   created_at: Date;
@@ -27,16 +28,21 @@ export interface CommentRequest {
   content: string;
 }
 
-export class NoteSaveContent {
+export class NoteSave {
   syntax_name: string;
   content: string;
+  title: string;
+  description: string;
 
-  constructor(syntax_name: string, content: string) {
+
+  constructor(syntax_name: string, content: string, title: string, description: string) {
     this.syntax_name = syntax_name;
     this.content = content;
+    this.title = title;
+    this.description = description;
   }
 }
-export class CommentSaveContent {
+export class CommentEdit {
   syntax_name: string;
   content: string;
   title: string;
@@ -45,15 +51,6 @@ export class CommentSaveContent {
     this.syntax_name = syntax_name;
     this.content = content;
     this.title = title;
-  }
-}
-export class NoteSaveOther {
-  title: string;
-  description: string;
-
-  constructor(title: string, description: string) {
-    this.title = title;
-    this.description = description;
   }
 }
 

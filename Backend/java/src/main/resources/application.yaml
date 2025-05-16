@@ -20,6 +20,10 @@ server:
   ssl:
     enabled: false
 spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration
+      - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
   config:
     activate:
       on-profile: develop
@@ -42,30 +46,6 @@ spring:
         hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
         hibernate.format_sql: true
         hibernate.use_sql_comments: true
-  elasticsearch:
-    uris: http://clearlaptop:9200
-
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      bootstrap-servers: localhost:9092
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
-        spring.json.type.mapping: accName:com.notes.models.api.account.AccName
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      retries: 2
-    jaas:
-      enabled: true
-    listener:
-      poll-timeout: 1800000
-      concurrency: 1
-      ack-mode: manual_immediate
   mvc:
     static-path-pattern: /resources/**
   security:
@@ -73,10 +53,8 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${keycloak-issuer}
-
 logging:
   level:
-    com.notes.services.utils.com.notes.services.utils.Orchestrator: DEBUG
     org:
       springframework:
         data:
@@ -99,7 +77,43 @@ springdoc:
     csrf:
       enabled: true
 sync-notes:
-  strategy: single_task
+  strategy: packet_task
+---
+spring:
+  config:
+    activate:
+      on-profile: develop & kafka
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      bootstrap-servers: localhost:9092
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.type.mapping: accName:com.notes.models.api.account.AccName
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      retries: 2
+    jaas:
+      enabled: true
+    listener:
+      poll-timeout: 1800000
+      concurrency: 1
+      ack-mode: manual_immediate
+---
+elastic-model: cointegrated__rubert-tiny2
+spring:
+  autoconfigure:
+    exclude: []
+  config:
+    activate:
+      on-profile: develop & elastic
+  elasticsearch:
+    uris: http://clearlaptop:9200
 ---
 scheme: https
 keycloak-issuer: ${scheme}://${keycloak-host}:${keycloak-port}/realms/${keycloak-realm}

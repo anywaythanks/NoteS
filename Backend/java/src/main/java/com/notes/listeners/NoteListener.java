@@ -1,6 +1,6 @@
 package com.notes.listeners;
 
-import com.notes.models.entity.Note;
+import com.notes.models.entity.Entry;
 import jakarta.persistence.PrePersist;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ public class NoteListener {
    private final Clock clock;
 
    @PrePersist
-   public void setCreatedOn(Note note) {
-      note.setCreatedOn(Instant.now(clock));
+   public void setCreatedOn(Entry entry) {
+      entry.setCreatedOn(Instant.now(clock));
    }
 }

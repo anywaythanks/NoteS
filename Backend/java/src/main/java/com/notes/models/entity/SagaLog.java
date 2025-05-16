@@ -1,8 +1,6 @@
 package com.notes.models.entity;
 
 import com.notes.converters.SagaEventConverter;
-import com.notes.converters.SyntaxTypeConverter;
-import com.notes.listeners.NoteListener;
 import com.notes.listeners.SagaListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -50,7 +48,7 @@ public class SagaLog {
    @NotNull
    @ManyToOne(fetch = FetchType.LAZY, optional = false)
    @JoinColumn(name = "note_id", nullable = false)
-   private Note note;
+   private Entry entry;
 
    @NotNull
    @ManyToOne(fetch = FetchType.LAZY, optional = false)

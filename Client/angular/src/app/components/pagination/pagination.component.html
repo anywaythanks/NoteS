@@ -2,7 +2,7 @@
   <button
     class="prev-button"
     (click)="previousPage()"
-    [disabled]="pageData.page === 1"
+    [disabled]="pageData.page === 0"
     aria-label="Previous page"
   >
     <fa-icon class="prev-icon icon-button" [icon]="faPlay"></fa-icon>
@@ -18,8 +18,8 @@
     </button>
     <input
       type="number"
-      min="1"
-      [max]="pageData.total_pages"
+      min="0"
+      [max]="pageData.total_pages-1"
       placeholder="Page"
       (input)="pageInput$.next(getValue($event))"
       style="width: 60px;"
@@ -29,7 +29,7 @@
   <button
     class="next-button"
     (click)="nextPage()"
-    [disabled]="pageData.page === pageData.total_pages"
+    [disabled]="pageData.page === pageData.total_pages-1"
     aria-label="Next page"
   >
     <fa-icon class="next-icon icon-button" [icon]="faPlay"></fa-icon>

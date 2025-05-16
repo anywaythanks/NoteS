@@ -30,7 +30,7 @@
       "syntax_type": { "type": "keyword" },
       "entry_type": { "type": "keyword" },
       "owner": { "type": "long" },
-      "vector.predicted_value": {
+      "vector.vector": {
         "type": "dense_vector",
         "dims": 312,
         "index": true,

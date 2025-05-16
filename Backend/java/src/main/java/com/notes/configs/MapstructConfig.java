@@ -1,7 +1,7 @@
 package com.notes.configs;
 
 import com.notes.mappers.repository.AccountRepositoryMapper;
-import com.notes.mappers.repository.NoteRepositoryMapper;
+import com.notes.mappers.repository.EntryRepositoryMapper;
 import com.notes.mappers.repository.PageRepositoryMapper;
 import com.notes.mappers.repository.TagRepositoryMapper;
 import com.notes.mappers.request.NoteRequestMapper;
@@ -24,7 +24,7 @@ import static org.mapstruct.SubclassExhaustiveStrategy.COMPILE_ERROR;
         unmappedTargetPolicy = ERROR,
         subclassExhaustiveStrategy = COMPILE_ERROR,
 
-        uses = {AccountRepositoryMapper.class, NoteRepositoryMapper.class,
+        uses = {AccountRepositoryMapper.class, EntryRepositoryMapper.class,
                 PageRepositoryMapper.class, TagRepositoryMapper.class,
 
                 NoteRequestMapper.class, TagRequestMapper.class,

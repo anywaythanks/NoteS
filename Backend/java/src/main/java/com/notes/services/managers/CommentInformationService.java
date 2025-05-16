@@ -1,10 +1,10 @@
 package com.notes.services.managers;
 
-import com.notes.mappers.repository.NoteRepositoryMapper;
+import com.notes.mappers.repository.EntryRepositoryMapper;
 import com.notes.mappers.repository.PageRepositoryMapper;
-import com.notes.models.domain.NotePartialDomainDto;
+import com.notes.models.domain.EntryPartialDomainDto;
 import com.notes.models.domain.PageDomainDto;
-import com.notes.repository.NoteRepositoryQuery;
+import com.notes.repository.EntryRepositoryQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CommentInformationService {
    private final AccountInformationService accountInformationService;
-   private final NoteRepositoryQuery noteRepositoryQuery;
+   private final EntryRepositoryQuery entryRepositoryQuery;
    private final PageRepositoryMapper pageMapper;
-   private final NoteRepositoryMapper noteMapper;
+   private final EntryRepositoryMapper noteMapper;
    private final NoteInformationService noteInformationService;
 
    /**
@@ -31,11 +31,10 @@ public class CommentInformationService {
     * @param limit       Number of results per page
     * @return PageDomainDto containing paginated NoteContentDomainDto comments
     */
-   public PageDomainDto<NotePartialDomainDto> comments(String accountName, String notePath, Integer pageNum, Integer limit) {
+   public PageDomainDto<EntryPartialDomainDto> comments(String accountName, String notePath, Integer pageNum, Integer limit) {
       var note = noteInformationService.findPublicByPath(notePath, accountName);
-      var page = noteRepositoryQuery
-              .findPublicParents(note.id(), PageRequest.of(pageNum, limit))
-              .map(noteMapper::ofPartial);
-      return pageMapper.of(page);
+      var page = entryRepositoryQuery
+              .findPublicParents(note.id(), PageRequest.of(pageNum, limit));
+      return pageMapper.of(page.map(noteMapper::ofPartial));
    }
 }

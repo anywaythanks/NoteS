@@ -53,7 +53,7 @@ public class Commit {
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "note_id", insertable = false, updatable = false)
    @Setter
-   Note note;
+   Entry entry;
 
    @NotNull
    @Length(max = 2048)

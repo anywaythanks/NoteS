@@ -3,7 +3,7 @@ package com.notes.services.managers;
 import com.notes.exceptions.TagNotFoundException;
 import com.notes.mappers.repository.TagRepositoryMapper;
 import com.notes.models.domain.TagDomainDto;
-import com.notes.repository.NoteTagRefRepository;
+import com.notes.repository.EntryTagRefRepository;
 import com.notes.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class TagInformationService {
    private final AccountInformationService accountInformationService;
    private final NoteInformationService noteInformationService;
    private final TagRepository tagRepository;
-   private final NoteTagRefRepository noteTagRefRepository;
+   private final EntryTagRefRepository entryTagRefRepository;
    private final TagRepositoryMapper tagRepositoryMapper;
 
    /**
@@ -44,7 +44,7 @@ public class TagInformationService {
     */
    public List<TagDomainDto> findTags(String notePath, String accountName) {
       var note = noteInformationService.findByPath(notePath, accountName);
-      var tags = noteTagRefRepository.findByNoteId(note.id());
+      var tags = entryTagRefRepository.findByNoteId(note.id());
       return tags.stream().map(tagRepositoryMapper::of).toList();
    }
 

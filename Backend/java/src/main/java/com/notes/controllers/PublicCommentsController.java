@@ -71,8 +71,8 @@ public class PublicCommentsController {
               noteRequestMapper.of(createDto));
 
       return ResponseEntity.created(ServletUriComponentsBuilder
-                      .fromPath("/api/public/{accountName}/notes/{pathNote}")
-                      .buildAndExpand(accountName.name(), note.path()).toUri())
+                      .fromPath("{pathNote}")
+                      .buildAndExpand(note.path()).toUri())
               .build();
    }
 

@@ -1,13 +1,12 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {filter, map, Observable, switchMap} from 'rxjs';
+import {catchError, filter, map, Observable, of, switchMap, throwError} from 'rxjs';
 import {
   CommentRequest,
-  CommentSaveContent,
+  CommentEdit,
   Note,
   NoteRequest,
-  NoteSaveContent,
-  NoteSaveOther
+  NoteSave
 } from "../models/note.model";
 import {Page} from "../models/page.model";
 import {environment} from "../../environments/environment";
@@ -42,35 +41,37 @@ export class NoteService {
       }));
   }
 
-  saveContentComment(noteData: CommentSaveContent, path: string): Observable<Note> {
+  editComment(noteData: CommentEdit, path: string): Observable<boolean> {
     return this.userService.getUser().pipe(
       filter((user): user is User => 'username' in user),
       switchMap(user => {
         if (!user?.username) {
-          throw new Error('Username not available');
+          throw throwError(() => new Error('Username not available'));
         }
         return this.http.post<Note>(
           `${this.baseUrl}/public/${user.username}/comments/${path}`,
           noteData
         );
       }),
-      map(initTime)
+      map(_ => true),
+      catchError(_ => of(false))
     );
   }
 
-  saveContentNote(noteData: NoteSaveContent, path: string): Observable<Note> {
+  editNote(noteData: NoteSave, path: string): Observable<boolean> {
     return this.userService.getUser().pipe(
       filter((user): user is User => 'username' in user),
       switchMap(user => {
         if (!user?.username) {
-          throw new Error('Username not available');
+          throw throwError(() => new Error('Username not available'));
         }
         return this.http.post<Note>(
-          `${this.baseUrl}/public/${user.username}/notes/${path}/content`,
+          `${this.baseUrl}/public/${user.username}/notes/${path}`,
           noteData
         );
       }),
-      map(initTime)
+      map(_ => true),
+      catchError(_ => of(false))
     );
   }
 
@@ -103,21 +104,22 @@ export class NoteService {
     );
   }
 
-  publicNote(isPublic: boolean, path: string): Observable<Note> {
+  publicNote(isPublic: boolean, path: string): Observable<boolean> {
     return this.userService.getUser().pipe(
       filter((user): user is User => 'username' in user),
       switchMap(user => {
         if (!user?.username) {
-          throw new Error('Username not available');
+          throw throwError(() => new Error('Username not available'));
         }
-        return this.http.post<Note>(
+        return this.http.post(
           `${this.baseUrl}/public/${user.username}/notes/${path}/publish`,
           {
             is_public: isPublic,
           }
         );
       }),
-      map(initTime)
+      map(_ => true),
+      catchError(_ => of(false))
     );
   }
 
@@ -126,7 +128,7 @@ export class NoteService {
       filter((user): user is User => 'username' in user),
       switchMap(user => {
         if (!user?.username) {
-          throw new Error('Username not available');
+          throw throwError(() => new Error('Username not available'));
         }
         return this.http.delete(
           `${this.baseUrl}/public/${user.username}/notes/${path}`
@@ -140,7 +142,7 @@ export class NoteService {
       filter((user): user is User => 'username' in user),
       switchMap(user => {
         if (!user?.username) {
-          throw new Error('Username not available');
+          throw throwError(() => new Error('Username not available'));
         }
         return this.http.delete(
           `${this.baseUrl}/public/${user.username}/comments/${path}`
@@ -154,7 +156,7 @@ export class NoteService {
       filter((user): user is User => 'username' in user),
       switchMap(user => {
         if (!user?.username) {
-          throw new Error('Username not available');
+          throw throwError(() => new Error('Username not available'));
         }
         return this.http.delete(
           `${this.baseUrl}/public/${user.username}/notes/${path}/tags/${tag}`
@@ -163,51 +165,38 @@ export class NoteService {
     );
   }
 
-  saveNote(noteData: NoteSaveOther, path: string): Observable<Note> {
+  createNote(noteData: NoteRequest): Observable<string> {
     return this.userService.getUser().pipe(
       filter((user): user is User => 'username' in user),
       switchMap(user => {
         if (!user?.username) {
-          throw new Error('Username not available');
+          throw throwError(() => new Error('Username not available'));
         }
-        return this.http.post<Note>(
-          `${this.baseUrl}/public/${user.username}/notes/${path}`,
-          noteData
-        );
-      }),
-      map(initTime)
-    );
-  }
-
-  createNote(noteData: NoteRequest): Observable<Note> {
-    return this.userService.getUser().pipe(
-      filter((user): user is User => 'username' in user),
-      switchMap(user => {
-        if (!user?.username) {
-          throw new Error('Username not available');
-        }
-        return this.http.post<Note>(
+        return this.http.post<any>(
           `${this.baseUrl}/public/${user.username}/notes`,
-          noteData
+          noteData, {observe: 'response'}
         );
       }),
-      map(initTime)
+      map(data => {
+        return data.headers.get("Location") || ""
+      })
     );
   }
 
-  createComment(noteData: CommentRequest, path: string): Observable<Note> {
+  createComment(noteData: CommentRequest, path: string): Observable<boolean> {
     return this.userService.getUser().pipe(
       filter((user): user is User => 'username' in user),
       switchMap(user => {
         if (!user?.username) {
-          throw new Error('Username not available');
+          throw throwError(() => new Error('Username not available'));
         }
         return this.http.post<Note>(
           `${this.baseUrl}/public/${user.username}/notes/${path}/comments`,
           noteData
         );
       }),
-      map(initTime)
+      map(_ => true),
+      catchError(_ => of(false))
     );
   }
 
@@ -236,7 +225,7 @@ export class NoteService {
     for (const tag of excludeTags) {
       params = params.append("filter", tag.name);
     }
-    console.log(params)
+
     return this.userService.getUser().pipe(
       filter((user): user is User => 'username' in user),
       switchMap(user => {

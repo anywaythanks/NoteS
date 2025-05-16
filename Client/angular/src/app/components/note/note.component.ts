@@ -1,5 +1,5 @@
 ﻿import {Component, HostListener, inject, Input, OnDestroy, OnInit} from '@angular/core';
-import {Note, NoteSaveOther} from "../../models/note.model";
+import {Note, NoteSave} from "../../models/note.model";
 import {NoteService} from "../../services/note.service";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {
@@ -31,6 +31,7 @@ import {Title} from "@angular/platform-browser";
 import {FooterComponent} from "../footer/footer.component";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-note',
@@ -54,6 +55,7 @@ import {MatInput} from "@angular/material/input";
 })
 export class NoteComponent implements OnInit, OnDestroy {
   @Input() uuid!: string;
+  private snackBar = inject(MatSnackBar);
   note: Note | undefined;
   title: string = "";
   editorOptions!: EditorOption;
@@ -82,16 +84,21 @@ export class NoteComponent implements OnInit, OnDestroy {
   saveChanges() {
     if (!this.hasUnsavedChangesProp) return;
 
-    const requests: Observable<Note>[] = [];
+    const requests: Observable<boolean>[] = [];
 
-    if (this.note?.note_type === 'NOTE' && this.note?.content !== this.markdownText) {
+    if (this.note?.note_type === 'NOTE' && (this.note?.content !== this.markdownText ||
+      this.note?.description !== this.description ||
+      this.note?.title !== this.title)) {
+      const ns = new NoteSave("MARKDOWN", this.markdownText, this.title, this.description || this.note?.description || "");
+      //TODO: old значение мб сравнивать.
       requests.push(
-        this.noteService.saveContentNote(
-          {content: this.markdownText, syntax_name: "markdown"},
-          this.uuid
-        ).pipe(
-          tap((note) => {
-            if (this.note) this.note.content = note.content || "";
+        this.noteService.editNote(ns, this.uuid).pipe(
+          tap((isEdit) => {
+            if (isEdit && this.note) {
+              this.note.content = ns.content;
+              this.note.title = ns.title;
+              this.note.description = ns.description;
+            }
             this.checkAndChangeVals();
           })
         )
@@ -99,41 +106,22 @@ export class NoteComponent implements OnInit, OnDestroy {
     }
     if ((this.note?.note_type === 'COMMENT' || this.note?.note_type === 'COMMENT_REDACTED')
       && this.note?.content !== this.markdownText) {
+      const ns = {content: this.markdownText, syntax_name: "MARKDOWN", title: this.title};
       requests.push(
-        this.noteService.saveContentComment(
-          {content: this.markdownText, syntax_name: "markdown", title: this.title},
-          this.uuid
-        ).pipe(
-          tap((note) => {
-            if (this.note) this.note.content = note.content || "";
+        this.noteService.editComment(ns, this.uuid).pipe(
+          tap((isEdit) => {
+            if (isEdit && this.note) this.note.content = ns.content;
             this.checkAndChangeVals();
           })
         )
       );
     }
     if (this.note?.note_type === 'NOTE' && this.note?.is_public !== this.isPublic) {
+      const pub = this.isPublic;
       requests.push(
         this.noteService.publicNote(this.isPublic, this.uuid).pipe(
-          tap((note) => {
-            if (this.note) this.note.is_public = this.isPublic;
-            this.checkAndChangeVals();
-          })
-        )
-      );
-    }
-
-    if (this.note?.note_type === 'NOTE' && this.note?.description !== this.description || this.note?.title !== this.title) {
-      requests.push(
-        this.noteService.saveNote(
-          new NoteSaveOther(this.title, this.description || this.note?.description || ""),
-          this.uuid
-        ).pipe(
-          tap((note) => {
-            if (this.note) {
-              this.note.description = note.description;
-              this.note.title = note.title;
-              this.titleService.setTitle(this.title);
-            }
+          tap((isEdit) => {
+            if (isEdit && this.note) this.note.is_public = pub;
             this.checkAndChangeVals();
           })
         )
@@ -143,8 +131,10 @@ export class NoteComponent implements OnInit, OnDestroy {
     if (requests.length === 0) return;
 
     forkJoin(requests)
-      .subscribe(() => {
-        // this.checkAndChangeVals();
+      .subscribe(edits => {
+        if (edits.reduce((p, c) => p && c)) {
+          this.checkAndChangeVals();
+        }
       });
   }
 
@@ -257,7 +247,15 @@ export class NoteComponent implements OnInit, OnDestroy {
   }
 
   checkAndChangeVals() {
-    this.hasUnsavedChangesProp = this.hasUnsavedChanges()
+    const oldVal = this.hasUnsavedChangesProp;
+    const newVal = this.hasUnsavedChanges();
+    this.hasUnsavedChangesProp = newVal;
+    if(oldVal && !newVal){
+      this.snackBar.open("Saved!", "Ok");
+      setTimeout(() => {
+        this.snackBar.dismiss();
+      }, 2000);
+    }
   }
 
   changeVals() {

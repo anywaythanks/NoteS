@@ -10,7 +10,6 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
@@ -33,18 +32,16 @@ public class NoteContent {
    @Setter
    String title;
 
-   @Field(value = "score", type = FieldType.Keyword)
-   BigDecimal score;
-
-   @Field(value = "vec.vec", type = FieldType.Dense_Vector, dims = 312)
-   double[] vec;
+   @Field(name = "_score", type = FieldType.Double)
+   @Setter
+   float score;
 
    @Field(value = "owner", type = FieldType.Keyword)
    Long owner;
 
    @Field(value = "entry_type", type = FieldType.Text)
    @Setter
-   NoteType noteType;
+   EntryType entryType;
 
    @Field(value = "syntax", type = FieldType.Text)
    @Setter

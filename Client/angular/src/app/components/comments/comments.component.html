@@ -14,7 +14,8 @@
   </mat-expansion-panel>
   <div class="comments">
     @let commentaries = comments | async;
-    <div class="pre-comment">Комментарии (<span class="count-comment">{{ commentaries?.total ?? 0 }}</span>)</div>
+    <div class="pre-comment">Комментарии (<span class="count-comment">{{ commentaries?.total_elements ?? 0 }}</span>)
+    </div>
 
     @if (commentaries !== null) {
       @for (comment of commentaries.items; track comment.path) {
@@ -23,7 +24,7 @@
             <fa-icon [icon]="faUser"></fa-icon>
             <span>{{ comment.owner_account_name }}</span>
             <span>{{ comment.createdAtText }}</span>
-            <span>{{comment.note_type == "COMMENT_REDACTED" ? "(изменённый)" : ""}}</span>
+            <span>{{ comment.state == "PENDING_MODIFY" || comment.state == "ACTIVE_MODIFIED" ? "(изменённый)" : "" }}</span>
             <button mat-icon-button [matMenuTriggerFor]="menu">
               <fa-icon [icon]="faEllipsisVertical" class="select-icon"></fa-icon>
             </button>
