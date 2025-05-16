@@ -78,21 +78,22 @@ Inheritance diagram for com.notes.events.ScheduleEvent:</div>
  <div class="center">
   <img src="classcom_1_1notes_1_1events_1_1ScheduleEvent.png" usemap="#com.notes.events.ScheduleEvent_map" alt=""/>
   <map id="com.notes.events.ScheduleEvent_map" name="com.notes.events.ScheduleEvent_map">
-<area href="classcom_1_1notes_1_1events_1_1BaseEvent.html" alt="com.notes.events.BaseEvent" shape="rect" coords="494,0,731,24"/>
-<area href="classcom_1_1notes_1_1events_1_1ScheduleAckEvent.html" alt="com.notes.events.ScheduleAckEvent" shape="rect" coords="123,112,360,136"/>
-<area href="classcom_1_1notes_1_1events_1_1ScheduleCreateEvent.html" alt="com.notes.events.ScheduleCreateEvent" shape="rect" coords="370,112,607,136"/>
-<area href="classcom_1_1notes_1_1events_1_1ScheduleDeleteEvent.html" alt="com.notes.events.ScheduleDeleteEvent" shape="rect" coords="617,112,854,136"/>
-<area href="classcom_1_1notes_1_1events_1_1ScheduleEditEvent.html" alt="com.notes.events.ScheduleEditEvent" shape="rect" coords="864,112,1101,136"/>
-<area href="classcom_1_1notes_1_1events_1_1FailedSync.html" alt="com.notes.events.FailedSync" shape="rect" coords="0,168,237,192"/>
-<area href="classcom_1_1notes_1_1events_1_1SuccessSync.html" alt="com.notes.events.SuccessSync" shape="rect" coords="247,168,484,192"/>
+<area href="classcom_1_1notes_1_1events_1_1BaseEvent.html" alt="com.notes.events.BaseEvent" shape="rect" coords="617,0,854,24"/>
+<area href="classcom_1_1notes_1_1events_1_1ScheduleAckEvent.html" alt="com.notes.events.ScheduleAckEvent" shape="rect" coords="247,112,484,136"/>
+<area href="classcom_1_1notes_1_1events_1_1ScheduleCreateEvent.html" alt="com.notes.events.ScheduleCreateEvent" shape="rect" coords="494,112,731,136"/>
+<area href="classcom_1_1notes_1_1events_1_1ScheduleDeleteEvent.html" alt="com.notes.events.ScheduleDeleteEvent" shape="rect" coords="741,112,978,136"/>
+<area href="classcom_1_1notes_1_1events_1_1ScheduleEditEvent.html" alt="com.notes.events.ScheduleEditEvent" shape="rect" coords="988,112,1225,136"/>
+<area href="classcom_1_1notes_1_1events_1_1ErrorSync.html" alt="com.notes.events.ErrorSync" shape="rect" coords="0,168,237,192"/>
+<area href="classcom_1_1notes_1_1events_1_1FailedSync.html" alt="com.notes.events.FailedSync" shape="rect" coords="247,168,484,192"/>
+<area href="classcom_1_1notes_1_1events_1_1SuccessSync.html" alt="com.notes.events.SuccessSync" shape="rect" coords="494,168,731,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a146f5c4a3703cef4b34edd3a1c9d6d13"><td class="memItemLeft" align="right" valign="top"><a id="a146f5c4a3703cef4b34edd3a1c9d6d13"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ScheduleEvent</b> (UUID sagaId, Long noteId, Long oldCommitId, Long newCommitId, Instant createdAt, <a class="el" href="enumcom_1_1notes_1_1models_1_1entity_1_1SagaEvent.html">SagaEvent</a> eventType)</td></tr>
-<tr class="separator:a146f5c4a3703cef4b34edd3a1c9d6d13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a971d3fbcbc153f322a920b4c25684f12"><td class="memItemLeft" align="right" valign="top"><a id="a971d3fbcbc153f322a920b4c25684f12"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ScheduleEvent</b> (UUID sagaId, Long noteId, Long oldCommitId, Long newCommitId, <a class="el" href="enumcom_1_1notes_1_1models_1_1entity_1_1SagaEvent.html">SagaEvent</a> eventType)</td></tr>
+<tr class="separator:a971d3fbcbc153f322a920b4c25684f12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Именно этот эвент перехватывают для логирования, следовательно, наследуясь от него ты говоришь, что мне нужны сага логи. </p>

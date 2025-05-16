@@ -69,6 +69,7 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="enumcom_1_1notes_1_1models_1_1entity_1_1SagaEvent-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">com.notes.models.entity.SagaEvent Enum Reference</div>  </div>
@@ -89,28 +90,73 @@ static <a class="el" href="enumcom_1_1notes_1_1models_1_1entity_1_1SagaEvent.htm
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a89088ec82946c89c63c7a1dd7e2475d4"><td class="memItemLeft" align="right" valign="top"><a id="a89088ec82946c89c63c7a1dd7e2475d4"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>CREATE</b> =(0)</td></tr>
-<tr class="separator:a89088ec82946c89c63c7a1dd7e2475d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2433b794cba4d0f5e23d86c8c613a9ae"><td class="memItemLeft" align="right" valign="top"><a id="a2433b794cba4d0f5e23d86c8c613a9ae"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>MODIFICATE</b> =(1)</td></tr>
-<tr class="separator:a2433b794cba4d0f5e23d86c8c613a9ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad1c6d19608f40d92b8ba2cfcd81b8d8"><td class="memItemLeft" align="right" valign="top"><a id="aad1c6d19608f40d92b8ba2cfcd81b8d8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DELETE</b> =(2)</td></tr>
-<tr class="separator:aad1c6d19608f40d92b8ba2cfcd81b8d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adad19a101d517e3c17382c8bb02852a6"><td class="memItemLeft" align="right" valign="top"><a id="adad19a101d517e3c17382c8bb02852a6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>SCHEDULED_INDEX</b> =(0)</td></tr>
+<tr class="separator:adad19a101d517e3c17382c8bb02852a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2c5719cfcfa3f66c0b652d5bc5fb592"><td class="memItemLeft" align="right" valign="top"><a id="aa2c5719cfcfa3f66c0b652d5bc5fb592"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>SCHEDULED_REINDEX</b> =(1)</td></tr>
+<tr class="separator:aa2c5719cfcfa3f66c0b652d5bc5fb592"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e43be53e16cd01dfb7e0b32e8a3de1d"><td class="memItemLeft" align="right" valign="top"><a id="a9e43be53e16cd01dfb7e0b32e8a3de1d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>SCHEDULED_REMOVE_INDEX</b> =(2)</td></tr>
+<tr class="separator:a9e43be53e16cd01dfb7e0b32e8a3de1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64d42eccf2d63973ad665c94d39cfe94"><td class="memItemLeft" align="right" valign="top"><a id="a64d42eccf2d63973ad665c94d39cfe94"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>SUCCESS_CREATED</b> =(3)</td></tr>
+<tr class="separator:a64d42eccf2d63973ad665c94d39cfe94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac31cfd7f983a1d20c90fb4b8874c59a3"><td class="memItemLeft" align="right" valign="top"><a id="ac31cfd7f983a1d20c90fb4b8874c59a3"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>SUCCESS_EDITED</b> =(4)</td></tr>
+<tr class="separator:ac31cfd7f983a1d20c90fb4b8874c59a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2cc0b779f27356f127081e61f917b433"><td class="memItemLeft" align="right" valign="top"><a id="a2cc0b779f27356f127081e61f917b433"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>SUCCESS_DELETED</b> =(5)</td></tr>
+<tr class="separator:a2cc0b779f27356f127081e61f917b433"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf1477e293a051d4996e9970dd51a81a"><td class="memItemLeft" align="right" valign="top"><a id="adf1477e293a051d4996e9970dd51a81a"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ERROR_CREATED</b> =(6)</td></tr>
+<tr class="separator:adf1477e293a051d4996e9970dd51a81a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e5a7d69aa26f61e37038fc763ef1de0"><td class="memItemLeft" align="right" valign="top"><a id="a8e5a7d69aa26f61e37038fc763ef1de0"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ERROR_EDITED</b> =(7)</td></tr>
+<tr class="separator:a8e5a7d69aa26f61e37038fc763ef1de0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ba488dd7a83c127456ef5b1bed7d84d"><td class="memItemLeft" align="right" valign="top"><a id="a5ba488dd7a83c127456ef5b1bed7d84d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ERROR_DELETED</b> =(8)</td></tr>
+<tr class="separator:a5ba488dd7a83c127456ef5b1bed7d84d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0706a0b03892597e30cf92dbe60744fe"><td class="memItemLeft" align="right" valign="top"><a id="a0706a0b03892597e30cf92dbe60744fe"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>FAILED</b> =(3)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>FAILED</b> =(9)</td></tr>
 <tr class="separator:a0706a0b03892597e30cf92dbe60744fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a839eb699e2fe73d82fbca79412206f29"><td class="memItemLeft" align="right" valign="top"><a id="a839eb699e2fe73d82fbca79412206f29"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>SUCCESS</b> =(4)</td></tr>
-<tr class="separator:a839eb699e2fe73d82fbca79412206f29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d25d01bd9b5c23229035ef626fecb0b"><td class="memItemLeft" align="right" valign="top"><a id="a5d25d01bd9b5c23229035ef626fecb0b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>COMPENSATE</b> =(5)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>COMPENSATE</b> =(10)</td></tr>
 <tr class="separator:a5d25d01bd9b5c23229035ef626fecb0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7665e8148e55b09412b8ce6baceef4e"><td class="memItemLeft" align="right" valign="top"><a id="ae7665e8148e55b09412b8ce6baceef4e"></a>
 final int&#160;</td><td class="memItemRight" valign="bottom"><b>id</b></td></tr>
 <tr class="separator:ae7665e8148e55b09412b8ce6baceef4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:ac23354304a4e04c677cea3d65cd47abe"><td class="memItemLeft" align="right" valign="top">static final Map&lt; Integer, <a class="el" href="enumcom_1_1notes_1_1models_1_1entity_1_1SagaEvent.html">SagaEvent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>map</b></td></tr>
+<tr class="separator:ac23354304a4e04c677cea3d65cd47abe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ac23354304a4e04c677cea3d65cd47abe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac23354304a4e04c677cea3d65cd47abe">&#9670;&nbsp;</a></span>map</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"> final Map&lt;Integer, <a class="el" href="enumcom_1_1notes_1_1models_1_1entity_1_1SagaEvent.html">SagaEvent</a>&gt; com.notes.models.entity.SagaEvent.map</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= Arrays.stream(SagaEvent.values())</div>
+<div class="line">           .collect(Collectors.toMap(SagaEvent::getId, Function.identity()))</div>
+</div><!-- fragment -->
+</div>
+</div>
 <hr/>The documentation for this enum was generated from the following file:<ul>
 <li>src/com/notes/models/entity/SagaEvent.java</li>
 </ul>

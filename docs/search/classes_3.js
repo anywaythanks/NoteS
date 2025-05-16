@@ -1,5 +1,26 @@
 var searchData=
 [
-  ['eventmapper_193',['EventMapper',['../interfacecom_1_1notes_1_1mappers_1_1events_1_1EventMapper.html',1,'com::notes::mappers::events']]],
-  ['exceptionhandlingcontroller_194',['ExceptionHandlingController',['../classcom_1_1notes_1_1exceptions_1_1handler_1_1ExceptionHandlingController.html',1,'com::notes::exceptions::handler']]]
+  ['entry_211',['Entry',['../classcom_1_1notes_1_1models_1_1entity_1_1Entry.html',1,'com::notes::models::entity']]],
+  ['entryrepositorycommand_212',['EntryRepositoryCommand',['../interfacecom_1_1notes_1_1repository_1_1EntryRepositoryCommand.html',1,'com::notes::repository']]],
+  ['entryrepositorycommandimpl_213',['EntryRepositoryCommandImpl',['../classcom_1_1notes_1_1repository_1_1inner_1_1EntryRepositoryCommandImpl.html',1,'com::notes::repository::inner']]],
+  ['entryrepositorymapper_214',['EntryRepositoryMapper',['../interfacecom_1_1notes_1_1mappers_1_1repository_1_1EntryRepositoryMapper.html',1,'com::notes::mappers::repository']]],
+  ['entryrepositoryquery_215',['EntryRepositoryQuery',['../interfacecom_1_1notes_1_1repository_1_1EntryRepositoryQuery.html',1,'com::notes::repository']]],
+  ['entryrepositoryschedule_216',['EntryRepositorySchedule',['../interfacecom_1_1notes_1_1repository_1_1EntryRepositorySchedule.html',1,'com::notes::repository']]],
+  ['entryrepositoryscheduleimpl_217',['EntryRepositoryScheduleImpl',['../classcom_1_1notes_1_1repository_1_1inner_1_1EntryRepositoryScheduleImpl.html',1,'com::notes::repository::inner']]],
+  ['entryrepositorysearchquery_218',['EntryRepositorySearchQuery',['../interfacecom_1_1notes_1_1repository_1_1EntryRepositorySearchQuery.html',1,'com::notes::repository']]],
+  ['entryrepositorysearchqueryimpl_219',['EntryRepositorySearchQueryImpl',['../classcom_1_1notes_1_1repository_1_1inner_1_1EntryRepositorySearchQueryImpl.html',1,'com::notes::repository::inner']]],
+  ['entrytagref_220',['EntryTagRef',['../classcom_1_1notes_1_1models_1_1entity_1_1EntryTagRef.html',1,'com::notes::models::entity']]],
+  ['entrytagrefcustomrepository_221',['EntryTagRefCustomRepository',['../interfacecom_1_1notes_1_1repository_1_1inner_1_1EntryTagRefCustomRepository.html',1,'com::notes::repository::inner']]],
+  ['entrytagrefdb_222',['EntryTagRefDb',['../interfacecom_1_1notes_1_1repository_1_1inner_1_1EntryTagRefDb.html',1,'com::notes::repository::inner']]],
+  ['entrytagrefrepository_223',['EntryTagRefRepository',['../interfacecom_1_1notes_1_1repository_1_1EntryTagRefRepository.html',1,'com::notes::repository']]],
+  ['entrytagrefrepositoryimpl_224',['EntryTagRefRepositoryImpl',['../classcom_1_1notes_1_1repository_1_1inner_1_1EntryTagRefRepositoryImpl.html',1,'com::notes::repository::inner']]],
+  ['entrytype_225',['EntryType',['../enumcom_1_1notes_1_1models_1_1entity_1_1EntryType.html',1,'com::notes::models::entity']]],
+  ['entrytypeapidto_226',['EntryTypeApiDto',['../enumcom_1_1notes_1_1models_1_1api_1_1note_1_1EntryTypeApiDto.html',1,'com::notes::models::api::note']]],
+  ['entrytypeconverter_227',['EntryTypeConverter',['../classcom_1_1notes_1_1converters_1_1EntryTypeConverter.html',1,'com::notes::converters']]],
+  ['entrytypedomaindto_228',['EntryTypeDomainDto',['../enumcom_1_1notes_1_1models_1_1domain_1_1EntryTypeDomainDto.html',1,'com::notes::models::domain']]],
+  ['entryutils_229',['EntryUtils',['../classcom_1_1notes_1_1services_1_1utils_1_1EntryUtils.html',1,'com::notes::services::utils']]],
+  ['entryuuidsrepositorydbimpl_230',['EntryUuidsRepositoryDbImpl',['../classcom_1_1notes_1_1repository_1_1inner_1_1EntryUuidsRepositoryDbImpl.html',1,'com::notes::repository::inner']]],
+  ['errorsync_231',['ErrorSync',['../classcom_1_1notes_1_1events_1_1ErrorSync.html',1,'com::notes::events']]],
+  ['eventmapper_232',['EventMapper',['../interfacecom_1_1notes_1_1mappers_1_1events_1_1EventMapper.html',1,'com::notes::mappers::events']]],
+  ['exceptionhandlingcontroller_233',['ExceptionHandlingController',['../classcom_1_1notes_1_1exceptions_1_1handler_1_1ExceptionHandlingController.html',1,'com::notes::exceptions::handler']]]
 ];

@@ -75,18 +75,16 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0de663bf30393ed0dce0e2dc522dcc6b"><td class="memItemLeft" align="right" valign="top">NoteEditPublicResponseDto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1controllers_1_1PrivateNoteController.html#a0de663bf30393ed0dce0e2dc522dcc6b">editPublicAllNote</a> (@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote, @Valid @RequestBody NoteEditPublicRequestDto editDto)</td></tr>
-<tr class="separator:a0de663bf30393ed0dce0e2dc522dcc6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ea01d78911abfc22a4f6925dd65fd4f"><td class="memItemLeft" align="right" valign="top">NoteEditOtherResponseDto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1controllers_1_1PrivateNoteController.html#a1ea01d78911abfc22a4f6925dd65fd4f">editNoteAll</a> (@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote, @Valid @RequestBody NoteEditOtherRequestDto editDto)</td></tr>
-<tr class="separator:a1ea01d78911abfc22a4f6925dd65fd4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e2af8da12f8e799fd975cf1fad28c81"><td class="memItemLeft" align="right" valign="top">NoteEditContentResponseDto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1controllers_1_1PrivateNoteController.html#a4e2af8da12f8e799fd975cf1fad28c81">editContentNote</a> (@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote, @Valid @RequestBody NoteEditOnlyContentRequestDto editDto)</td></tr>
-<tr class="separator:a4e2af8da12f8e799fd975cf1fad28c81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d330ce28ae41c72bb6c61efe6111ed0"><td class="memItemLeft" align="right" valign="top">NoteSearchContentResponseDto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1controllers_1_1PrivateNoteController.html#a1d330ce28ae41c72bb6c61efe6111ed0">getNoteAll</a> (@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote)</td></tr>
-<tr class="separator:a1d330ce28ae41c72bb6c61efe6111ed0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7a68eafaf69d462acf0c6447ddb1842"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1controllers_1_1PrivateNoteController.html#ac7a68eafaf69d462acf0c6447ddb1842">editPublicAllNote</a> (@Valid @PathVariable(&quot;accountName&quot;) AccName accountName, @Valid @PathVariable NotePath pathNote, @Valid @RequestBody NoteEditPublicRequestDto editDto)</td></tr>
+<tr class="separator:ac7a68eafaf69d462acf0c6447ddb1842"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1135be737f39ae03871f3938e98b638"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1controllers_1_1PrivateNoteController.html#aa1135be737f39ae03871f3938e98b638">editNoteAll</a> (@Valid @PathVariable(&quot;accountName&quot;) AccName accountName, @Valid @PathVariable NotePath pathNote, @Valid @RequestBody NoteEditRequestDto editDto)</td></tr>
+<tr class="separator:aa1135be737f39ae03871f3938e98b638"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cc9fe579cacf27b41e024feff5fff65"><td class="memItemLeft" align="right" valign="top">EntryFullResponseDto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1notes_1_1controllers_1_1PrivateNoteController.html#a8cc9fe579cacf27b41e024feff5fff65">getNoteAll</a> (@Valid @PathVariable(&quot;accountName&quot;) AccName accountName, @Valid @PathVariable NotePath pathNote)</td></tr>
+<tr class="separator:a8cc9fe579cacf27b41e024feff5fff65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4e2af8da12f8e799fd975cf1fad28c81"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4e2af8da12f8e799fd975cf1fad28c81">&#9670;&nbsp;</a></span>editContentNote()</h2>
+<a id="aa1135be737f39ae03871f3938e98b638"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1135be737f39ae03871f3938e98b638">&#9670;&nbsp;</a></span>editNoteAll()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -95,9 +93,9 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">NoteEditContentResponseDto com.notes.controllers.PrivateNoteController.editContentNote </td>
+          <td class="memname">void com.notes.controllers.PrivateNoteController.editNoteAll </td>
           <td>(</td>
-          <td class="paramtype">@Valid @PathVariable AccName&#160;</td>
+          <td class="paramtype">@Valid @PathVariable(&quot;accountName&quot;) AccName&#160;</td>
           <td class="paramname"><em>accountName</em>, </td>
         </tr>
         <tr>
@@ -109,50 +107,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">@Valid @RequestBody NoteEditOnlyContentRequestDto&#160;</td>
-          <td class="paramname"><em>editDto</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p><a href="https://anywaythanks.github.io/NoteS-API/#/PrivateNote/post_api_private__accountName__notes__pathNote__content">Click</a> </p>
-
-</div>
-</div>
-<a id="a1ea01d78911abfc22a4f6925dd65fd4f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1ea01d78911abfc22a4f6925dd65fd4f">&#9670;&nbsp;</a></span>editNoteAll()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">NoteEditOtherResponseDto com.notes.controllers.PrivateNoteController.editNoteAll </td>
-          <td>(</td>
-          <td class="paramtype">@Valid @PathVariable AccName&#160;</td>
-          <td class="paramname"><em>accountName</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">@Valid @PathVariable NotePath&#160;</td>
-          <td class="paramname"><em>pathNote</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">@Valid @RequestBody NoteEditOtherRequestDto&#160;</td>
+          <td class="paramtype">@Valid @RequestBody NoteEditRequestDto&#160;</td>
           <td class="paramname"><em>editDto</em>&#160;</td>
         </tr>
         <tr>
@@ -171,8 +126,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0de663bf30393ed0dce0e2dc522dcc6b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0de663bf30393ed0dce0e2dc522dcc6b">&#9670;&nbsp;</a></span>editPublicAllNote()</h2>
+<a id="ac7a68eafaf69d462acf0c6447ddb1842"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7a68eafaf69d462acf0c6447ddb1842">&#9670;&nbsp;</a></span>editPublicAllNote()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -181,9 +136,9 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">NoteEditPublicResponseDto com.notes.controllers.PrivateNoteController.editPublicAllNote </td>
+          <td class="memname">void com.notes.controllers.PrivateNoteController.editPublicAllNote </td>
           <td>(</td>
-          <td class="paramtype">@Valid @PathVariable AccName&#160;</td>
+          <td class="paramtype">@Valid @PathVariable(&quot;accountName&quot;) AccName&#160;</td>
           <td class="paramname"><em>accountName</em>, </td>
         </tr>
         <tr>
@@ -214,8 +169,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a1d330ce28ae41c72bb6c61efe6111ed0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d330ce28ae41c72bb6c61efe6111ed0">&#9670;&nbsp;</a></span>getNoteAll()</h2>
+<a id="a8cc9fe579cacf27b41e024feff5fff65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cc9fe579cacf27b41e024feff5fff65">&#9670;&nbsp;</a></span>getNoteAll()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -224,9 +179,9 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">NoteSearchContentResponseDto com.notes.controllers.PrivateNoteController.getNoteAll </td>
+          <td class="memname">EntryFullResponseDto com.notes.controllers.PrivateNoteController.getNoteAll </td>
           <td>(</td>
-          <td class="paramtype">@Valid @PathVariable AccName&#160;</td>
+          <td class="paramtype">@Valid @PathVariable(&quot;accountName&quot;) AccName&#160;</td>
           <td class="paramname"><em>accountName</em>, </td>
         </tr>
         <tr>

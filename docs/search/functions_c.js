@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['tags_326',['tags',['../classcom_1_1notes_1_1controllers_1_1PublicTagsController.html#a8d5d9013a4213c5cecbd31ce4ef5b455',1,'com.notes.controllers.PublicTagsController.tags(@Valid @PathVariable AccName accountName, @Valid @PathVariable NotePath pathNote)'],['../classcom_1_1notes_1_1controllers_1_1PublicTagsController.html#af058a2ddceb86cc85d13a9ca5d1eff4e',1,'com.notes.controllers.PublicTagsController.tags(@Valid @PathVariable AccName accountName)']]]
+  ['tags_360',['tags',['../classcom_1_1notes_1_1controllers_1_1PublicTagsController.html#a622c333c13937cbdf74e5d17ae2fb4a2',1,'com.notes.controllers.PublicTagsController.tags(@Valid @PathVariable(&quot;accountName&quot;) AccName accountName, @Valid @PathVariable NotePath pathNote)'],['../classcom_1_1notes_1_1controllers_1_1PublicTagsController.html#afc29ee21fb416d1046b07e9be0be1e18',1,'com.notes.controllers.PublicTagsController.tags(@Valid @PathVariable(&quot;accountName&quot;) AccName accountName)']]]
 ];

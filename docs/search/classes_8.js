@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['mapstructconfig_201',['MapstructConfig',['../interfacecom_1_1notes_1_1configs_1_1MapstructConfig.html',1,'com::notes::configs']]],
-  ['markdownconfig_202',['MarkdownConfig',['../classcom_1_1notes_1_1configs_1_1MarkdownConfig.html',1,'com::notes::configs']]]
+  ['kafkaconfig_240',['KafkaConfig',['../classcom_1_1notes_1_1configs_1_1KafkaConfig.html',1,'com::notes::configs']]]
 ];
